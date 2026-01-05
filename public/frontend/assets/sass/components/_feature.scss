@@ -1,0 +1,325 @@
+.feature {
+    background-color: var(--white-color);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+
+    .feature-position-img {
+        position: absolute;
+        top: 5px;
+        right: 0;
+        z-index: -1;
+    }
+
+    .taitel {
+        .taitel-img {
+            position: absolute;
+            bottom: -16px;
+            left: 0px;
+        }
+    }
+
+    .feature-slick-icon {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        justify-content: end;
+
+        .feature-slick-prev {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--primary-color-1);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+
+            &:hover {
+                background-color: var(--primary-color-1);
+
+                span {
+                    svg {
+                        color: var(--white-color);
+                        transition: var(--transition-all);
+                    }
+                }
+            }
+
+            span {
+                line-height: 0;
+
+                svg {
+                    stroke: currentColor;
+                    color: var(--primary-color-1);
+                }
+            }
+        }
+
+        .feature-slick-next {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--primary-color-1);
+            background-color: var(--primary-color-1);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+
+            &:hover {
+                background-color: transparent;
+
+                span {
+                    svg {
+                        color: var(--primary-color-1);
+                        transition: var(--transition-all);
+                    }
+                }
+            }
+
+            span {
+                line-height: 0;
+
+                svg {
+                    stroke: currentColor;
+                    color: var(--white-color);
+                    transition: var(--transition-all);
+                }
+            }
+        }
+    }
+
+    .brand-car-item {
+        margin: 0 12px;
+        box-shadow: 0px 0px 60px 0px transparent;
+        border: 1px solid rgba(237, 237, 237, 1);
+    }
+
+    .feature-thumb {
+        margin-top: 0px;
+        padding-left: 5px;
+
+        img {
+            width: 342px;
+            height: 622px;
+        }
+    }
+}
+
+
+
+
+
+.feature-slick-prev,
+.trending-slick-prve {
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--primary-color-1);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-all);
+
+    &:hover {
+        background-color: var(--primary-color-1);
+
+        span {
+            svg {
+                color: var(--white-color);
+                transition: var(--transition-all);
+            }
+        }
+    }
+
+    span {
+        line-height: 0;
+
+        svg {
+            stroke: currentColor;
+            color: var(--primary-color-1);
+        }
+    }
+}
+
+.feature-slick-next,
+.trending-slick-next {
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--primary-color-1);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-all);
+
+    &:hover {
+
+        background-color: var(--primary-color-1);
+
+        span {
+
+            svg {
+
+                color: var(--white-color);
+
+            }
+        }
+    }
+
+    span {
+        line-height: 0;
+
+        svg {
+            stroke: currentColor;
+            color: var(--primary-color-1);
+            transition: var(--transition-all);
+
+        }
+    }
+}
+
+.trending-slick-prve {
+    background-color: var(--primary-color-3);
+    border: 1px solid var(--primary-color-3);
+
+    span {
+        svg {
+            color: var(--white-color);
+        }
+    }
+
+    &:hover {
+        background-color: var(--white-color);
+
+        span {
+            svg {
+                color: var(--primary-color-3);
+            }
+        }
+    }
+}
+
+.trending-slick-next {
+    border: 1px solid var(--primary-color-3);
+
+    span {
+        svg {
+            stroke: currentColor;
+            color: var(--primary-color-3);
+        }
+    }
+
+    &:hover {
+        background-color: var(--primary-color-3);
+    }
+}
+
+// .feature-two  
+.feature-two {
+    background-color: #fff;
+    margin: 0px auto;
+    position: relative;
+    z-index: 1;
+
+    .taitel .taitel-img {
+        position: absolute;
+        bottom: -14px;
+        left: 0px;
+    }
+
+
+
+    .feature-two-img-main {
+        position: relative;
+
+        .feature-two-img {
+
+
+            img {
+                width: 708px;
+                height: 478px;
+                border-radius: 8px;
+            }
+
+        }
+
+        .close {
+            width: 30px;
+            height: 30px;
+            border: 1px solid transparent;
+            background-color: var(--white-color);
+            border-radius: 50px;
+            position: absolute;
+            top: 13px;
+            right: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                width: 12.499px;
+                height: 12.5px;
+                object-fit: cover;
+            }
+        }
+
+    }
+
+
+
+
+
+
+    .brand-car-item {
+        border: 1px solid #E9E9E9;
+        background-color: #F8F8F8;
+
+        .brand-car-item-img {
+            .brand-car-item-img-text {
+                .text-df {
+                    .text {
+                        &.text-two {
+                            background-color: var(--primary-color-2);
+                            color: var(--white-color);
+                        }
+                    }
+                }
+
+                .icon {
+                    &:hover {
+                        background-color: var(--primary-color-2);
+                    }
+                }
+            }
+        }
+
+        .brand-car-inner {
+            .brand-car-inner-item {
+
+
+                p {
+                    color: var(--primary-color-2);
+                }
+            }
+        }
+
+        &:hover {
+            .brand-car-inner {
+                h3 {
+                    color: var(--primary-color-2);
+                }
+            }
+        }
+    }
+
+
+}
+
+// .feature-three  
+.feature-three {
+    .brand-car-item {
+        display: flex;
+    }
+}

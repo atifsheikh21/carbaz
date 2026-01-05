@@ -1,0 +1,58 @@
+@keyframes move {
+    from {
+        clip-path: circle(50px at 0% 50%);
+    }
+
+    to {
+        clip-path: circle(50px at 100% 50%);
+    }
+}
+
+.preloader {
+    position: fixed;
+    z-index: 10;
+    height: 100vh;
+    width: 100%;
+    left: 0;
+    top: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    z-index: 99999999999999;
+
+    svg {
+        position: absolute;
+        top: 0;
+        width: 100vw;
+        height: 110vh;
+        fill: var(--headline-color);
+    }
+}
+
+h5.preloader-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    color: var(--white-color);
+
+    &::after {
+        content: "Loading";
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: var(--primary-color);
+        animation: move 2s infinite alternate;
+    }
+}
+
+@media (max-width: 1040px) {
+    h5.preloader-text {
+        font-size: 60px;
+    }
+}

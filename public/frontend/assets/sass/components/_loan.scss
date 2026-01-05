@@ -1,0 +1,245 @@
+.loan {
+    padding: 120px 0;
+    position: relative;
+    z-index: 1;
+
+    .loan-bg {
+        padding: 30px 20px 30px 20px;
+        background-color: #0D274E;
+        border-radius: 8px;
+        border: 1px solid #1E4073;
+    }
+
+    .loan-taitel {
+        font-size: 46px;
+        font-weight: var(--bold);
+        line-height: 46px;
+        font-family: var(----DMSans);
+        color: var(--white-color);
+        border-bottom: 1px solid #1E4073;
+        padding-bottom: 16px;
+
+
+    }
+
+    .loan-form-min {
+        margin-top: 25px;
+
+        .loan-form-item {
+            position: relative;
+            margin-bottom: 15px;
+
+            .form-label {
+                font-size: 16px;
+                font-weight: var(--regular);
+                line-height: 18px;
+                font-family: var(--roboto);
+                color: var(--white-color);
+
+                span {
+                    color: var(--primary-color-2);
+                }
+            }
+
+            .form-control {
+                font-size: 16px;
+                font-weight: var(--semiBold);
+                line-height: 16px;
+                font-family: var(--roboto);
+                color: var(--headline-color);
+                padding: 12px 12px 12px 80px;
+                border: 1px solid var(--white-color);
+                background-color: var(--white-color);
+                border-radius: 4px;
+
+                &:focus {
+                    box-shadow: 0 0 0 0.25rem transparent;
+                    border-color: var(--primary-color-2);
+                }
+
+                &::placeholder {
+                    color: var(--headline-color);
+                }
+            }
+
+            .icon {
+                position: absolute;
+                top: 38px;
+                left: 20px;
+                border-right: 1px solid rgba(13, 39, 78, 0.2);
+                padding-right: 18px;
+
+                span {
+                    svg {
+                        stroke: currentColor;
+                        color: var(--primary-color-2);
+                    }
+
+                    .svg-two {
+                        stroke: transparent;
+                        fill: currentColor;
+                        color: var(--primary-color-2);
+                    }
+                }
+            }
+
+        }
+
+        .loan-form-item-btn {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-top: 22px;
+
+            .reset-btn {
+                font-size: 18px;
+                font-weight: 500;
+                line-height: 18px;
+                color: var(--white-color);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-family: var(--roboto);
+                transition: all linear 0.3s;
+
+                &:hover {
+                    color: var(--primary-color-3);
+
+                    span {
+                        svg {
+                            color: var(--primary-color-3);
+                        }
+                    }
+                }
+
+                span {
+                    svg {
+                        fill: currentColor;
+                        color: var(--white-color);
+                        transition: all linear 0.3s;
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    .estimate-item {
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #163461;
+        margin-left: 35px;
+
+        .estimate-taitel {
+            font-size: 46px;
+            font-weight: var(--bold);
+            line-height: 46px;
+            color: var(--white-color);
+            border-bottom: 1px solid #1E4073;
+            padding-bottom: 16px;
+            padding-top: 0;
+            text-align: center;
+        }
+
+        .estimate-img {
+            padding: 70px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                width: 218px;
+                height: 165px;
+            }
+        }
+
+        .estimate-payment {
+            ul {
+                li {
+                    font-size: 16px;
+                    font-weight: var(--regular);
+                    line-height: 18px;
+                    font-family: var(--roboto);
+                    color: var(--white-color);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding-bottom: 20px;
+
+                    span {
+                        font-size: 18px;
+                        font-weight: var(--semiBold);
+                    }
+
+
+                    &:last-child {
+                        border-top: 1px solid #1E4073;
+                        padding-top: 20px;
+                        padding-bottom: 0;
+                    }
+
+                }
+            }
+        }
+    }
+
+}
+
+
+
+
+.loan-calculator {
+    background: var(--white-color);
+    padding-bottom: 0;
+
+    .loan-bg {
+        padding: 60px 80px 80px 80px;
+    }
+
+    .loan-form-min {
+        margin-top: 0;
+
+        .loan-form-item {
+            margin-bottom: 25px;
+
+            .icon {
+                top: 47px;
+            }
+
+            .form-control {
+
+                padding: 20px 12px 20px 80px;
+
+            }
+        }
+
+        .thm-btn {
+            height: 56px;
+            margin-top: 30px;
+        }
+    }
+
+
+    .loan-taitel {
+        border-bottom: 1px solid transparent;
+        text-align: center;
+    }
+
+    .loan-taitel-dec {
+        font-family: var(--roboto);
+        font-size: 18px;
+        font-weight: var(--regular);
+        line-height: 28px;
+        color: var(--white-color);
+        text-align: center;
+
+        padding: 0 66px;
+        margin-bottom: 60px;
+    }
+
+
+    .estimate-item {
+        margin-left: 35px;
+    }
+}

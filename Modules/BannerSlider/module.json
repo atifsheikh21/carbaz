@@ -1,0 +1,11 @@
+{
+    "name": "BannerSlider",
+    "alias": "bannerslider",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\BannerSlider\\Providers\\BannerSliderServiceProvider"
+    ],
+    "files": []
+}

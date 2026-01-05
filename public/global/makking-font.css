@@ -1,0 +1,75 @@
+@font-face {
+    font-family: 'Makking';
+    src: url('../fonts/Makking-Thin.otf') format('opentype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Makking';
+    src: url('../fonts/Makking-ExtraLight.otf') format('opentype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Makking';
+    src: url('../fonts/Makking-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Makking';
+    src: url('../fonts/Makking-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Makking';
+    src: url('../fonts/Makking-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Makking';
+    src: url('../fonts/Makking-SemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Makking';
+    src: url('../fonts/Makking-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Makking';
+    src: url('../fonts/Makking-ExtraBold.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+html,
+body {
+    font-family: 'Makking', sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: 'Makking', sans-serif;
+}

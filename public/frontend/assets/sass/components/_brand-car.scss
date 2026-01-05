@@ -1,0 +1,655 @@
+.brand-car {
+    padding-bottom: 120px;
+    margin-top: -3px;
+    position: relative;
+    z-index: 1;
+    background-color: var(--white-color);
+
+    .brand-car-position-img {
+        position: absolute;
+        top: -184px;
+        right: 0;
+        z-index: -1;
+    }
+
+    .taitel {
+        .taitel-img {
+            position: absolute;
+            bottom: -16px;
+            left: 0px;
+        }
+    }
+
+    .nav {
+        justify-content: end;
+        gap: 20px;
+
+        .nav-link {
+            padding: 15px 30px;
+            color: var(--headline-color);
+            font-size: 18px;
+            font-weight: var(--medium);
+            line-height: 20px;
+            font-family: var(--roboto);
+            border: 1px solid var(--primary-color-1);
+            background-color: var(--white-color);
+            border-radius: 4px;
+        }
+    }
+
+    .nav-pills {
+        .nav-link.active {
+            color: var(--headline-color);
+            background-color: var(--primary-color-1);
+            border: 1px solid var(--primary-color-1);
+        }
+    }
+}
+
+
+
+
+
+
+.brand-car-item {
+    box-shadow: 0px 0px 60px 0px rgba(0, 0, 0, 0.10);
+    overflow: hidden;
+    border-radius: 8px;
+    position: relative;
+    z-index: 1;
+
+    .brand-car-item-img {
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        border-radius: 8px 8px 0px 0px;
+
+        &::after {
+            content: "";
+            position: absolute;
+            pointer-events: none;
+            opacity: 1;
+            z-index: 3;
+            transform: rotate(5deg);
+            top: 50%;
+            right: -10%;
+            bottom: 50%;
+            left: -10%;
+            background: rgba(255, 255, 255, .2);
+
+
+        }
+
+        &::before {
+            content: "";
+            position: absolute;
+            pointer-events: none;
+            opacity: 1;
+            z-index: 3;
+            transform: rotate(5deg);
+            top: -10%;
+            right: 51%;
+            bottom: -10%;
+            left: 50%;
+            background: rgba(255, 255, 255, .2);
+        }
+
+        img {
+            height: 217px;
+            width: 100%;
+            object-fit: cover;
+            transition: var(--transition-ease-in-out);
+        }
+
+        .brand-car-item-img-text {
+            position: absolute;
+            top: 0;
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            width: 100%;
+            padding: 16px 16px 0 16px;
+            z-index: 11;
+
+            .text-df {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                .text {
+                    font-size: 14px;
+                    font-weight: var(--regular);
+                    line-height: 16px;
+                    color: var(--white-color);
+                    background-color: var(--secondary-color);
+                    padding: 4px 8px;
+                    border-radius: 2px;
+                }
+
+                .text-two {
+                    background-color: var(--primary-color-1);
+                    color: var(--headline-color);
+                }
+
+
+            }
+
+            .icon-main {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .icon {
+                height: 30px;
+                width: 30px;
+                background-color: var(--white-color);
+                color: var(--headline-color);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 5px;
+                transition: var(--transition-ease-in-out);
+
+
+                span {
+                    line-height: 0;
+
+                    svg {
+                        stroke: currentColor;
+                        color: var(--headline-color);
+                        transition: var(--transition-ease-in-out);
+                    }
+                }
+
+                &:hover {
+                    background-color: var(--primary-color-1);
+
+                    span {
+                        svg {
+                            color: var(--white-color);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+
+    .brand-car-inner {
+        padding: 25px 20px 20px 20px;
+
+        .brand-car-inner-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            span {
+                font-size: 14px;
+                font-weight: var(--regular);
+                line-height: 14px;
+                color: var(--paragraph-color);
+                font-family: var(--roboto);
+
+                svg {
+                    stroke: currentColor;
+                    color: var(--primary-color-2);
+
+
+                }
+            }
+
+            p {
+                font-weight: var(--bold);
+                color: var(--primary-color-1);
+                font-family: var(----DMSans);
+            }
+        }
+
+
+        h3 {
+            padding-top: 5px;
+            letter-spacing: -1px;
+            font-size: 20px;
+            transition: all linear 0.3s;
+        }
+
+        .brand-car-inner-item-two {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+
+            span {
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 14px;
+                color: var(--paragraph-color);
+                font-family: var(--roboto);
+            }
+        }
+
+
+        .brand-car-inner-item-thumb {
+            height: 16px;
+            width: 19px;
+            line-height: 0;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        .brand-car-btm-txt {
+            font-weight: var(--medium);
+            line-height: 16px;
+            font-family: var(--roboto);
+
+            span {
+                color: var(--paragraph-color);
+                font-weight: var(--regular);
+            }
+
+        }
+
+        .brand-car-btm-txt-btm {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: space-between;
+            border-top: 1px solid #E9E9E9;
+            padding-top: 20px;
+
+            .view-btn {
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 20px;
+                color: var(--headline-color);
+
+                span {
+                    svg {
+                        stroke: currentColor;
+                        color: var(--headline-color);
+                    }
+                }
+
+            }
+        }
+
+
+    }
+
+
+
+
+    // hover start 
+    &:hover {
+
+        .brand-car-inner {
+            h3 {
+                color: var(--primary-color-1);
+            }
+        }
+
+        .brand-car-item-img {
+            &::after {
+                top: 0;
+                bottom: 0;
+                opacity: 0;
+                transition: all 900ms linear;
+            }
+
+            &::before {
+                left: 0;
+                right: 0;
+                opacity: 0;
+                transition: all 900ms linear;
+            }
+
+            img {
+                transform: scale(1.3) rotate(10deg);
+
+            }
+
+            .brand-car-item-img-text {
+                .icon {
+                    opacity: 1;
+                }
+            }
+
+        }
+
+        .brand-car-inner-btn {
+            .thm-btn {
+                background-color: var(--primary-color);
+                color: var(--white-color);
+
+                &::after {
+                    transform: rotateY(90deg);
+                }
+
+                &::before {
+                    transform: rotateX(90deg);
+                }
+            }
+
+
+        }
+
+
+
+    }
+
+    // hover end
+
+
+
+
+
+
+    &.two {
+        display: flex;
+        align-items: center;
+        box-shadow: 0px 0px 60px 0px transparent;
+        border: 1px solid #E9E9E9;
+        padding: 20px;
+        gap: 30px;
+
+        .brand-car-item-img {
+            border-radius: 10px;
+            width: 40%;
+
+            img {
+                width: 186px;
+                height: 203px;
+
+            }
+
+
+
+
+
+            .brand-car-item-img-text {
+                padding: 16px 16px 0 16px;
+
+
+
+
+            }
+
+
+
+
+        }
+
+        .brand-car-inner {
+            width: 60%;
+            padding: 0;
+
+
+            h3 {
+                padding-top: 0;
+                padding-bottom: 10px;
+                font-size: 22px;
+            }
+
+
+
+            .brand-car-inner-item {
+                justify-content: space-between;
+
+                .brand-car-inner-btn {
+                    margin-top: 0;
+
+                    .brand-car-btm-txt {
+                        padding-top: 0;
+                    }
+                }
+
+
+            }
+
+
+
+
+
+        }
+    }
+
+}
+
+.brand-car-inner-item-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding-bottom: 30px;
+    margin-top: 19px;
+
+}
+
+
+
+.brand-car-btn {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+    .thm-btn {
+        width: 220px;
+        height: 60px;
+    }
+}
+
+
+
+
+
+
+
+.brand-car-two {
+    padding-top: 0 !important;
+
+    .brand-car-item {
+        display: flex;
+        align-items: center;
+        box-shadow: 0px 0px 60px 0px transparent;
+        border: 1px solid #E9E9E9;
+        padding: 20px;
+        gap: 30px;
+
+        .brand-car-item-img {
+            .brand-car-item-img-text {
+                .text-df {
+                    .text-two {
+                        background-color: var(--primary-color-2);
+                        color: var(--white-color);
+                    }
+                }
+
+                .icon {
+                    &:hover {
+                        background-color: var(--primary-color-2);
+                    }
+                }
+            }
+
+        }
+
+        .brand-car-item-img {
+            border-radius: 10px;
+            width: 50%;
+
+            img {
+                width: 329px;
+                height: 203px;
+
+            }
+
+        }
+
+        .brand-car-inner {
+            width: 50%;
+            padding: 0;
+
+
+            h3 {
+                padding-bottom: 10px;
+                padding-top: 0;
+            }
+
+            .brand-car-inner-item-main {
+                margin-top: 8px;
+            }
+
+            .brand-car-inner-item {
+                justify-content: space-between;
+
+                p {
+                    color: var(--primary-color-2);
+                }
+
+                .brand-car-inner-btn {
+                    margin-top: 0;
+
+                    .brand-car-btm-txt {
+                        padding-top: 0;
+                    }
+                }
+
+
+            }
+
+            .brand-car-inner-btn {
+                margin-top: 20px;
+
+                .love-btn {
+                    border: 1px solid transparent;
+                }
+
+
+                .brand-car-btm-txt {
+                    padding-top: 0;
+                }
+
+                .thm-btn {
+                    width: 100%;
+                }
+            }
+        }
+
+
+        &:hover {
+            .brand-car-inner {
+                h3 {
+                    color: var(--primary-color-2);
+                }
+            }
+        }
+    }
+
+    .nav {
+        .nav-link {
+            border: 1px solid var(--primary-color-2);
+        }
+    }
+
+    .nav-pills {
+        .nav-link.active {
+            color: var(--white-color);
+            background-color: var(--primary-color-2);
+            border: 1px solid var(--primary-color-2);
+        }
+    }
+
+
+
+
+}
+
+
+
+
+
+.brand-car-three {
+    padding-top: 115px;
+    padding-bottom: 0;
+
+
+    .brand-car-item {
+
+
+        .brand-car-item-img {
+
+            .brand-car-item-img-text {
+
+
+                .text-df {
+                    .text-two {
+                        background-color: var(--primary-color-3);
+                        color: var(--white-color);
+                    }
+
+
+                }
+
+
+
+                .icon {
+
+                    &:hover {
+                        background-color: var(--primary-color-3);
+                    }
+                }
+
+            }
+        }
+
+
+        .brand-car-inner {
+
+            .brand-car-inner-item {
+                p {
+                    color: var(--primary-color-3);
+                }
+
+
+            }
+        }
+
+        // hover start 
+        &:hover {
+            .brand-car-inner {
+                h3 {
+                    color: var(--primary-color-3);
+                }
+            }
+        }
+
+
+
+
+    }
+
+
+    .nav {
+        .nav-link {
+            border: 1px solid var(--primary-color-3);
+        }
+    }
+
+    .nav-pills {
+        .nav-link.active {
+            color: var(--white-color);
+            background-color: var(--primary-color-3);
+            border: 1px solid var(--primary-color-3);
+        }
+    }
+
+}

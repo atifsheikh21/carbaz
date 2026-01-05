@@ -1,0 +1,194 @@
+.formbold-mb-5 {
+    margin-bottom: 20px;
+}
+
+.formbold-pt-3 {
+    padding-top: 12px;
+}
+
+.formbold-main-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 126px;
+    right: 110px;
+    z-index: 1;
+
+    .thm-btn {
+        width: 100%;
+        border: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        span {
+            line-height: 0;
+
+            svg {
+                fill: currentColor;
+                color: var(--white-color);
+            }
+        }
+    }
+}
+
+.formbold-form-wrapper {
+    max-width: 550px;
+    width: 100%;
+    background: #F4F2F3;
+    border-radius: 8px;
+    display: none;
+}
+
+.formbold-form-wrapper.active {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.formbold-form-label {
+    display: block;
+    font-weight: 500;
+    font-size: 16px;
+    color: #07074d;
+    margin-bottom: 12px;
+}
+
+.formbold-form-label-2 {
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.formbold-text {
+    color: var(--headline-color);
+    font-family: var(--roboto);
+    font-size: 12px;
+    font-weight: var(--regular);
+    padding: 12px 14px;
+    background-color: var(--white-color);
+    border-radius: 4px;
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 8px;
+
+}
+
+.formbold-form-input {
+    width: 100%;
+    padding: 12px 24px;
+    border-radius: 6px;
+    border: 1px solid #E9E9E9;
+    background: var(--white-color);
+    font-weight: var(--roboto);
+    font-size: 16px;
+    color: #6b7280;
+    outline: none;
+    resize: none;
+    font-family: var(--roboto);
+}
+
+.formbold-form-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+
+
+.formbold-btn:hover {
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.formbold--mx-3 {
+    margin-left: -12px;
+    margin-right: -12px;
+}
+
+.formbold-px-3 {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.formbold-form-header {
+    background: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 14px;
+    border-radius: 8px 8px 0px 0px;
+}
+
+.formbold-form-header h3 {
+    font-weight: 700;
+    font-size: 20px;
+    color: white;
+}
+
+.formbold-form-header button {
+    background: var(--white-color);
+    border: none;
+    width: 30px;
+    height: 30px;
+    color: var(--headline-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+
+    svg {
+        fill: currentColor;
+    }
+
+
+}
+
+.formbold-chatbox-form {
+    padding: 10px 14px 20px 14px;
+}
+
+.formbold-action-buttons {
+    max-width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.formbold-action-btn {
+    width: 70px;
+    height: 70px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.formbold-action-btn .formbold-cross-icon {
+    display: none;
+}
+
+.formbold-action-btn.active .formbold-cross-icon {
+    display: block;
+}
+
+.formbold-action-btn.active .formbold-chat-icon {
+    display: none;
+}

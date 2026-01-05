@@ -1,0 +1,161 @@
+.information {
+    padding: 120px 0;
+    position: relative;
+    z-index: 1;
+    background-color: var(--white-color);
+    overflow: hidden;
+
+    .information-main {
+        border-radius: 8px;
+        border: 1px solid #E9E9E9;
+        padding-bottom: 50px;
+
+        .information-main-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+
+            .information-main-item-inner {
+                width: 100%;
+                padding: 24px 0 24px 30px;
+                background-color: var(--primary-color);
+                border-radius: 8px 0px 0px 0px;
+                display: flex;
+                align-items: center;
+                gap: 25px;
+
+                &.two {
+                    width: 100%;
+                    background-color: var(--secondary-color);
+                    border-radius: 0px 8px 0px 0px;
+                    justify-content: end;
+                    padding: 24px 30px 24px 0px;
+                }
+
+                .icon {
+                    img {
+                        width: 121px;
+                        height: 96px;
+                        border-radius: 500px;
+                        object-fit: cover;
+                    }
+                }
+
+
+                .text {
+                    font-weight: var(--bold);
+                    font-family: var(--DMSans);
+                    color: var(--white-color);
+                }
+            }
+
+            .vs-text {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 70px;
+                height: 70px;
+                background-color: var(--white-color);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 100%;
+
+                h4 {
+                    font-size: 24px;
+                    font-weight: var(--bold);
+                    font-family: var(--DMSans);
+                    line-height: 0;
+                    text-transform: uppercase;
+                }
+            }
+        }
+
+        .information-car-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px 75px;
+
+            .information-car-item-img {
+                img {
+                    width: 449px;
+                    height: 293px;
+                }
+
+
+            }
+        }
+
+        .information-list {
+            padding: 0 50px;
+
+            ul {
+                border-bottom: 1px solid #E9E9E9;
+                padding: 10px 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                &:nth-child(5) {
+                    border-bottom: 1px solid transparent;
+                }
+
+                &:last-child {
+                    border-bottom: 1px solid transparent;
+                }
+
+                li {
+                    width: 38%;
+                    font-size: 18px;
+                    font-weight: var(--regular);
+                    line-height: 28px;
+                    font-family: var(--roboto);
+                    color: var(--paragraph-color);
+                    text-align: center;
+                    display: flex;
+                    justify-content: center;
+
+                    span {
+                        color: var(--headline-color);
+                    }
+
+                    .thm-btn {
+                        border: 1px solid #FFE2DB;
+                        width: 184px;
+                        color: var(--headline-color);
+                        background-color: var(--primary-color);
+
+                        &:hover {
+                            color: var(--white-color);
+                        }
+
+                        &::after {
+                            background-color: #FFE2DB;
+                            border: 1px solid transparent;
+                        }
+
+                        &::before {
+                            background-color: #FFE2DB;
+                            border: 1px solid transparent;
+                        }
+                    }
+                }
+            }
+        }
+
+        .information-btn {
+            padding: 0 50px;
+            margin-top: 10px;
+
+            .thm-btn {
+                width: 100%;
+                border: 1px solid var(--primary-color);
+            }
+        }
+
+
+    }
+}

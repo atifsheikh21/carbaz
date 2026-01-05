@@ -1,0 +1,116 @@
+html[dir="rtl"] .header-right-item .header-right-item-btn .dropdown .btn-arrow {
+  right: auto;
+  left: 18px;
+}
+
+html[dir="rtl"] .banner-search-bar .banner-sarchber-box-inner {
+  border-right: 0px solid #b9b9b9;
+  padding-left: 0;
+  border-left: 1px solid #b9b9b9;
+  padding-right: 15px;
+}
+html[dir="rtl"] .banner-search-bar .banner-sarchber-box-inner:nth-child(4),
+html[dir="rtl"] .banner-search-bar .banner-sarchber-box-inner:nth-child(5) {
+  border-right: 0px solid #b9b9b9;
+  border-left: 0px solid #b9b9b9;
+}
+
+html[dir="rtl"] .categories .taitel .taitel-img,
+html[dir="rtl"] .brand-car .taitel .taitel-img,
+html[dir="rtl"] .feature-two .taitel .taitel-img,
+html[dir="rtl"] .testimonial .taitel .taitel-img,
+html[dir="rtl"] .taitel .taitel-img {
+  left: auto;
+  right: 0px;
+}
+
+html[dir="rtl"] .blogs.two .taitel.two .taitel-img {
+  left: 45.5% !important;
+  right: auto;
+}
+
+html[dir="rtl"] .categories-logo-txt {
+  padding: 10px;
+}
+html[dir="rtl"] .vedio .vedio-bg,
+html[dir="rtl"] .loan,
+html[dir="rtl"] .vedio .vedio-bg *,
+html[dir="rtl"] .loan .container,
+html[dir="rtl"] .footer-item-text-link a span,
+html[dir="rtl"] .blog-item .blog-item-inner .blog-item-btn a span {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] .breadcrumb-item {
+  display: flex;
+  order: -1;
+}
+html[dir="rtl"] .breadcrumb-item::before {
+  padding-right: 0px;
+  padding-left: 20px;
+}
+html[dir="rtl"] .about .about-pl {
+  padding-left: 0;
+  padding-right: 126px;
+}
+
+html[dir="rtl"] .inventory-main-box .location-box .icon {
+  right: auto;
+  left: 8px;
+}
+
+html[dir="rtl"] .accordion-button::after {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .blogs-rightbar-item .blogs-rightbar-sarch-box .sarch-btn {
+  right: auto;
+  left: 26px;
+}
+html[dir="rtl"] #offcanvas-nav {
+  left: auto;
+  right: -300px;
+}
+html[dir="rtl"] #offcanvas-nav.open {
+  right: 0;
+}
+
+html[dir="rtl"] .dropdown a {
+  flex-direction: row !important;
+  width: 100%;
+}
+
+html[dir="rtl"] .categories-three {
+  overflow: hidden;
+}
+
+html[dir="rtl"] #nav-cls-btn {
+  right: auto;
+  left: 15px;
+}
+
+html[dir="rtl"] .m-nav .header-right-item-btn {
+  padding: 10px 10px 10px 0px;
+}
+
+html[dir="rtl"] .inventory-main-box .select-Brand-box .form-check-label {
+  margin-right: 18px;
+}
+html[dir="rtl"] .accordion-button {
+  text-align: right;
+}
+
+@media (max-width: 992px) {
+  html[dir="rtl"] .about .about-pl {
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  html[dir="rtl"] .cookie_consent_modal {
+    left: auto;
+    right: 0;
+    max-width: 100vw;
+  }
+}

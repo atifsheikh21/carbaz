@@ -1,0 +1,124 @@
+.avatar {
+    width: 120px;
+    height: 120px;
+}
+
+.submenu_active {
+    color: #ff603d !important;
+}
+
+.delete_danger_btn {
+    background: red !important;
+    color: #fff !important;
+}
+
+.crancy-wc__logo a h3 {
+    color: #191b23;
+    font-size: 34px;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.crancy-wc__form-inner.common-flex {
+    gap: 20px;
+}
+
+.delet_modal_form {
+    display: flex;
+    width: 100%;
+    gap: 15px;
+}
+
+.create_new_btn_box {
+    min-width: 100% !important;
+}
+
+.create_new_btn_inline_box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.create_new_btn_inline_box h4 {
+    margin-bottom: 0px !important;
+}
+
+.translation_main_box h4 {
+    margin-bottom: 0px !important;
+}
+
+.translation_box ul {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.translation_main_box .crancy-customer-filter {
+    padding: 0px !important;
+}
+
+.seo_description_box {
+    height: 120px !important;
+}
+
+.crancy-adashboard.crancy-show.language_box {
+    padding-bottom: 0px !important;
+}
+
+.car_gallery_image {
+    height: 160px;
+    width: 200px;
+}
+
+.approval_button {
+    background: #06a722;
+}
+
+.approval_featured {
+    background: #b90ef1f0;
+}
+
+.tagify tag > div::before {
+    -webkit-box-shadow: 0 0 0 16px transparent inset !important;
+    box-shadow: 0 0 0 16px transparent inset !important;
+}
+
+.tagify tag > div {
+    padding: 0em 15px !important;
+    color: #14212b !important;
+    font-weight: 400 !important;
+}
+
+.tagify tag x:hover {
+    color: #14212b !important;
+    background: transparent !important;
+}
+
+.tagify tag x:hover + div > span {
+    opacity: 1 !important;
+}
+
+.tagify tag x {
+    padding-left: 10px !important;
+}
+
+.tagify tag:hover:not([readonly]) div::before {
+    box-shadow: 0 0 0 16px transparent inset !important;
+}
+
+.tagify tag {
+    margin: 0 !important;
+}
+
+.tagify__input {
+    min-width: 110px;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.crancy-btn.crancy-ybcolor {
+    background: #0d274e !important;
+    color: #fff !important;
+}

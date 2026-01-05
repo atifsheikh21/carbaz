@@ -1,0 +1,240 @@
+.dealers-details {
+    background-color: var(--white-color);
+    position: relative;
+    z-index: 1;
+    padding: 120px 0;
+    overflow: hidden;
+
+    .dealers-details-side-bar {
+        padding: 20px 30px 40px 30px;
+        border-radius: 10px;
+        background-color: #F9FAFF;
+
+        .dealers-details-taitel {
+
+            &.two {
+                padding-top: 40px;
+            }
+
+            h3 {
+                border-bottom: 1px solid #E9E9E9;
+                padding-bottom: 10px;
+            }
+
+            p {
+                font-size: 16px;
+                font-weight: var(--regular);
+                line-height: 28px;
+                padding-top: 10px;
+            }
+
+
+            .address {
+                padding-top: 20px;
+
+                li {
+                    padding-bottom: 10px;
+
+                    a {
+
+                        font-size: 16px;
+                        font-weight: var(--regular);
+                        line-height: 26px;
+                        font-family: var(--roboto);
+                        color: var(--paragraph-color);
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+
+                        span {
+                            svg {
+                                fill: currentColor;
+                                color: var(--primary-color-2);
+                            }
+                        }
+
+                        .svg-two {
+                            fill: transparent;
+                            color: var(--primary-color-2);
+                            stroke: currentColor;
+                        }
+                    }
+                }
+            }
+
+
+            .working-hours {
+                padding-top: 10px;
+
+                li {
+                    font-family: var(--roboto);
+                    font-size: 16px;
+                    font-weight: var(--regular);
+                    line-height: 36px;
+                    color: var(--paragraph-color);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    transition: var(--transition-all);
+
+                    &:hover {
+                        color: var(--primary-color-2);
+                    }
+                }
+
+                .closed {
+                    color: var(--primary-color-3);
+                }
+            }
+
+
+            .map {
+                padding-top: 20px;
+
+
+                iframe {
+                    width: 100%;
+                    border-radius: 4px;
+                    height: 187px;
+                }
+            }
+
+            .social-link {
+                display: flex;
+                align-items: center;
+                gap: 24px;
+                margin-top: 20px;
+
+                li {
+                    a {
+                        span {
+                            svg {
+                                fill: currentColor;
+                                color: var(--headline-color);
+                                transition: all linear 0.5s;
+
+                                &:hover {
+                                    color: var(--primary-color-2);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+        }
+    }
+
+
+
+
+    // contact-beach-box 
+
+    .contact-beach-box {
+        padding: 28px;
+        border-radius: 10px;
+        background: #F9FAFF;
+        margin-bottom: 30px;
+
+        .contact-beach-box-taitel {
+            border-bottom: 1px solid #E9E9E9;
+            padding-bottom: 10px;
+
+            h3 {
+                font-family: var(--DMSans);
+                color: var(--headline-color);
+            }
+        }
+
+        .contact-beach-box-main {
+            .contact-beach-box-item {
+                margin-top: 20px;
+
+                .form-control {
+                    padding: 11px 20px;
+                    border-radius: 4px;
+                    border: 1px solid #E9E9E9;
+                    background: var(--white-color);
+                    font-family: var(--roboto);
+                    font-size: 16px;
+                    font-weight: var(--regular);
+                    line-height: 28px;
+                    color: var(--headline-color);
+
+                    &:focus {
+                        border: 1px solid var(--primary-color-2);
+                    }
+
+                    &::placeholder {
+                        color: var(--headline-color);
+                    }
+                }
+            }
+
+            .thm-btn-two {
+                width: 100%;
+                margin-top: 24px;
+            }
+
+        }
+
+
+
+    }
+
+
+
+
+    .dealers-details-banner {
+        position: relative;
+        margin-bottom: 30px;
+
+        img {
+            width: 100%;
+            box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
+        }
+    }
+
+
+
+
+
+    .inventory-ber {
+        margin-bottom: 30px;
+    }
+
+
+
+    .inventory-ber-left {
+        .shaf-filter {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+
+            li {
+                padding: 8px 24px;
+                border-radius: 4px;
+                background: rgba(64, 95, 242, 0.2);
+                font-size: 18px;
+                font-weight: var(--regular);
+                line-height: 28px;
+                font-family: var(--roboto);
+                color: var(--headline-color);
+                cursor: pointer;
+            }
+
+            .active {
+                background-color: var(--primary-color-2);
+                color: var(--white-color);
+            }
+        }
+    }
+
+
+
+
+
+
+}

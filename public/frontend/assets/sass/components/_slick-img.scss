@@ -1,0 +1,42 @@
+.slick-img-main {
+    background-color: var(--white-color);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .slick-img {
+        position: relative;
+
+        img {
+            width: 275px;
+            height: 286px;
+        }
+
+
+        &:hover {
+
+            .slick-img-overlay {
+                opacity: 1;
+            }
+        }
+
+        .slick-img-overlay {
+            position: absolute;
+            content: "";
+            top: 50%;
+            left: 50%;
+            width: 233px;
+            height: 246px;
+            background-color: rgba(255, 96, 61, 0.9);
+            border-radius: 5px;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+    }
+}

@@ -1,0 +1,58 @@
+.download {
+    padding: 0px 0 120px 0;
+    position: relative;
+    z-index: 1;
+    background-color: var(--white-color);
+
+    .taitel {
+        margin-top: 28px;
+
+        .taitel-img {
+            position: absolute;
+            bottom: -16px;
+            left: 0px;
+        }
+    }
+
+    .download-bg {
+        border-radius: 10px;
+        background: #0d274e;
+        padding: 88px 90px 0px 80px;
+    }
+
+    .download-taitel {
+        color: var(--white-color);
+    }
+
+    .decp {
+        margin-top: 30px;
+        font-family: var(--roboto);
+        color: var(--white-color);
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 28px;
+
+    }
+
+    .download-taitel-img {
+        margin-top: 50px;
+    }
+
+    .download-taitel-img-text {
+        margin-top: 20px;
+        color: var(--white-color);
+        font-weight: var(--bold);
+    }
+
+    .download-btn {
+        margin-top: 42px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .download-main {
+        position: relative;
+        text-align: end;
+    }
+}

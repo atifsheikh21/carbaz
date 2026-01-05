@@ -1,0 +1,57 @@
+.work {
+    background-color: var(--white-color);
+    position: relative;
+    z-index: 1;
+    padding-bottom: 115px;
+
+    .taitel {
+        text-align: center;
+
+        .taitel-img {
+            transform: translate(-50%, -50%);
+            left: 50%;
+            bottom: -23px;
+        }
+    }
+
+    .work-taitel {
+        text-align: center;
+    }
+
+    .work-item {
+
+        &.two {
+            margin-top: 78px;
+        }
+
+        &:hover {
+            .work-item-text {
+                color: var(--secondary-color);
+            }
+        }
+
+        .work-icon-item {
+            display: flex;
+            align-items: center;
+            gap: 44px;
+
+
+        }
+
+        .work-item-text {
+            font-size: 30px;
+            font-weight: var(--bold);
+            line-height: 30px;
+            color: var(--headline-color);
+            font-family: var(--DMSans);
+            padding-top: 30px;
+            transition: var(--transition-all);
+        }
+
+        .work-item-des {
+            color: var(--paragraph-color);
+            padding-right: 50px;
+            padding-top: 15px;
+        }
+    }
+}

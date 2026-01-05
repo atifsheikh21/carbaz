@@ -1,0 +1,21 @@
+{
+    "GeneralSetting": true,
+    "Language": true,
+    "Blog": true,
+    "Page": true,
+    "Currency": true,
+    "Newsletter": true,
+    "ContactMessage": true,
+    "Brand": true,
+    "City": true,
+    "Feature": true,
+    "Car": true,
+    "Testimonial": true,
+    "Subscription": true,
+    "Kyc": true,
+    "Country": true,
+    "BannerSlider": true,
+    "Slider": true,
+    "CompareList": true,
+    "Menu": true
+}

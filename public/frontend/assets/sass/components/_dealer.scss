@@ -1,0 +1,294 @@
+.dealer {
+
+    padding: 60px 0;
+    position: relative;
+    z-index: 1;
+
+
+    .dealer-taitel {
+        color: var(--white-color);
+        padding-top: 32px;
+    }
+
+    .taitel {
+        .taitel-img {
+            position: absolute;
+            bottom: -16px;
+            left: 0px;
+        }
+    }
+
+    .dealer-btn {
+        margin-top: 60px;
+
+        .thm-btn {
+            width: 200px;
+            color: var(--headline-color);
+        }
+
+        .thm-btn-two {
+            width: 205px;
+        }
+    }
+
+    .dealer-img {
+        img {
+            width: 862.125px;
+            height: 425px;
+        }
+    }
+}
+
+
+.dealer-two {
+    position: relative;
+    z-index: 1;
+    background: url(../assets/images/hero/dealers-bg.png) no-repeat center / cover;
+
+    .dealer-two-taitel {
+        color: var(--white-color);
+    }
+
+    .dealer-two-btn {
+        text-align: end;
+
+        .thm-btn-thr {
+
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0);
+
+
+
+            &:hover {
+                color: var(--white-color);
+
+                &::after {
+                    background-color: var(--primary-color-3);
+                }
+
+                &::before {
+                    background-color: var(--primary-color-3);
+                }
+            }
+        }
+    }
+
+    .dealer-two-slick {
+        margin-top: 50px;
+    }
+
+    .dealer-two-item {
+        background-color: var(--white-color);
+        border-radius: 10px;
+        padding: 30px 30px;
+        margin: 0 15px;
+
+        .dealer-two-inner {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            border-bottom: 1px solid #E9E9E9;
+            padding-bottom: 25px;
+
+            .icon {
+                background-color: var(--white-color);
+                height: 100px;
+                width: 100px;
+                border-radius: 500px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #E9E9E9;
+
+                img {
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 500px;
+                    object-fit: cover;
+                }
+            }
+
+            .text {
+                h3 {
+                    font-family: var(----DMSans);
+                    font-weight: var(--bold);
+                    padding-bottom: 2px;
+                    font-size: 22px;
+                }
+
+                span {
+                    font-size: 14px;
+                    font-weight: var(--medium);
+                    line-height: 14px;
+                    font-family: var(--roboto);
+                    color: var(--headline-color);
+                }
+            }
+        }
+
+
+        .dealer-contact-box {
+            margin-top: 26px;
+
+            ul {
+                li {
+                    padding-bottom: 16px;
+
+                    &:last-child {
+                        padding-bottom: 0;
+                    }
+
+                    a {
+                        display: flex;
+                        gap: 8px;
+                        font-size: 16px;
+                        font-weight: var(--regular);
+                        line-height: 24px;
+                        color: var(--paragraph-color);
+                        font-family: var(--roboto);
+                    }
+
+                    span {
+                        svg {
+                            fill: currentColor;
+                            color: var(--primary-color-3);
+                        }
+
+                        .mailto-svg {
+                            fill: transparent;
+                            stroke: currentColor;
+                            color: var(--primary-color-3);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        .dealer-two-item-btn {
+            margin-top: 30px;
+        }
+
+
+
+    }
+
+
+}
+
+
+
+.dealer-three {
+    background: var(--white-color);
+
+    .dealer-two-item {
+        margin: 0;
+        background-color: var(--white-color);
+        border: 1px solid #E9E9E9;
+
+        .dealer-two-inner {
+            border-bottom: 1px solid #E9E9E9;
+
+            .icon {
+                border: 1px solid #E9E9E9;
+            }
+        }
+
+        .dealer-contact-box {
+            ul {
+                li {
+                    span {
+                        svg {
+                            fill: currentColor;
+                            color: var(--primary-color-2);
+                        }
+
+                        .mailto-svg {
+                            fill: transparent;
+                            stroke: currentColor;
+                            color: var(--primary-color-2);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .next-prev-btn {
+        justify-content: center;
+        display: flex;
+    }
+
+    .dealer-form {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        justify-content: end;
+        margin-bottom: 50px;
+
+        .dealer-form-item {
+            position: relative;
+            width: 100%;
+
+            &.two {
+
+                .icon {
+                    top: 12px;
+                }
+
+                .form-select {
+                    height: 53px;
+                    padding-top: 18px;
+                }
+            }
+
+            .form-control,
+            .form-select {
+                border-radius: 5px;
+                border: 1px solid #E9E9E9;
+                background: #F8F8F8;
+                padding: 17px 17px 17px 53px;
+                font-family: var(--roboto);
+                font-size: 14px;
+                font-weight: var(--regular);
+                line-height: 14px;
+                color: var(--headline-color);
+
+                &:focus {
+                    color: var(--headline-color);
+                    border-color: var(--primary-color-2);
+                }
+
+                &::placeholder {
+                    color: #7E8BA0;
+                }
+
+            }
+
+            .icon {
+
+                position: absolute;
+                top: 11px;
+                left: 25px;
+
+                span {
+                    svg {
+                        fill: currentColor;
+                        color: var(--primary-color-2);
+                    }
+                }
+            }
+
+
+
+        }
+
+
+
+        .thm-btn-two {
+            width: 50%;
+            height: 52px;
+
+        }
+    }
+}

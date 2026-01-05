@@ -1,0 +1,57 @@
+.help {
+    position: relative;
+    z-index: 1;
+    background-color: var(--white-color);
+    padding-top: 120px;
+
+    .help-box {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        justify-content: center;
+
+        .icon {
+            width: 46.999px;
+            height: 47px;
+        }
+
+        .text {
+
+            h6 {
+                font-size: 18px;
+                font-weight: var(--regular);
+                line-height: 28px;
+            }
+
+
+            h3 {
+                a {
+                    color: var(--headline-color);
+                }
+            }
+        }
+    }
+
+
+    .help-taitel {
+        text-align: center;
+
+        span {
+            color: var(--primary-color-2);
+            text-decoration-line: underline;
+        }
+    }
+
+    .help-img {
+        margin-top: 56px;
+
+        img {
+            width: 1456px;
+            height: 425px;
+        }
+    }
+}
+
+.help-two {
+    padding-top: 0;
+}

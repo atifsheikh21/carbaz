@@ -1,0 +1,37 @@
+.error {
+    position: relative;
+    z-index: 1;
+    background-color: var(--white-color);
+    padding: 120px 0;
+
+    .error-img {
+        text-align: center;
+
+        img {
+            width: 1085px;
+            height: 361.384px;
+        }
+    }
+
+    .error-text {
+        display: flex;
+        justify-content: center;
+        margin-top: 108px;
+        text-align: center;
+
+
+    }
+
+    .error-btn {
+        margin-top: 50px;
+        display: flex;
+        justify-content: center;
+
+        .thm-btn {
+            width: 244px;
+            height: 60px;
+        }
+    }
+
+
+}

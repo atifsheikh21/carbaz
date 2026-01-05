@@ -1,0 +1,42 @@
+.cars-listing {
+    background-color: var(--white-color);
+    position: relative;
+    z-index: 1;
+    padding-bottom: 120px;
+
+    .feature-slick-icon {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        gap: 20px;
+
+        .feature-slick-prev,
+        .feature-slick-next   {
+            border: 1px solid var(--primary-color-2);
+
+            span {
+                svg {
+                    color: var(--primary-color-2);
+                }
+            }
+
+            &:hover {
+                span {
+                    svg {
+                        color: var(--white-color);
+                    }
+                }
+
+                background-color: var(--primary-color-2);
+            }
+        }
+
+    }
+
+
+    .brand-car-item {
+        margin: 0 15px;
+        box-shadow: 0px 0px 60px 0px transparent;
+        border: 1px solid #E9E9E9;
+    }
+}
