@@ -20,7 +20,7 @@ Route::group(['middleware' => ['XSS','DEMO', 'CurrencyLangaugeForAPI'], 'as' => 
 
     Route::group(['middleware' => ['HtmlSpecialchars', 'auth:api']], function () {
 
-        Route::group(['as'=> 'user.', 'prefix' => 'user'],function (){
+        Route::group(['as'=> 'api.user.', 'prefix' => 'user'], function () {
 
             Route::get('select-car-purpose', [CarController::class, 'select_car_purpose'])->name('select-car-purpose');
 

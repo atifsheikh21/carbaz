@@ -19,7 +19,7 @@ use Modules\Kyc\Http\Controllers\API\KycController;
 
 Route::group(['middleware' => ['XSS','DEMO', 'CurrencyLangaugeForAPI']], function () {
 
-    Route::group(['as'=> 'user.', 'prefix' => 'user', 'middleware' => ['auth:api']],function (){
+    Route::group(['as'=> 'api.user.', 'prefix' => 'user', 'middleware' => ['auth:api']],function (){
 
         Route::controller(KycController::class)->group(function () {
             Route::get('kyc', 'kyc')->name('kyc');
