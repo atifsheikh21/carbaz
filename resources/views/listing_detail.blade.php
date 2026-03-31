@@ -5,9 +5,896 @@
     <meta name="description" content="{{ html_decode($car->seo_description) }}">
 @endsection
 
+@push('style_section')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <style>
+        .listing-detail-hero{
+            background: #e9e6e3;
+            padding: 60px 0;
+        }
+        .listing-detail-hero .container{
+            max-width: 1200px;
+        }
+        .listing-detail-hero__grid{
+            display: grid;
+            grid-template-columns: 560px 1fr;
+            gap: 120px;
+            align-items: start;
+        }
+        .listing-detail-hero__media{
+            max-width: 560px;
+            display: flex;
+            flex-direction: column;
+            margin-top: 50px !important;
+        }
+        .listing-detail-hero .inventory-details-slick-for{
+            margin: 0;
+        }
+        .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img{
+            height: 430px;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            border: 8px solid #2f2f2f;
+            background: #f4f4f4;
+            overflow: hidden;
+        }
+        .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img img{
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 0;
+            border: 0;
+            background: transparent;
+        }
+        .listing-detail-hero .inventory-details-slick-nav{
+            margin-top: 18px;
+        }
+        .listing-detail-hero__mobile-image{
+            display: none;
+        }
+        .listing-detail-hero .inventory-details-slick-nav .inventory-details-slick-img img{
+            border-radius: 10px;
+            background: #f4f4f4;
+        }
+        .inventory-details .inventory-details-slick-nav .inventory-details-slick-img img{
+
+            width: 100%;
+    height: 80px !important;
+    object-fit: cover;
+        }
+        .listing-detail-hero__meta{
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 26px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            text-align: right;
+            margin-top: 100px
+        }
+        .listing-detail-hero__meta-type{
+            font-weight: 800;
+        }
+        .listing-detail-hero__meta-type--dealer{
+            color: #b60304;
+        }
+        .listing-detail-hero__meta-type--private{
+            color: #23a549;
+            font-size: 20px;
+        }
+        .listing-detail-hero__meta-sep{
+            color: rgba(0,0,0,.65);
+        }
+        .listing-detail-hero__meta-name{
+            color: #23a549;
+        }
+        .lp-detail__seller{
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+            text-decoration: none;
+            color: inherit;
+        }
+        .lp-detail__seller-type{
+            color: #b60304;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .lp-detail__seller-sep{
+            color: rgba(0,0,0,.65);
+            font-weight: 700;
+        }
+        .lp-detail__seller-name{
+            color: #23a549;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .listing-detail-hero__badge{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: #0CA640;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        .listing-detail-hero__location{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(0,0,0,0.18);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        .listing-detail-hero__right{
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+        }
+        .listing-detail-hero__keyinfo{
+            margin-top: 100px;
+            display: grid;
+            gap: 15px 28px;
+            color: #6f6f6f;
+            font-size: 14px;
+            text-transform: lowercase;
+            justify-content: center;
+        }
+        .listing-detail-hero__keyinfo div{
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.35;
+        }
+        .listing-detail-hero__keyinfo div span{
+            min-width: 100px;
+            color: #8b8b8b;
+            flex: 0 0 100px;
+        }
+        .listing-detail-hero__specs{
+            margin-top: 22px;
+            display: grid;
+            gap: 6px;
+            color: #444;
+            font-weight: 700;
+        }
+        .listing-detail-hero__specs div{
+            font-size: 14px;
+        }
+        .listing-detail-hero__title{
+            margin-top: 32px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #2b2b2b;
+        }
+        .listing-detail-hero__subtitle{
+            margin-top: 6px;
+            font-size: 12px;
+            color: #6b6b6b;
+        }
+        .listing-detail-hero__actions{
+            /*margin-top: 100px;*/
+            display: flex;
+            border: 2px solid #2b2b2b;
+            border-radius: 999px;
+            overflow: hidden;
+            background: #e3e5ea;
+            width: 90%;
+            
+            gap: 0;
+        }
+
+        @media (min-width: 992px){
+            .listing-detail-hero__actions > *{
+                position: relative;
+            }
+
+            .listing-detail-hero__actions > * + *{
+                margin-left: -10px;
+            }
+
+            .listing-detail-hero__actions > :nth-child(1){ z-index: 6; }
+            .listing-detail-hero__actions > :nth-child(2){ z-index: 5; }
+            .listing-detail-hero__actions > :nth-child(3){ z-index: 4; }
+            .listing-detail-hero__actions > :nth-child(4){ z-index: 3; }
+            .listing-detail-hero__actions > :nth-child(5){ z-index: 2; }
+        }
+
+        .listing-detail-hero__actions-city{
+            padding: 10px 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            background: #7cb4ff;
+            color: white;
+            line-height: 1;
+            flex: 1 1 0;
+            min-width: 0;
+            box-sizing: border-box;
+            border-radius: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .listing-detail-hero__actions a{
+            padding: 10px 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #2b2b2b;
+            text-decoration: none;
+            line-height: 1;
+            flex: 1 1 0;
+            min-width: 0;
+            box-sizing: border-box;
+            border-radius: 15px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .listing-detail-hero__actions a.action-email{ background: #b9bcc3; }
+        .listing-detail-hero__actions a.action-call{ background: #d2cdcd; }
+        .listing-detail-hero__actions a.action-chat{ background: #e9e6e3; }
+
+        .listing-detail-hero__actions a + a{ border-left: 0; }
+        .listing-detail-hero__price{
+            margin-top: 175px;
+            font-size: 55px;
+            font-weight: 700;
+            color: #2b2b2b;
+            letter-spacing: -0.02em;
+            text-align: center;
+        }
+        .listing-detail-hero__left-info{
+            margin-top: auto;
+        }
+        .listing-detail-hero__left-title{
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2b2b2b;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 55px;
+        }
+        .listing-detail-hero__left-subtitle{
+            margin-top: -10px;
+            font-size: 16px;
+            color: #6b6b6b;
+        }
+        .listing-detail-description{
+            background: #e9e6e3;
+            padding: 30px 0 10px;
+        }
+        .listing-detail-description .container{
+            max-width: 1200px;
+        }
+        .inventory-details.py-120px .container{
+            max-width: 1100px;
+        }
+        .cars-listing.feature-two .container{
+            max-width: 1100px;
+        }
+        .cars-listing.feature-two .row.mt-56px{
+            row-gap: 26px;
+        }
+        .listing-detail-description__title{
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #2b2b2b;
+            margin-bottom: 10px;
+        }
+        .listing-detail-description__body{
+            color: #4b4b4b;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+        .listing-detail-description__body p{
+font-size: 18px !important;
+font-weight: 300;
+        }
+        .listing-detail-description .feature-list ul{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 26px;
+            padding-left: 0;
+            margin: 0;
+        }
+        .listing-detail-description .feature-list ul li{
+            width: auto;
+            margin: 0;
+        }
+        @media (max-width: 575.98px){
+            .listing-detail-hero{
+                padding: 34px 0;
+                display: block !important;
+                visibility: visible !important;
+                height: auto !important;
+                min-height: 0 !important;
+            }
+            .listing-detail-description,
+            .inventory-details.py-120px{
+                display: block !important;
+                visibility: visible !important;
+                height: auto !important;
+                min-height: 0 !important;
+            }
+            .listing-detail-hero__grid{
+                display:flex;
+                flex-direction:column;
+                gap: 20px;
+                height: auto !important;
+                min-height: 0 !important;
+            }
+            .listing-detail-hero__media{
+                max-width: 100%;
+                display: block;
+            }
+            .listing-detail-hero .inventory-details-slick-for,
+            .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img,
+            .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img img{
+                height: auto !important;
+                max-height: none !important;
+            }
+
+            .listing-detail-hero__mobile-image{
+                display: none;
+            }
+
+            .listing-detail-hero .inventory-details-slick-for{
+                display: block !important;
+            }
+
+            .listing-detail-hero .inventory-details-slick-nav{
+                display: none !important;
+            }
+
+            .listing-detail-hero .inventory-details-slick-for,
+            .listing-detail-hero .inventory-details-slick-nav,
+            .listing-detail-hero .inventory-details-slick-for .slick-list,
+            .listing-detail-hero .inventory-details-slick-for .slick-track,
+            .listing-detail-hero .inventory-details-slick-nav .slick-list,
+            .listing-detail-hero .inventory-details-slick-nav .slick-track,
+            .listing-detail-hero__left-info,
+            .listing-detail-hero__right{
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+
+            [data-aos],
+            .aos-init,
+            .aos-animate{
+                opacity: 1 !important;
+                transform: none !important;
+                visibility: visible !important;
+            }
+            .listing-detail-hero__left-info{
+                margin-top: 18px;
+            }
+            .listing-detail-hero__right{
+                min-height: auto;
+            }
+            .listing-detail-hero__left-title{
+                font-size: 24px;
+                gap: 8px;
+            }
+            .listing-detail-hero__location{
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+            .listing-detail-hero__badge{
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+            .listing-detail-hero__actions{
+                width: 130%;
+                /*display: grid;*/
+                grid-template-columns: 1fr 1fr;
+                margin-top: 18px;
+                border-radius: 14px;
+            }
+            .listing-detail-hero__actions-city{
+                grid-column: 1 / -1;
+                padding: 10px 10px;
+                border-right: 0;
+                border-bottom: 1px solid #2b2b2b;
+            }
+            .listing-detail-hero__actions a{
+                width: 100%;
+                padding: 10px 10px;
+                letter-spacing: 0.08em;
+                font-size: 12px;
+                border-left: 0 !important;
+                border-top: 1px solid #2b2b2b;
+            }
+            .listing-detail-hero__actions a:nth-of-type(2){
+                border-left: 1px solid #2b2b2b !important;
+            }
+            .listing-detail-hero__actions a:last-of-type{
+                grid-column: 1 / -1;
+            }
+            .listing-detail-hero__keyinfo{
+                grid-template-columns: 1fr;
+                gap: 10px;
+                margin-top: 14px !important;
+            }
+            .listing-detail-hero__keyinfo div{
+                font-size: 12px;
+            }
+            .listing-detail-hero__meta{
+                justify-content: flex-start;
+                text-align: left;
+                margin-bottom: 16px;
+                margin-top: 30px !important;
+            }
+            .location-mobile{
+                margin-top: 75px !important;
+            }
+            .listing-detail-hero__price{
+                font-size: 30px;
+                text-align: left;
+                margin-top: 16px !important;
+            }
+
+            .listing-detail-description{
+                padding: 60px 0 10px;
+            }
+            .listing-detail-description__body{ font-size: 16px; }
+            .listing-detail-description__body p{ font-size: 16px !important; }
+            .listing-detail-description .feature-list ul{
+                gap: 10px 16px;
+            }
+            .listing-detail-description .feature-list ul li{
+                font-size: 12px;
+            }
+
+            .cars-listing.feature-two .row.mt-56px{
+                row-gap: 18px;
+            }
+        }
+        @media (max-width: 991.98px){
+            .listing-detail-hero{
+                padding: 44px 0;
+            }
+            .listing-detail-hero .container,
+            .listing-detail-description .container{
+                max-width: 100%;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            .listing-detail-hero__grid{
+                grid-template-columns: 1fr;
+                gap: 26px;
+            }
+            .listing-detail-hero__media{
+                max-width: 100%;
+                margin-top: 0 !important;
+            }
+            .listing-detail-hero__right{
+                min-height: auto;
+            }
+            .listing-detail-hero__keyinfo{
+                margin-top: 22px;
+            }
+            .listing-detail-hero__actions{
+                margin-top: 22px;
+                width: 130%;
+                justify-content: flex-start;
+                gap: 3px;
+            }
+
+            .listing-detail-hero__actions > * + *{ margin-left: 0; }
+            .listing-detail-hero__price{
+                text-align: left;
+                margin-top: 18px;
+            }
+        }
+
+        @media (max-width: 1199.98px){
+            .listing-detail-hero__grid{
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+            .listing-detail-hero__media{
+                max-width: 100%;
+            }
+            .listing-detail-hero__price{
+                margin-top: 60px;
+            }
+            .listing-detail-hero__actions{
+                margin-top: 40px;
+            }
+        }
+
+        .cd-lightbox{
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999999 !important;
+            display: none;
+            overflow: hidden;
+        }
+        .cd-lightbox.is-open{
+            display: block;
+        }
+        .cd-lightbox__backdrop{
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,.86);
+            backdrop-filter: blur(6px);
+        }
+        .cd-lightbox__dialog{
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .cd-lightbox__topbar{
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #fff;
+        }
+        .cd-lightbox__counter{
+            margin-right: auto;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: .04em;
+        }
+        .cd-lightbox__close{
+            width: 40px;
+            height: 40px;
+            border: 0;
+            border-radius: 10px;
+            background: rgba(255,255,255,.14);
+            color: #fff;
+            font-size: 24px;
+            line-height: 1;
+        }
+        .cd-lightbox__main{
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 16px;
+        }
+        .cd-lightbox__swiper{
+            width: min(1100px, 100%);
+            height: 100%;
+        }
+        .cd-lightbox__swiper .swiper-slide{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cd-lightbox__swiper .swiper-zoom-container{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cd-lightbox__swiper img{
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        .cd-lightbox__swiper iframe,
+        .cd-lightbox__swiper video{
+            width: 100%;
+            height: min(70vh, 640px);
+            border: 0;
+            border-radius: 14px;
+            background: #000;
+        }
+        .cd-lightbox__thumbs{
+            flex: 0 0 auto;
+            padding: 12px 16px 18px;
+        }
+        .cd-lightbox__thumbs .swiper{
+            width: min(1100px, 100%);
+            margin: 0 auto;
+        }
+        .cd-lightbox__thumbs .swiper-slide{
+            opacity: .55;
+            cursor: pointer;
+        }
+        .cd-lightbox__thumbs .swiper-slide-thumb-active{
+            opacity: 1;
+        }
+        .cd-lightbox__thumbs img{
+            width: 100%;
+            height: 72px;
+            object-fit: cover;
+            display: block;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,.18);
+            background: #111;
+        }
+        .cd-lightbox__thumb--video{
+            position: relative;
+        }
+        .cd-lightbox__thumb--video::after{
+            content: '▶';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            text-shadow: 0 2px 12px rgba(0,0,0,.6);
+        }
+        .cd-lightbox .swiper-button-next,
+        .cd-lightbox .swiper-button-prev{
+            color: #fff;
+        }
+        .cd-lightbox .swiper-button-next::after,
+        .cd-lightbox .swiper-button-prev::after{
+            font-size: 22px;
+            font-weight: 900;
+        }
+        @media (max-width: 767.98px){
+            .cd-lightbox__main{
+                padding: 0 10px;
+            }
+            .cd-lightbox__thumbs img{
+                height: 56px;
+            }
+            .cd-lightbox__swiper iframe,
+            .cd-lightbox__swiper video{
+                height: min(60vh, 420px);
+            }
+        }
+    </style>
+@endpush
+
 @section('body-content')
 
 <main>
+    <div class="lp-mobile d-block d-md-none lp-detail">
+        @php
+            $__sellerType = strtolower((string) ($car->seller_type ?? ''));
+            if ($__sellerType !== '') {
+                $__isDealerAd = str_contains($__sellerType, 'dealer');
+            } else {
+                $__isDealerAd = ((int) ($dealer?->is_dealer ?? 0)) === 1;
+            }
+            $__sellerDisplayName = $__isDealerAd && !empty($dealer?->is_vehicle_seller) && !empty($dealer?->vehicle_company_name)
+                ? html_decode($dealer->vehicle_company_name)
+                : html_decode($dealer?->name);
+            $__sellerName = strtoupper(trim((string) $__sellerDisplayName));
+            $__cityOnly = null;
+            if (!empty($car?->city_id)) {
+                $__cityOnly = optional(Modules\City\Entities\City::find($car->city_id))->name;
+            }
+            if (!$__cityOnly && !empty($car->address)) {
+                $addressParts = array_values(array_filter(array_map('trim', explode(',', html_decode($car->address)))));
+                if (count($addressParts) >= 2) {
+                    $__cityOnly = $addressParts[1];
+                } elseif (count($addressParts) === 1) {
+                    $__cityOnly = $addressParts[0];
+                }
+            }
+            $__sellerPhoneRaw = (string) ($dealer?->phone ?? '');
+            $__sellerPhone = preg_replace('/\D+/', '', $__sellerPhoneRaw);
+            $__whatsAppPhone = $__sellerPhone;
+            $__priceRaw = $car->offer_price ?: $car->regular_price;
+            $__priceNum = is_numeric($__priceRaw) ? (float) $__priceRaw : null;
+            $__picsCount = is_countable($galleries) ? count($galleries) : 0;
+            $__thumbs = [];
+            foreach ($galleries as $__g) { $__thumbs[] = $__g; }
+            $__mainImg = $__thumbs[0] ?? null;
+        @endphp
+
+        <div class="lp-mobile__filter">
+            <button class="lp-mobile__filter-label" type="button" data-bs-toggle="offcanvas" data-bs-target="#lpMobileFilterDetail" aria-controls="lpMobileFilterDetail">Filter</button>
+            <form class="lp-mobile__filter-form" method="GET" action="{{ route('listings') }}">
+                <input class="lp-mobile__filter-input" type="text" name="search" value="{{ request()->get('search') }}" placeholder="search car & part by key word">
+            </form>
+        </div>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="lpMobileFilterDetail" aria-labelledby="lpMobileFilterDetailLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="lpMobileFilterDetailLabel">Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="d-grid gap-2">
+                    <a class="btn btn-dark" href="{{ route('listings', request()->query()) }}">Open filters</a>
+                    <a class="btn btn-light" href="{{ route('listings') }}">Browse all ads</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lp-detail__nav">
+            <a class="lp-detail__back" href="{{ route('listings') }}">back</a>
+            <div class="lp-detail__spacer"></div>
+            <a class="lp-detail__search" href="{{ route('home') }}">HOME</a>
+        </div>
+
+        <div class="lp-mobile-card lp-detail-card">
+            <div class="lp-mobile-card__top">
+                <div class="lp-mobile-card__top-left">
+                    @if(!empty($dealer?->username))
+                        <a href="{{ route('dealer', $dealer->username) }}" class="lp-detail__seller">
+                            <span class="lp-detail__seller-type">{{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}</span>
+                            <span class="lp-detail__seller-sep">|</span>
+                            <span class="lp-detail__seller-name">{{ $__sellerName !== '' ? $__sellerName : ' ' }}</span>
+                        </a>
+                    @else
+                        <span class="lp-detail__seller">
+                            <span class="lp-detail__seller-type">{{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}</span>
+                            <span class="lp-detail__seller-sep">|</span>
+                            <span class="lp-detail__seller-name">{{ $__sellerName !== '' ? $__sellerName : ' ' }}</span>
+                        </span>
+                    @endif
+                </div>
+                <div class="lp-mobile-card__top-right">{{ $__cityOnly ? strtoupper($__cityOnly) : ' ' }}</div>
+            </div>
+
+            <div class="lp-detail__media js-cd-open-lightbox" data-cd-index="0" role="button" tabindex="0">
+                @if($__mainImg)
+                    <img class="lp-detail__main-img" src="{{ getImageOrPlaceholder($__mainImg->image, '920x636') }}" alt="img">
+                @else
+                    <img class="lp-detail__main-img" src="{{ getImageOrPlaceholder($car->thumb_image, '920x636') }}" alt="img">
+                @endif
+
+                <div class="lp-detail__heart">
+                    @guest('web')
+                        <a href="javascript:;" class="before_auth_wishlist" aria-label="wishlist"></a>
+                    @else
+                        @php
+                            $isInWishlist = false;
+                            if (\Illuminate\Support\Facades\Schema::hasTable('wishlists')) {
+                                $isInWishlist = App\Models\Wishlist::where('car_id',$car->id)
+                                    ->where('user_id',Auth::user()->id)
+                                    ->first();
+                            }
+                        @endphp
+                        <a href="{{ route('user.add-to-wishlist', $car->id) }}" class="{{ $isInWishlist ? 'active' : '' }}" aria-label="wishlist"></a>
+                    @endguest
+                </div>
+
+                @if($__picsCount > 0)
+                    <div class="lp-detail__pics">+{{ $__picsCount }} PIC</div>
+                @endif
+            </div>
+
+            <div class="lp-detail__thumbs">
+                @php
+                    $__thumbShow = array_slice($__thumbs, 0, 3);
+                    $__extra = max($__picsCount - count($__thumbShow), 0);
+                @endphp
+                @foreach($__thumbShow as $__t)
+                    <div class="lp-detail__thumb js-cd-open-lightbox" data-cd-index="{{ $loop->index }}" role="button" tabindex="0">
+                        <img src="{{ getImageOrPlaceholder($__t->image, '216x148') }}" alt="thumb">
+                    </div>
+                @endforeach
+                @if($__extra > 0)
+                    <div class="lp-detail__thumb lp-detail__thumb--more js-cd-open-lightbox" data-cd-index="{{ count($__thumbShow) }}" role="button" tabindex="0">
+                        <span>+{{ $__extra }} PIC</span>
+                    </div>
+                @endif
+            </div>
+
+            <div class="lp-detail__body">
+                <div class="lp-detail__title">{{ strtoupper(trim((string) html_decode($car->title))) }}</div>
+                <div class="lp-detail__subtitle">{{ __('Go to motorcheck for history check') }}</div>
+
+                <div class="lp-detail__specs">
+                    @if(!empty($car->year))<div><span>year</span>{{ html_decode($car->year) }}</div>@endif
+                    @if(!empty($car->engine_size))<div><span>engine</span>{{ html_decode($car->engine_size) }}</div>@endif
+                    @if(!empty($car->fuel_type))<div><span>fuel type</span>{{ html_decode($car->fuel_type) }}</div>@endif
+                    @if(!empty($car->transmission))<div><span>transmission</span>{{ html_decode($car->transmission) }}</div>@endif
+                    @if(!empty($car->mileage))<div><span>mileage</span>{{ html_decode($car->mileage) }}</div>@endif
+                    @if(!empty($car->body_type))<div><span>body type</span>{{ html_decode($car->body_type) }}</div>@endif
+                    @if(!empty($car->drive))<div><span>drive</span>{{ html_decode($car->drive) }}</div>@endif
+                    @if(!empty($car->interior_color))<div><span>color</span>{{ html_decode($car->interior_color) }}</div>@endif
+                </div>
+
+                <div class="lp-detail__price-row">
+                    <div class="lp-detail__label">
+                        @if(!empty($dealer?->username))
+                            <a href="{{ route('dealer', $dealer->username) }}" class="lp-detail__seller">
+                                <span class="lp-detail__seller-type">{{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}</span>
+                                <span class="lp-detail__seller-sep">|</span>
+                                <span class="lp-detail__seller-name">{{ $__sellerName !== '' ? $__sellerName : ' ' }}</span>
+                            </a>
+                        @else
+                            <span class="lp-detail__seller">
+                                <span class="lp-detail__seller-type">{{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}</span>
+                                <span class="lp-detail__seller-sep">|</span>
+                                <span class="lp-detail__seller-name">{{ $__sellerName !== '' ? $__sellerName : ' ' }}</span>
+                            </span>
+                        @endif
+                    </div>
+                    <div class="lp-detail__price">
+                        @if(!is_null($__priceNum))
+                            €{{ number_format($__priceNum, 0, '.', ',') }}
+                        @endif
+                        <div class="lp-detail__warranty">3 Month Warranty</div>
+                    </div>
+                </div>
+
+                <div class="lp-detail__section">
+                    <div class="lp-detail__section-title">Description</div>
+                    <div class="lp-detail__section-body">
+                        {!! clean(html_decode($car->description)) !!}
+                    </div>
+                </div>
+
+                @if(!empty($car->address))
+                    <div class="lp-detail__section">
+                        <div class="lp-detail__section-title">Dealer address</div>
+                        <div class="lp-detail__section-body">{{ html_decode($car->address) }}</div>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <div class="lp-detail__contactbar">
+            <button class="lp-detail__contactbtn" type="button" data-bs-toggle="offcanvas" data-bs-target="#lpContactSeller" aria-controls="lpContactSeller">CONTACT SELLER</button>
+        </div>
+
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="lpContactSeller" aria-labelledby="lpContactSellerLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="lpContactSellerLabel">Contact</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="lp-detail__actions">
+                    @php
+                        $__waText = rawurlencode('Hi, I am interested in your car ad: ' . (string) html_decode($car->title));
+                    @endphp
+                    @auth('web')
+                        <a class="lp-detail__action" href="{{ $__whatsAppPhone ? 'https://wa.me/'.$__whatsAppPhone.'?text='.$__waText : '#' }}" target="_blank">whatsapp chat</a>
+                        <a class="lp-detail__action" href="{{ $__sellerPhoneRaw ? 'tel:'.html_decode($__sellerPhoneRaw) : '#' }}">call</a>
+                        <a class="lp-detail__action" href="{{ !empty($dealer?->email) ? 'mailto:'.html_decode($dealer?->email) : '#' }}">email</a>
+                    @else
+                        <a class="lp-detail__action" href="{{ route('login') }}">whatsapp chat</a>
+                        <a class="lp-detail__action" href="{{ route('login') }}">call</a>
+                        <a class="lp-detail__action" href="{{ route('login') }}">email</a>
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-none d-md-block">
     <!-- banner-part-start  -->
 
     <section class="inner-banner">
@@ -33,52 +920,25 @@
     <!-- Inventory Details-part-start -->
 
 
-    <section class="inventory-details py-120px">
+    <section class="inventory-details listing-detail-hero">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-md-7">
-                    <div class="row">
-                        <div class="col-lg-9 col-sm-6 col-md-12">
-                            <div class="inventory-details-top-taitel">
-                                <h5>{{ __('translate.Brand') }} : {{ $car?->brand?->name }}</h5>
-                                <span></span>
-                                <h5>{{ __('translate.Views') }} : {{ $car->total_view }}</h5>
-                            </div>
-
-
-                            <h2 class="inventory-details-taitel">{{ html_decode($car->title) }}</h2>
-
-
+            <div class="listing-detail-hero__grid">
+                <div class="listing-detail-hero__media">
+                    @php
+                        $__firstGallery = null;
+                        foreach ($galleries as $__g) { $__firstGallery = $__g; break; }
+                    @endphp
+                    @if($__firstGallery)
+                        <div class="listing-detail-hero__mobile-image">
+                            <img src="{{ getImageOrPlaceholder($__firstGallery->image, '920x636') }}" alt="img">
                         </div>
-
-                        <div class="col-lg-3  col-sm-6 col-md-12">
-
-
-                            <div class="inventory-details-right-btn two">
-                                <a href="javascript:;" class="price-btn">
-                                    @if ($car->offer_price)
-                                        {{ currency($car->offer_price) }}
-                                    @else
-                                        {{ currency($car->regular_price) }}
-                                    @endif
-                                </a>
-
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="row">
-
-
-
-
-                        <div class="inventory-details-slick-for">
+                    @endif
+                    <div class="inventory-details-slick-for">
 
 
 
                             @foreach ($galleries as $gallery)
-                                <div class="inventory-details-slick-img">
+                                <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ $loop->index }}" role="button" tabindex="0">
 
                                         <div class="inventory-details-slick-img-tag">
                                         <div class="icon-main">
@@ -97,7 +957,12 @@
                                                     </a>
                                                     @else
                                                     @php
-                                                        $isInWishlist = App\Models\Wishlist::where('car_id',$car->id)->where('user_id',Auth::user()->id)->first();
+                                                        $isInWishlist = false;
+                                                        if (\Illuminate\Support\Facades\Schema::hasTable('wishlists')) {
+                                                            $isInWishlist = App\Models\Wishlist::where('car_id',$car->id)
+                                                                ->where('user_id',Auth::user()->id)
+                                                                ->first();
+                                                        }
                                                     @endphp
                                                     <a href="{{ route('user.add-to-wishlist', $car->id) }}" 
                                                     class="icon {{ $isInWishlist ? 'active' : '' }}">
@@ -106,20 +971,10 @@
                                                                 <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z"
                                                                     stroke-width="1.3" stroke-linejoin="round"/>
                                                             </svg>
-                                                        </span>
-                                                    </a>
-
-                                                    @endif
-
-
-                                            <a href="{{ route('add-to-compare', $car->id) }}" class="icon">
-                                            <span>
-                                            <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M1 10V9C1 6.23858 3.23858 4 6 4H17L14 1" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path d="M17 10V11C17 13.7614 14.7614 16 12 16H1L4 19" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </svg>
                                             </span>
                                             </a>
+
+                                                    @endguest
                                             </div>
                                         </div>
 
@@ -127,50 +982,272 @@
                                     <img src="{{ getImageOrPlaceholder($gallery->image, '920x636') }}" alt="img">
                                 </div>
                             @endforeach
-                        </div>
 
-
-                        <div class="inventory-details-slick-nav">
-                            @foreach ($galleries as $gallery)
-                                <div class="inventory-details-slick-img">
-                                    <img src="{{ getImageOrPlaceholder($gallery->image, '216x148') }}" alt="img">
+                            @if($car->video_id)
+                                <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ is_countable($galleries) ? count($galleries) : 0 }}" role="button" tabindex="0">
+                                    <span class="inventory-details-vedio">
+                                        <img src="{{ getImageOrPlaceholder($car->video_image, '920x636') }}" alt="img">
+                                        <span class="overlay">
+                                            <a class="my-video-links" data-autoplay="true" data-vbtype="video"
+                                                href="https://youtu.be/{{ $car->video_id }}">
+                                                <span>
+                                                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                                            d="M40 76.0001C59.8822 76.0001 76.0001 59.8827 76.0001 40C76.0001 20.1178 59.8827 3.99992 40 3.99992C20.1178 3.99992 3.99992 20.1178 3.99992 40C3.99992 59.8822 20.1178 76.0001 40 76.0001ZM40 80C62.0911 80 80 62.0911 80 40C80 17.9084 62.0911 0 40 0C17.9084 0 0 17.9084 0 40C0 62.0911 17.9084 80 40 80Z" />
+                                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                                            d="M50.3927 40.0003L31.9984 27.7375V52.2634L50.3927 40.0003ZM54.1089 37.6706C55.7716 38.7791 55.7716 41.2219 54.1089 42.3303L32.3513 56.8357C30.4906 58.0763 27.998 56.742 27.998 54.5057V25.4953C27.998 23.259 30.4906 21.9251 32.3513 23.1657L54.1089 37.6706Z" />
+                                                    </svg>
+                                                </span>
+                                            </a>
+                                        </span>
+                                    </span>
                                 </div>
-                            @endforeach
+                            @endif
+                    </div>
+
+                    <div class="inventory-details-slick-nav">
+                        @foreach ($galleries as $gallery)
+                            <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ $loop->index }}" role="button" tabindex="0">
+                                <img src="{{ getImageOrPlaceholder($gallery->image, '216x148') }}" alt="img">
+                            </div>
+                        @endforeach
+
+                        @if($car->video_id)
+                            <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ is_countable($galleries) ? count($galleries) : 0 }}" role="button" tabindex="0">
+                                <img src="{{ getImageOrPlaceholder($car->video_image, '216x148') }}" alt="img">
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="cd-lightbox" id="cdLightbox" aria-hidden="true">
+                        <div class="cd-lightbox__backdrop" data-cd-close></div>
+                        <div class="cd-lightbox__dialog" role="dialog" aria-modal="true" aria-label="Gallery">
+                            <div class="cd-lightbox__topbar">
+                                <div class="cd-lightbox__counter" id="cdLightboxCounter">1 / 1</div>
+                                <button class="cd-lightbox__close" type="button" aria-label="Close" data-cd-close>×</button>
+                            </div>
+                            <div class="cd-lightbox__main">
+                                <div class="swiper cd-lightbox__swiper" id="cdLightboxMain">
+                                    <div class="swiper-wrapper">
+                                        @foreach ($galleries as $gallery)
+                                            <div class="swiper-slide" data-cd-type="image">
+                                                <div class="swiper-zoom-container">
+                                                    <img loading="lazy" src="{{ getImageOrPlaceholder($gallery->image, '1905x1080') }}" alt="img">
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                        @if($car->video_id)
+                                            <div class="swiper-slide" data-cd-type="youtube" data-cd-youtube="{{ $car->video_id }}">
+                                                <iframe loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="video"></iframe>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
+                                </div>
+                            </div>
+                            <div class="cd-lightbox__thumbs">
+                                <div class="swiper" id="cdLightboxThumbs">
+                                    <div class="swiper-wrapper">
+                                        @foreach ($galleries as $gallery)
+                                            <div class="swiper-slide">
+                                                <img loading="lazy" src="{{ getImageOrPlaceholder($gallery->image, '216x148') }}" alt="thumb">
+                                            </div>
+                                        @endforeach
+                                        @if($car->video_id)
+                                            <div class="swiper-slide cd-lightbox__thumb--video">
+                                                <img loading="lazy" src="{{ getImageOrPlaceholder($car->video_image, '216x148') }}" alt="video">
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
+                    <div class="listing-detail-hero__left-info">
+                        <h2 class="listing-detail-hero__left-title">
+                            {{ html_decode($car->title) }}
+                            @php
+                                $cityOnly = null;
+                                if (!empty($car?->city_id)) {
+                                    $cityOnly = optional(Modules\City\Entities\City::find($car->city_id))->name;
+                                }
+                                if (!$cityOnly && !empty($car->address)) {
+                                    $addressParts = array_values(array_filter(array_map('trim', explode(',', html_decode($car->address)))));
+                                    if (count($addressParts) >= 2) {
+                                        $cityOnly = $addressParts[1];
+                                    } elseif (count($addressParts) === 1) {
+                                        $cityOnly = $addressParts[0];
+                                    }
+                                }
+                            @endphp
+                        </h2>
+                        <div class="listing-detail-hero__left-subtitle">{{ __('Go to motorcheck for history check') }}</div>
+
+                        <div class="listing-detail-hero__meta">
+                            @php
+                                $__sellerType = strtolower((string) ($car->seller_type ?? ''));
+                                if ($__sellerType !== '') {
+                                    $__isDealerAd = str_contains($__sellerType, 'dealer');
+                                } else {
+                                    $__isDealerAd = ((int) ($dealer?->is_dealer ?? 0)) === 1;
+                                }
+                                $__sellerDisplayName = $__isDealerAd && !empty($dealer?->is_vehicle_seller) && !empty($dealer?->vehicle_company_name)
+                                    ? html_decode($dealer->vehicle_company_name)
+                                    : html_decode($dealer?->name);
+                            @endphp
+                            @if(!empty($dealer?->username))
+                                <a href="{{ route('dealer', $dealer->username) }}" style="text-decoration:none;">
+                                    <span class="listing-detail-hero__meta-type {{ $__isDealerAd ? 'listing-detail-hero__meta-type--dealer' : 'listing-detail-hero__meta-type--private' }}">
+                                        {{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}
+                                    </span>
+                                    <span class="listing-detail-hero__meta-sep">|</span>
+                                    <span class="listing-detail-hero__meta-name">{{ $__sellerDisplayName }}</span>
+                                </a>
+                            @else
+                                <span class="listing-detail-hero__meta-type {{ $__isDealerAd ? 'listing-detail-hero__meta-type--dealer' : 'listing-detail-hero__meta-type--private' }}">
+                                    {{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}
+                                </span>
+                                <span class="listing-detail-hero__meta-sep">|</span>
+                                <span class="listing-detail-hero__meta-name">{{ $__sellerDisplayName }}</span>
+                            @endif
+                        </div>
+
+                        <div class="location-mobile" style="margin-top: 160px;">
+                            <div class="listing-detail-description__title">{{ __('translate.Locations') }}</div>
+                            <div class="listing-detail-description__body">
+                                {{ html_decode($car->address) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="listing-detail-hero__right">
+                    <div class="listing-detail-hero__actions">
+                         @if($cityOnly)
+                            <span class="listing-detail-hero__actions-city">{{ strtoupper($cityOnly) }}</span>
+                        @endif
+                        @auth('web')
+                            <a class="action-email" href="mailto:{{ html_decode($dealer?->email) }}">{{ __('Email') }}</a>
+                            <a class="action-call" href="tel:{{ html_decode($dealer?->phone) }}">{{ __('Call') }}</a>
+                            @if(!empty($dealer?->id))
+                                <a class="action-chat" href="{{ route('user.messages.start', $dealer->id) }}">Chat</a>
+                            @endif
+                        @else
+                            <a class="action-email" href="{{ route('login') }}">{{ __('Email') }}</a>
+                            <a class="action-call" href="{{ route('login') }}">{{ __('Call') }}</a>
+                            <a class="action-chat" href="{{ route('login') }}">Chat</a>
+                        @endauth
+                    </div>
+
+                    <div class="listing-detail-hero__keyinfo">
+                        @if($car->year)
+                            <div><span>year</span>{{ html_decode($car->year) }}</div>
+                        @endif
+                        @if($car->engine_size)
+                            <div><span>engine</span>{{ html_decode($car->engine_size) }}</div>
+                        @endif
+                        @if($car->transmission)
+                            <div><span>transmission</span>{{ html_decode($car->transmission) }}</div>
+                        @endif
+                        @if($car->mileage)
+                            <div><span>mileage</span>{{ html_decode($car->mileage) }}</div>
+                        @endif
+                        @if($car->body_type)
+                            <div><span>body type</span>{{ html_decode($car->body_type) }}</div>
+                        @endif
+                        @if($car->drive)
+                            <div><span>drive</span>{{ html_decode($car->drive) }}</div>
+                        @endif
+                        @if($car->interior_color)
+                            <div><span>color</span>{{ html_decode($car->interior_color) }}</div>
+                        @endif
+                        @if($car->exterior_color)
+                            <div><span>exterior color</span>{{ html_decode($car->exterior_color) }}</div>
+                        @endif
+                        @if($car->fuel_type)
+                            <div><span>fuel type</span>{{ html_decode($car->fuel_type) }}</div>
+                        @endif
+                        @if($car->condition)
+                            <div>
+                                <span>condition</span>
+                                @if($car->condition == 'Used')
+                                    {{ __('translate.Used') }}
+                                @else
+                                    {{ __('translate.New') }}
+                                @endif
+                            </div>
+                        @endif
+                        @if($car->seller_type)
+                            <div><span>seller type</span>{{ html_decode($car->seller_type) }}</div>
+                        @endif
+                    </div>
+
+                    <div class="listing-detail-hero__price">
+                        @if ($car->offer_price)
+                            @php
+                                $__priceText = currency($car->offer_price);
+                                $__priceText = preg_replace('/^[^0-9]+/u', '', (string) $__priceText);
+                            @endphp
+                            €{{ $__priceText }}
+                        @else
+                            @php
+                                $__priceText = currency($car->regular_price);
+                                $__priceText = preg_replace('/^[^0-9]+/u', '', (string) $__priceText);
+                            @endphp
+                            €{{ $__priceText }}
+                        @endif
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <section class="listing-detail-description">
+        <div class="container">
+            <div class="listing-detail-description__title">{{ __('translate.Description') }}</div>
+            <div class="listing-detail-description__body">
+                {!! clean(html_decode($car->description)) !!}
+            </div>
+
+            <div style="margin-top: 24px;">
+                <div class="listing-detail-description__title">{{ __('translate.Features') }}</div>
+                <div class="listing-detail-description__body">
+                    <div class="feature-list">
+                        <ul>
+                            @foreach ($car_features as $index => $car_feature)
+                                <li>
+                                    <span>
+                                        <i class="fa-solid fa-check"></i>
+                                    </span>
+                                    {{ $car_feature->name }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="inventory-details py-120px">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
 
                     @if ($listing_ads->status == 'enable')
-                        <div class="inventory-details-thumb" data-aos="fade-up" data-aos-delay="50">
+                        <div class="inventory-details-thumb">
                             <a href="{{ $listing_ads->link }}" target="_blank"> <img src="{{ getImageOrPlaceholder($listing_ads->image,'950x130') }}" alt="img"></a>
                         </div>
                     @endif
 
 
                     <!-- Description Overview  -->
-                    <div class="accordion" id="accordionPanelsStayOpenExample" data-aos="fade-up"
-                    data-aos-delay="100">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                                    aria-controls="panelsStayOpen-collapseOne">
-                                    {{ __('translate.Description Overview') }}
-                                </button>
-                            </h2>
-                            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                                aria-labelledby="panelsStayOpen-headingOne">
-                                <div class="accordion-body">
-                                    {!! clean(html_decode($car->description)) !!}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-                    <!-- Description Overview  -->
+                    @if(false)
                     <div class="accordion" id="accordionPanelsStayOpenExample1" data-aos="fade-up"
                     data-aos-delay="150">
                         <div class="accordion-item">
@@ -547,9 +1624,11 @@
                             </div>
                         </div>
                     </div>
+                    @endif
 
 
                     <!-- Video -->
+                    @if(false)
                     <div class="accordion" id="accordionPanelsStayOpenExample3" data-aos="fade-up"
                     data-aos-delay="250">
                         <div class="accordion-item">
@@ -589,52 +1668,8 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <!-- Locations -->
-                    <div class="accordion" id="accordionPanelsStayOpenExample4" data-aos="fade-up"
-                    data-aos-delay="300">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="panelsStayOpen-headingfive">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#panelsStayOpen-collapsefive" aria-expanded="true"
-                                    aria-controls="panelsStayOpen-collapsefive">
-                                    {{ __('translate.Locations') }}
-                                </button>
-                            </h2>
-                            <div id="panelsStayOpen-collapsefive" class="accordion-collapse collapse show"
-                                aria-labelledby="panelsStayOpen-headingfive">
-                                <div class="accordion-body">
-                                    <ul class="locations">
-                                        <li>
-                                            <a href="javascript:;">
-                                                <span>
-                                                    <svg width="18" height="22" viewBox="0 0 18 22" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M2.55 20.25C2.13579 20.25 1.8 20.5858 1.8 21C1.8 21.4142 2.13579 21.75 2.55 21.75V20.25ZM14.95 21.75C15.3642 21.75 15.7 21.4142 15.7 21C15.7 20.5858 15.3642 20.25 14.95 20.25V21.75ZM15.75 8.5C15.75 10.1981 14.6274 12.4022 13.0703 14.2376C12.3055 15.139 11.4701 15.9098 10.6819 16.4488C9.87165 17.0029 9.2019 17.25 8.75 17.25V18.75C9.65435 18.75 10.6315 18.3005 11.5286 17.687C12.4479 17.0584 13.3804 16.1906 14.2141 15.208C15.8538 13.2752 17.25 10.7292 17.25 8.5H15.75ZM8.75 17.25C8.31285 17.25 7.64989 16.992 6.83557 16.4004C6.0463 15.8269 5.20886 15.0085 4.44153 14.0574C2.8796 12.1213 1.75 9.81691 1.75 8.11111H0.25C0.25 10.3327 1.63915 12.9727 3.27409 14.9992C4.1052 16.0294 5.03573 16.9468 5.95389 17.6139C6.84698 18.2628 7.8309 18.75 8.75 18.75V17.25ZM1.75 8.11111C1.75 4.5023 5.07541 1.75 8.75 1.75V0.25C4.43487 0.25 0.25 3.4977 0.25 8.11111H1.75ZM8.75 1.75C12.3966 1.75 15.75 4.47727 15.75 8.5H17.25C17.25 3.52273 13.0931 0.25 8.75 0.25V1.75ZM11.1 8C11.1 9.21965 10.0712 10.25 8.75 10.25V11.75C10.8529 11.75 12.6 10.0941 12.6 8H11.1ZM8.75 10.25C7.42876 10.25 6.4 9.21965 6.4 8H4.9C4.9 10.0941 6.64707 11.75 8.75 11.75V10.25ZM6.4 8C6.4 6.78035 7.42876 5.75 8.75 5.75V4.25C6.64707 4.25 4.9 5.90594 4.9 8H6.4ZM8.75 5.75C10.0712 5.75 11.1 6.78035 11.1 8H12.6C12.6 5.90594 10.8529 4.25 8.75 4.25V5.75ZM2.55 21.75H14.95V20.25H2.55V21.75Z" />
-                                                    </svg>
-                                                </span>
-                                                {{ html_decode($car->address) }}
-                                            </a>
-
-
-
-                                            <iframe src="{{ html_decode($car->google_map) }}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-
-                                        </li>
-
-
-                                    </ul>
-
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
+                    @endif
+                    @if(false)
                     @if ($reviews->count() > 0)
                         <!-- Write Your Review -->
                         <div class="accordion aos-init aos-animate" id="accordionPanelsStayOpenExample5" data-aos="fade-up"
@@ -753,247 +1788,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-lg-4 col-md-5">
-                    <div class="p-sticky">
-                    <div class="auto-sales-item">
-
-                        <div class="auto-sales-item-inner">
-
-                        <div class="auto-sales-logo">
-                                <a href="{{ route('dealer', $dealer->username) }}"><img src="{{ getImageOrPlaceholder($dealer->image, '80x80') }}" alt="logo"></a>
-                            </div>
-
-                            <div class="auto-sales-text-item">
-                                <div class="auto-sales-text-left">
-                                    <h3>{{ html_decode($dealer->name) }}
-                                        @php
-                                            $kyc = Modules\Kyc\Entities\KycInformation::where('user_id',$dealer->id)->where('status',1)->first();
-                                        @endphp
-                                        @if($kyc)
-                                            <span  class="varified-badge">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10.007 2.10377C8.60544 1.65006 7.08181 2.28116 6.41156 3.59306L5.60578 5.17023C5.51004 5.35763 5.35763 5.51004 5.17023 5.60578L3.59306 6.41156C2.28116 7.08181 1.65006 8.60544 2.10377 10.007L2.64923 11.692C2.71404 11.8922 2.71404 12.1078 2.64923 12.308L2.10377 13.993C1.65006 15.3946 2.28116 16.9182 3.59306 17.5885L5.17023 18.3942C5.35763 18.49 5.51004 18.6424 5.60578 18.8298L6.41156 20.407C7.08181 21.7189 8.60544 22.35 10.007 21.8963L11.692 21.3508C11.8922 21.286 12.1078 21.286 12.308 21.3508L13.993 21.8963C15.3946 22.35 16.9182 21.7189 17.5885 20.407L18.3942 18.8298C18.49 18.6424 18.6424 18.49 18.8298 18.3942L20.407 17.5885C21.7189 16.9182 22.35 15.3946 21.8963 13.993L21.3508 12.308C21.286 12.1078 21.286 11.8922 21.3508 11.692L21.8963 10.007C22.35 8.60544 21.7189 7.08181 20.407 6.41156L18.8298 5.60578C18.6424 5.51004 18.49 5.35763 18.3942 5.17023L17.5885 3.59306C16.9182 2.28116 15.3946 1.65006 13.993 2.10377L12.308 2.64923C12.1078 2.71403 11.8922 2.71404 11.692 2.64923L10.007 2.10377ZM6.75977 11.7573L8.17399 10.343L11.0024 13.1715L16.6593 7.51465L18.0735 8.92886L11.0024 15.9999L6.75977 11.7573Z">
-
-                                                </path>
-                                                </svg>
-                                            </span>
-                                        @endif
-                                    </h3>
-                                    <p>{{ __('translate.Member Since') }} {{ $dealer->created_at->format('F Y') }} </p>
-                                </div>
-                                <div class="auto-sales-text-right">
-                                    <h6>{{ __('translate.Total Cars') }} {{ $dealer->total_car }}</h6>
-                                    <p>
-                                        <span>
-                                            <svg width="53" height="11" viewBox="0 0 53 11" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M5.3 0L6.48992 3.80041H10.3406L7.22534 6.14919L8.41526 9.94959L5.3 7.60081L2.18474 9.94959L3.37466 6.14919L0.2594 3.80041H4.11007L5.3 0Z" />
-                                                <path
-                                                    d="M15.8996 0L17.0895 3.80041H20.9402L17.8249 6.14919L19.0149 9.94959L15.8996 7.60081L12.7843 9.94959L13.9743 6.14919L10.859 3.80041H14.7097L15.8996 0Z" />
-                                                <path
-                                                    d="M26.4992 0L27.6891 3.80041H31.5398L28.4246 6.14919L29.6145 9.94959L26.4992 7.60081L23.384 9.94959L24.5739 6.14919L21.4586 3.80041H25.3093L26.4992 0Z" />
-                                                <path
-                                                    d="M37.1008 0L38.2907 3.80041H42.1414L39.0261 6.14919L40.216 9.94959L37.1008 7.60081L33.9855 9.94959L35.1754 6.14919L32.0602 3.80041H35.9109L37.1008 0Z" />
-                                                <path
-                                                    d="M47.7004 0L48.8903 3.80041H52.741L49.6257 6.14919L50.8157 9.94959L47.7004 7.60081L44.5851 9.94959L45.7751 6.14919L42.6598 3.80041H46.5105L47.7004 0Z" />
-                                            </svg>
-                                        </span>
-                                        ({{ $total_dealer_rating }})
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                            @auth('web')
-                            <div class="auto-sales-contact">
-                                <ul>
-                                    <li>
-                                        <a href="tel:{{ html_decode($dealer->phone) }}">
-                                            <span>
-                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M13 14L12.8529 14.7354C13.1846 14.8018 13.5196 14.6379 13.6708 14.3354L13 14ZM6 7L5.66459 6.32918C5.36208 6.48043 5.19824 6.81544 5.26456 7.14709L6 7ZM6.35402 6.82299L6.68943 7.49381L6.68943 7.49381L6.35402 6.82299ZM7.31654 4.29136L8.0129 4.01281L7.31654 4.29136ZM6.50289 2.25722L5.80653 2.53576L6.50289 2.25722ZM17.7428 13.4971L17.4642 14.1935L17.7428 13.4971ZM15.7086 12.6835L15.9872 11.9871H15.9872L15.7086 12.6835ZM13.177 13.646L13.8478 13.9814V13.9814L13.177 13.646ZM14.25 9C14.25 9.41421 14.5858 9.75 15 9.75C15.4142 9.75 15.75 9.41421 15.75 9H14.25ZM14.6955 7.46927L15.3884 7.18225L14.6955 7.46927ZM12.5307 5.30448L12.8177 4.61157L12.5307 5.30448ZM11 4.25C10.5858 4.25 10.25 4.58579 10.25 5C10.25 5.41421 10.5858 5.75 11 5.75V4.25ZM18.25 9C18.25 9.41421 18.5858 9.75 19 9.75C19.4142 9.75 19.75 9.41421 19.75 9H18.25ZM18.391 5.93853L19.0839 5.65152L18.391 5.93853ZM14.0615 1.60896L14.3485 0.916054V0.916054L14.0615 1.60896ZM11 0.25C10.5858 0.25 10.25 0.585786 10.25 1C10.25 1.41421 10.5858 1.75 11 1.75V0.25ZM18.25 15.3541V17H19.75V15.3541H18.25ZM3 1.75H4.64593V0.25H3V1.75ZM13 14C13.1471 13.2646 13.1473 13.2646 13.1475 13.2646C13.1476 13.2647 13.1477 13.2647 13.1479 13.2647C13.1481 13.2648 13.1483 13.2648 13.1484 13.2648C13.1487 13.2649 13.1488 13.2649 13.1488 13.2649C13.1488 13.2649 13.1482 13.2648 13.147 13.2645C13.1447 13.264 13.14 13.2631 13.1331 13.2615C13.1193 13.2585 13.0967 13.2533 13.0659 13.2459C13.0044 13.2309 12.9104 13.2066 12.7898 13.1711C12.5482 13.1 12.2016 12.9847 11.7954 12.8106C10.9796 12.461 9.94391 11.8833 9.03033 10.9697L7.96967 12.0303C9.05609 13.1167 10.2704 13.789 11.2046 14.1894C11.6734 14.3903 12.0768 14.525 12.3665 14.6101C12.5115 14.6528 12.6285 14.6832 12.7114 14.7034C12.7529 14.7135 12.7859 14.721 12.8097 14.7263C12.8217 14.7289 12.8313 14.7309 12.8385 14.7325C12.8421 14.7332 12.8451 14.7339 12.8475 14.7343C12.8487 14.7346 12.8498 14.7348 12.8507 14.735C12.8511 14.7351 12.8515 14.7352 12.8519 14.7352C12.8521 14.7353 12.8523 14.7353 12.8524 14.7353C12.8527 14.7354 12.8529 14.7354 13 14ZM9.03033 10.9697C8.11675 10.0561 7.53901 9.02042 7.18936 8.20456C7.01527 7.79836 6.89996 7.45184 6.8289 7.21025C6.79342 7.08962 6.76912 6.99565 6.75414 6.93406C6.74666 6.90329 6.74151 6.88065 6.73847 6.86687C6.73695 6.85999 6.73595 6.85532 6.73546 6.85296C6.73521 6.85178 6.73509 6.85118 6.73508 6.85117C6.73508 6.85116 6.73511 6.8513 6.73517 6.85159C6.7352 6.85174 6.73524 6.85192 6.73528 6.85214C6.7353 6.85225 6.73534 6.85244 6.73535 6.8525C6.73539 6.8527 6.73544 6.85291 6 7C5.26456 7.14709 5.26461 7.14732 5.26466 7.14756C5.26468 7.14765 5.26473 7.1479 5.26477 7.14809C5.26484 7.14846 5.26492 7.14887 5.26501 7.14932C5.2652 7.15022 5.26541 7.15127 5.26566 7.15247C5.26615 7.15488 5.26677 7.15789 5.26753 7.1615C5.26905 7.16873 5.27111 7.17834 5.27374 7.19026C5.279 7.21408 5.28655 7.2471 5.29664 7.28859C5.31682 7.37154 5.34721 7.48851 5.38985 7.6335C5.47504 7.92316 5.60973 8.32664 5.81064 8.79544C6.21099 9.72958 6.88325 10.9439 7.96967 12.0303L9.03033 10.9697ZM6.33541 7.67082L6.68943 7.49381L6.01861 6.15217L5.66459 6.32918L6.33541 7.67082ZM8.0129 4.01281L7.19925 1.97868L5.80653 2.53576L6.62018 4.5699L8.0129 4.01281ZM18.0213 12.8008L15.9872 11.9871L15.4301 13.3798L17.4642 14.1935L18.0213 12.8008ZM12.5062 13.3106L12.3292 13.6646L13.6708 14.3354L13.8478 13.9814L12.5062 13.3106ZM15.9872 11.9871C14.6592 11.4559 13.1458 12.0313 12.5062 13.3106L13.8478 13.9814C14.1386 13.3999 14.8265 13.1384 15.4301 13.3798L15.9872 11.9871ZM6.68943 7.49381C7.96868 6.85419 8.54408 5.34076 8.0129 4.01281L6.62018 4.5699C6.86163 5.17351 6.60008 5.86143 6.01861 6.15217L6.68943 7.49381ZM4.64593 1.75C5.15706 1.75 5.6167 2.06119 5.80653 2.53576L7.19925 1.97868C6.78162 0.934616 5.77042 0.25 4.64593 0.25V1.75ZM19.75 15.3541C19.75 14.2296 19.0654 13.2184 18.0213 12.8008L17.4642 14.1935C17.9388 14.3833 18.25 14.8429 18.25 15.3541H19.75ZM17 18.25C8.57766 18.25 1.75 11.4223 1.75 3H0.25C0.25 12.2508 7.74923 19.75 17 19.75V18.25ZM17 19.75C18.5188 19.75 19.75 18.5188 19.75 17H18.25C18.25 17.6904 17.6904 18.25 17 18.25V19.75ZM1.75 3C1.75 2.30964 2.30964 1.75 3 1.75V0.25C1.48122 0.25 0.25 1.48122 0.25 3H1.75ZM15.75 9C15.75 8.37622 15.6271 7.75855 15.3884 7.18225L14.0026 7.75628C14.1659 8.15059 14.25 8.5732 14.25 9H15.75ZM15.3884 7.18225C15.1497 6.60596 14.7998 6.08232 14.3588 5.64124L13.2981 6.7019C13.5999 7.00369 13.8393 7.36197 14.0026 7.75628L15.3884 7.18225ZM14.3588 5.64124C13.9177 5.20016 13.394 4.85028 12.8177 4.61157L12.2437 5.99739C12.638 6.16072 12.9963 6.40011 13.2981 6.7019L14.3588 5.64124ZM12.8177 4.61157C12.2415 4.37286 11.6238 4.25 11 4.25V5.75C11.4268 5.75 11.8494 5.83406 12.2437 5.99739L12.8177 4.61157ZM19.75 9C19.75 7.85093 19.5237 6.71312 19.0839 5.65152L17.6981 6.22554C18.0625 7.10516 18.25 8.04792 18.25 9H19.75ZM19.0839 5.65152C18.6442 4.58992 17.9997 3.62533 17.1872 2.81282L16.1265 3.87348C16.7997 4.5467 17.3338 5.34593 17.6981 6.22554L19.0839 5.65152ZM17.1872 2.81282C16.3747 2.0003 15.4101 1.35578 14.3485 0.916054L13.7745 2.30187C14.6541 2.66622 15.4533 3.20025 16.1265 3.87348L17.1872 2.81282ZM14.3485 0.916054C13.2869 0.476325 12.1491 0.25 11 0.25V1.75C11.9521 1.75 12.8948 1.93753 13.7745 2.30187L14.3485 0.916054Z" />
-                                                </svg>
-                                            </span>
-
-                                            {{ html_decode($dealer->phone) }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="mailto:{{ html_decode($dealer->email) }}">
-
-                                            <span>
-                                                <svg class="stroke-color" width="24" height="24" viewBox="0 0 24 24"
-                                                    fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M2 12V7C2 4.79086 3.79086 3 6 3H18C20.2091 3 22 4.79086 22 7V17C22 19.2091 20.2091 21 18 21H8M6 8L9.7812 10.5208C11.1248 11.4165 12.8752 11.4165 14.2188 10.5208L18 8M2 15H8M2 18H8"
-                                                        stroke-width="1.5" stroke-linecap="round" />
-                                                </svg>
-
-                                            </span>
-
-                                            {{ html_decode($dealer->email) }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;">
-
-                                            <span>
-                                                <svg width="18" height="22" viewBox="0 0 18 22" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M3 20.25C2.58579 20.25 2.25 20.5858 2.25 21C2.25 21.4142 2.58579 21.75 3 21.75V20.25ZM15 21.75C15.4142 21.75 15.75 21.4142 15.75 21C15.75 20.5858 15.4142 20.25 15 20.25V21.75ZM15.75 8.5C15.75 10.2065 14.6599 12.4136 13.1547 14.2468C12.4148 15.1481 11.6072 15.9179 10.8465 16.4554C10.0624 17.0094 9.42269 17.25 9 17.25V18.75C9.88982 18.75 10.8438 18.294 11.7121 17.6804C12.6038 17.0504 13.5071 16.1815 14.314 15.1987C15.9026 13.2638 17.25 10.7209 17.25 8.5H15.75ZM9 17.25C8.59247 17.25 7.95947 16.9993 7.171 16.4074C6.409 15.8353 5.59932 15.0178 4.85679 14.0668C3.34675 12.1327 2.25 9.82498 2.25 8.11111H0.75C0.75 10.3246 2.09075 12.9614 3.67446 14.9899C4.4788 16.0201 5.38006 16.9385 6.27041 17.6069C7.13428 18.2555 8.09503 18.75 9 18.75V17.25ZM2.25 8.11111C2.25 4.48059 5.47857 1.75 9 1.75V0.25C4.78944 0.25 0.75 3.51941 0.75 8.11111H2.25ZM9 1.75C12.4938 1.75 15.75 4.45503 15.75 8.5H17.25C17.25 3.54497 13.2382 0.25 9 0.25V1.75ZM11.25 8C11.25 9.24264 10.2426 10.25 9 10.25V11.75C11.0711 11.75 12.75 10.0711 12.75 8H11.25ZM9 10.25C7.75736 10.25 6.75 9.24264 6.75 8H5.25C5.25 10.0711 6.92893 11.75 9 11.75V10.25ZM6.75 8C6.75 6.75736 7.75736 5.75 9 5.75V4.25C6.92893 4.25 5.25 5.92893 5.25 8H6.75ZM9 5.75C10.2426 5.75 11.25 6.75736 11.25 8H12.75C12.75 5.92893 11.0711 4.25 9 4.25V5.75ZM3 21.75H15V20.25H3V21.75Z" />
-                                                </svg>
-
-                                            </span>
-                                            {{ html_decode($dealer->address) }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            @else
-                                <div class="auto-sales-contact" style="padding: 12px 0;">
-                                    <a href="{{ route('login') }}" class="thm-btn-two" style="width:100%;text-align:center;">{{ __('translate.Login') }}</a>
-                                </div>
-                            @endauth
-
-                            <div class="auto-sales-contact" style="padding-top: 12px;">
-                                @auth('web')
-                                    <a href="{{ route('user.messages.start', $dealer->id) }}" class="thm-btn-two" style="width:100%;text-align:center;">Chat with seller</a>
-                                @else
-                                    <a href="{{ route('login') }}" class="thm-btn-two" style="width:100%;text-align:center;">Chat with seller</a>
-                                @endauth
-                            </div>
-
-
-
-                            <form method="POST" action="{{ route('send-message-to-dealer', $dealer->id) }}">
-                                @csrf
-                                <div class="auto-sales-form">
-
-                                    <div class="auto-sales-form-item">
-                                        <input type="text" class="form-control" id="exampleFormControlInput3"
-                                            placeholder="{{ __('translate.Name') }} *" name="name" value="{{ old('name') }}">
-                                    </div>
-                                    <div class="auto-sales-form-item">
-                                        <input type="email" class="form-control" id="exampleFormControlInput4"
-                                            placeholder="{{ __('translate.Email') }} *" name="email" value="{{ old('email') }}">
-                                    </div>
-
-                                    <div class="auto-sales-form-item">
-                                        <input type="text" class="form-control" id="exampleFormControlInput5"
-                                            placeholder="{{ __('translate.Phone') }}" name="phone" value="{{ old('phone') }}">
-                                    </div>
-
-                                    <div class="auto-sales-form-item">
-                                        <input type="text" class="form-control" id="exampleFormControlInpu6"
-                                            placeholder="{{ __('translate.Subject') }} *" value="{{ old('subject') }}" name="subject">
-                                    </div>
-
-                                    <div class="auto-sales-form-item">
-                                        <textarea class="form-control" id="exampleFormControlTextarea11" rows="3"
-                                            placeholder="{{ __('translate.Message') }} *" name="message">{{ old('message') }}</textarea>
-                                    </div>
-
-                                    @if($google_recaptcha->status==1)
-                                        <div class="auto-sales-form-item">
-                                            <div class="g-recaptcha" data-sitekey="{{ $google_recaptcha->site_key }}"></div>
-                                        </div>
-                                    @endif
-
-                                    <button type="submit" class="thm-btn-two">{{ __('translate.Send Message') }}</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="auto-lone-item">
-                            <h3 class="auto-lone-head">{{ __('translate.Auto Loan Calculator') }}</h3>
-                            <p class="sub-taitel">
-                                {{ __('translate.You can calculate monthly loan amount using this calculator') }}</p>
-
-                            <form>
-                                <div class="auto-lone-form">
-                                    <div class="auto-lone-form-item">
-                                        <label for="loan_amount" class="form-label">{{ __('translate.Loan Amount') }}
-                                            <span>*</span></label>
-                                        <input type="text" class="form-control" id="loan_amount"
-                                            placeholder="{{ __('translate.Amount') }}">
-
-                                        <div class="icon">
-                                            <span>
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="12" cy="12" r="10" stroke="#405FF2" stroke-width="1.5"/>
-                                            <path d="M14 10C14 8.89543 13.1046 8 12 8C10.8954 8 10 8.89543 10 10C10 11.1046 10.8954 12 12 12" stroke="#405FF2" stroke-width="1.5" stroke-linecap="round"/>
-                                            <path d="M12 12C13.1046 12 14 12.8954 14 14C14 15.1046 13.1046 16 12 16C10.8954 16 10 15.1046 10 14" stroke="#405FF2" stroke-width="1.5" stroke-linecap="round"/>
-                                            <path d="M12 6.5V8" stroke="#405FF2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M12 16V17.5" stroke="#405FF2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="auto-lone-form-item">
-                                        <label for="interest_rate" class="form-label">{{ __('translate.Interest Rate') }}
-                                            <span>*</span></label>
-                                        <input type="text" class="form-control" id="interest_rate"
-                                            placeholder="{{ __('translate.Rate') }}">
-
-                                        <div class="icon">
-                                            <span>
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 14 18)" stroke="#405FF2" stroke-width="1.5"/>
-                                            <circle cx="2" cy="2" r="2" transform="matrix(1 0 0 -1 6 10)" stroke="#405FF2" stroke-width="1.5"/>
-                                            <path d="M19 5L4 20" stroke="#405FF2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="auto-lone-form-item">
-                                        <label for="total_year" class="form-label">{{ __('translate.Loan Tern in Year') }}
-                                            <span>*</span></label>
-                                        <input type="text" class="form-control" id="total_year"
-                                            placeholder="{{ __('translate.Year') }}">
-
-                                        <div class="icon">
-                                            <span>
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M3 7.5C3 5.29086 4.79086 3.5 7 3.5H17C19.2091 3.5 21 5.29086 21 7.5V18C21 20.2091 19.2091 22 17 22H7C4.79086 22 3 20.2091 3 18V7.5Z" stroke="#405FF2" stroke-width="1.5"/>
-                                            <path d="M3 9H21" stroke="#405FF2" stroke-width="1.5" stroke-linecap="round"/>
-                                            <path d="M8 2L8 5" stroke="#405FF2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M16 2V5" stroke="#405FF2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <circle cx="12" cy="15" r="1" fill="#405FF2"/>
-                                            <circle cx="16" cy="15" r="1" fill="#405FF2"/>
-                                            <circle cx="8" cy="15" r="1" fill="#405FF2"/>
-                                            </svg>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="auto-lone-form-btn">
-                                        <button id="calculate_btn" type="button" class="thm-btn-two">{{ __('translate.Loan Calculate') }}</button>
-                                        <button type="button" class="reset-now-btn" id="reset_btn">
-                                            <span>
-                                                <svg width="13" height="13" viewBox="0 0 13 13" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M13 6.50442C13.0022 7.95669 12.5159 9.36769 11.6189 10.5114C10.7219 11.6551 9.46612 12.4653 8.05275 12.8122C6.63938 13.1592 5.15021 13.0227 3.82379 12.4248C2.49738 11.8268 1.41048 10.802 0.737207 9.51444C0.063938 8.22687 -0.156736 6.75109 0.110535 5.32351C0.377807 3.89593 1.11756 2.59917 2.21128 1.64095C3.305 0.68273 4.68941 0.118515 6.14271 0.0386867C7.59602 -0.0411418 9.03413 0.368036 10.2267 1.20067L10.1472 0.970075C10.0859 0.783733 10.1013 0.580728 10.19 0.405719C10.2788 0.23071 10.4335 0.0980331 10.6203 0.0368748C10.807 -0.0242835 11.0105 -0.00891303 11.1859 0.079605C11.3613 0.168123 11.4943 0.322538 11.5555 0.508879L12.2778 2.67073C12.3136 2.7791 12.3231 2.89441 12.3055 3.00716C12.2879 3.11992 12.2438 3.22689 12.1767 3.31929C12.1067 3.41752 12.0133 3.4967 11.9048 3.54957C11.7962 3.60245 11.6762 3.62733 11.5555 3.62195H9.38888C9.19734 3.62195 9.01364 3.54602 8.8782 3.41088C8.74275 3.27574 8.66666 3.09245 8.66666 2.90133C8.66927 2.7488 8.72033 2.60103 8.81248 2.47931C8.90463 2.35758 9.03311 2.26817 9.17944 2.22395C8.22939 1.63148 7.109 1.37068 5.99427 1.4825C4.87954 1.59433 3.83361 2.07244 3.02077 2.84176C2.20793 3.61107 1.67423 4.62799 1.5035 5.73279C1.33276 6.8376 1.53466 7.9677 2.07749 8.94558C2.62032 9.92347 3.47332 10.6937 4.50252 11.1354C5.53171 11.5771 6.67879 11.6651 7.76359 11.3857C8.84838 11.1063 9.80943 10.4753 10.4958 9.59179C11.1821 8.70826 11.5549 7.62228 11.5555 6.50442C11.5555 6.3133 11.6316 6.13 11.7671 5.99486C11.9025 5.85972 12.0862 5.7838 12.2778 5.7838C12.4693 5.7838 12.653 5.85972 12.7885 5.99486C12.9239 6.13 13 6.3133 13 6.50442Z" />
-                                                </svg>
-                                            </span>
-                                            {{ __('translate.Reset Now') }}
-                                        </button>
-                                    </div>
-
-
-                                    <p class="auto-lone-amount">{{ __('translate.Monthly Payment') }}: <span id="monthly_payment">{{ currency(0.00) }}</span></p>
-
-                                </div>
-
-
-                            </form>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -1023,9 +1818,9 @@
                             </div>
                         </div>
 
-                        <div class="row mt-56px  ">
+                        <div class="row mt-56px">
                             @foreach ($related_listings as $related_car)
-                                <div class="col-lg-3">
+                                <div class="col-lg-4 col-md-6">
                                     <div class="brand-car-item">
                                         <div class="brand-car-item-img">
                                             <img src="{{ getImageOrPlaceholder($related_car->thumb_image, '304x217') }}" alt="thumb">
@@ -1060,7 +1855,12 @@
                                                         </a>
                                                     @else
                                                     @php
-                                                        $isInWishlist = App\Models\Wishlist::where('car_id',$car->id)->where('user_id',Auth::user()->id)->first();
+                                                        $isInWishlist = false;
+                                                        if (\Illuminate\Support\Facades\Schema::hasTable('wishlists')) {
+                                                            $isInWishlist = App\Models\Wishlist::where('car_id',$car->id)
+                                                                ->where('user_id',Auth::user()->id)
+                                                                ->first();
+                                                        }
                                                     @endphp
                                                     <a href="{{ route('user.add-to-wishlist', $car->id) }}" 
                                                     class="icon {{ $isInWishlist ? 'active' : '' }}">
@@ -1099,9 +1899,17 @@
                                                 <span>{{ $related_car?->brand?->name }}</span>
                                                 <p>
                                                     @if ($related_car->offer_price)
-                                                        {{ currency($related_car->offer_price) }}
+                                                        @php
+                                                            $__priceText = currency($related_car->offer_price);
+                                                            $__priceText = preg_replace('/^[^0-9]+/u', '', (string) $__priceText);
+                                                        @endphp
+                                                        €{{ $__priceText }}
                                                     @else
-                                                        {{ currency($related_car->regular_price) }}
+                                                        @php
+                                                            $__priceText = currency($related_car->regular_price);
+                                                            $__priceText = preg_replace('/^[^0-9]+/u', '', (string) $__priceText);
+                                                        @endphp
+                                                        €{{ $__priceText }}
                                                     @endif
                                                 </p>
                                             </div>
@@ -1173,134 +1981,193 @@
                 </div>
             </div>
         </section>
+
+        <section class="inventory-details" style="padding: 0 0 60px; background:#fff;">
+            <div class="container" style="max-width: 980px;">
+                <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+                    @auth('web')
+                        @if(!empty($dealer?->id))
+                            <a href="{{ route('user.messages.start', $dealer->id) }}" class="thm-btn-two" style="min-width:220px;text-align:center;">Chat with seller</a>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}" class="thm-btn-two" style="min-width:220px;text-align:center;">{{ __('translate.Login') }}</a>
+                        <a href="{{ route('login') }}" class="thm-btn-two" style="min-width:220px;text-align:center;">Chat with seller</a>
+                    @endauth
+                </div>
+            </div>
+        </section>
     @endif
 
     <!--Cars Listing-part-end -->
 
 </main>
+	</div>
 
 @endsection
 
 
 @push('js_section')
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <script>
-        "use strict";
+        (function(){
+            const modal = document.getElementById('cdLightbox');
+            if (!modal || typeof Swiper === 'undefined') return;
 
-        function carReview(rating){
-            $(".car_rat").each(function(){
-                var car_rat = $(this).data('rating')
-                if(car_rat > rating){
-                    $(this).removeClass('fa-solid fa-star').addClass('fa-regular fa-star');
-                }else{
-                    $(this).removeClass('fa-regular fa-star').addClass('fa-solid fa-star');
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            if (modal.parentElement !== document.body) {
+                document.body.appendChild(modal);
+            }
+
+            const counterEl = document.getElementById('cdLightboxCounter');
+            const closeEls = modal.querySelectorAll('[data-cd-close]');
+            const openEls = document.querySelectorAll('.js-cd-open-lightbox');
+            const closeBtn = modal.querySelector('[data-cd-close].cd-lightbox__close');
+
+            let thumbsSwiper = null;
+            let mainSwiper = null;
+            let lastActiveIndex = 0;
+            let lastFocusedEl = null;
+
+            function setBodyLock(locked){
+                if (locked) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
                 }
-            })
-            $("#car_rating").val(rating);
-        }
+            }
+
+            function stopAllVideos(){
+                modal.querySelectorAll('iframe').forEach((iframe) => {
+                    iframe.src = 'about:blank';
+                });
+            }
+
+            function ensureYoutubeForActiveSlide(){
+                if (!mainSwiper) return;
+                const slide = mainSwiper.slides[mainSwiper.activeIndex];
+                if (!slide) return;
+                const type = slide.getAttribute('data-cd-type');
+                if (type !== 'youtube') return;
+
+                const videoId = slide.getAttribute('data-cd-youtube');
+                const iframe = slide.querySelector('iframe');
+                if (!videoId || !iframe) return;
+
+                const src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(videoId) + '?autoplay=1&mute=1&rel=0&playsinline=1';
+                if (iframe.src !== src) iframe.src = src;
+            }
+
+            function updateCounter(){
+                if (!mainSwiper || !counterEl) return;
+                const total = mainSwiper.slides.length;
+                const current = mainSwiper.realIndex + 1;
+                counterEl.textContent = current + ' / ' + total;
+            }
+
+            function openAt(index){
+                lastActiveIndex = index || 0;
+
+                if (modal.parentElement !== document.body) {
+                    document.body.appendChild(modal);
+                }
+
+                lastFocusedEl = document.activeElement;
+                if (lastFocusedEl && typeof lastFocusedEl.blur === 'function') {
+                    lastFocusedEl.blur();
+                }
+
+                modal.classList.add('is-open');
+                modal.setAttribute('aria-hidden', 'false');
+                setBodyLock(true);
+
+                if (!thumbsSwiper) {
+                    thumbsSwiper = new Swiper('#cdLightboxThumbs', {
+                        slidesPerView: 5,
+                        spaceBetween: 10,
+                        watchSlidesProgress: true,
+                        breakpoints: {
+                            0: { slidesPerView: 4 },
+                            768: { slidesPerView: 6 }
+                        }
+                    });
+                }
+
+                if (!mainSwiper) {
+                    mainSwiper = new Swiper('#cdLightboxMain', {
+                        initialSlide: lastActiveIndex,
+                        loop: false,
+                        zoom: { maxRatio: 3 },
+                        keyboard: { enabled: true },
+                        navigation: {
+                            nextEl: '#cdLightboxMain .swiper-button-next',
+                            prevEl: '#cdLightboxMain .swiper-button-prev'
+                        },
+                        thumbs: { swiper: thumbsSwiper },
+                        on: {
+                            slideChange: function(){
+                                stopAllVideos();
+                                updateCounter();
+                                ensureYoutubeForActiveSlide();
+                            },
+                            afterInit: function(){
+                                updateCounter();
+                                ensureYoutubeForActiveSlide();
+                            }
+                        }
+                    });
+                } else {
+                    mainSwiper.slideTo(lastActiveIndex, 0);
+                    stopAllVideos();
+                    updateCounter();
+                    ensureYoutubeForActiveSlide();
+                }
+
+                if (closeBtn && typeof closeBtn.focus === 'function') {
+                    closeBtn.focus();
+                }
+            }
+
+            function close(){
+                modal.classList.remove('is-open');
+                modal.setAttribute('aria-hidden', 'true');
+                setBodyLock(false);
+                stopAllVideos();
+                if (mainSwiper) mainSwiper.zoom && mainSwiper.zoom.out();
+
+                if (lastFocusedEl && document.contains(lastFocusedEl) && typeof lastFocusedEl.focus === 'function') {
+                    lastFocusedEl.focus();
+                }
+            }
+
+            openEls.forEach((el) => {
+                const open = (e) => {
+                    if (e && e.target && e.target.closest && e.target.closest('a')) return;
+                    if (e && e.preventDefault) e.preventDefault();
+                    if (e && e.stopPropagation) e.stopPropagation();
+                    if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+                    const idx = parseInt(el.getAttribute('data-cd-index') || '0', 10);
+                    openAt(Number.isFinite(idx) ? idx : 0);
+                };
+                el.addEventListener('click', open);
+                el.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        open(e);
+                    }
+                });
+            });
+
+            closeEls.forEach((el) => el.addEventListener('click', close));
+
+            document.addEventListener('keydown', (e) => {
+                if (!modal.classList.contains('is-open')) return;
+                if (e.key === 'Escape') close();
+            });
+        })();
     </script>
-
-
-    <script>
-        "use strict";
-
-        let currencyPosition = "{{ Session::get('currency_position') }}";
-        let currencyIcon = "{{ Session::get('currency_icon') }}";
-
-        function calculateMonthlyPayment(loanAmount, interestRate, loanTermYears)
-        {
-            let monthlyInterestRate = (interestRate / 100) / 12;
-            let totalPayments = loanTermYears * 12;
-
-            let monthlyPayment = loanAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalPayments))
-                / (Math.pow(1 + monthlyInterestRate, totalPayments) - 1);
-
-            return monthlyPayment;
-        }
-
-        $("#calculate_btn").on("click", function(e){
-            e.preventDefault();
-
-            let loanAmount = $("#loan_amount").val();
-            let interestRate = $("#interest_rate").val();
-            let loanTermYears = $("#total_year").val();
-
-            if(!loanAmount){
-                toastr.error("{{ __('translate.Please fill out the form') }}")
-                return;
-            }
-
-            if(!interestRate){
-                toastr.error("{{ __('translate.Please fill out the form') }}")
-                return;
-            }
-
-            if(!loanTermYears){
-                toastr.error("{{ __('translate.Please fill out the form') }}")
-                return;
-            }
-
-            let finalPayment = calculateMonthlyPayment(loanAmount, interestRate, loanTermYears)
-            finalPayment = finalPayment.toFixed(2)
-            finalPayment = finalPayment.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-            let appendCurrency = '';
-
-            if(currencyPosition == 'before_price'){
-                appendCurrency = `${currencyIcon}${finalPayment}`
-            }else if(currencyPosition == 'before_price_with_space'){
-                appendCurrency = `${currencyIcon} ${finalPayment}`
-            }else if(currencyPosition == 'after_price'){
-                appendCurrency = `${finalPayment}${currencyIcon}`
-            }else if(currencyPosition == 'after_price_with_space'){
-                appendCurrency = `${finalPayment} ${currencyIcon}`
-            }
-
-            $("#monthly_payment").html(appendCurrency);
-        })
-
-        $("#loan_amount").on("keyup", function(e){
-            let enteredValue = e.target.value;
-            let numericValue = enteredValue.replace(/[^0-9.]/g, '');
-            $(this).val(numericValue);
-        })
-
-        $("#interest_rate").on("keyup", function(e){
-            let enteredValue = e.target.value;
-            let numericValue = enteredValue.replace(/[^0-9.]/g, '');
-            $(this).val(numericValue);
-        })
-
-        $("#total_year").on("keyup", function(e){
-            let enteredValue = e.target.value;
-            let numericValue = enteredValue.replace(/[^0-9.]/g, '');
-            $(this).val(numericValue);
-        })
-
-        $("#reset_btn").on("click", function(){
-            $("#loan_amount").val('');
-            $("#interest_rate").val('');
-            $("#total_year").val('');
-
-            let appendCurrency = '';
-
-            if(currencyPosition == 'before_price'){
-                appendCurrency = `${currencyIcon}0.00`
-            }else if(currencyPosition == 'before_price_with_space'){
-                appendCurrency = `${currencyIcon} 0.00`
-            }else if(currencyPosition == 'after_price'){
-                appendCurrency = `0.00${currencyIcon}`
-            }else if(currencyPosition == 'after_price_with_space'){
-                appendCurrency = `0.00 ${currencyIcon}`
-            }
-
-            $("#monthly_payment").html(appendCurrency);
-
-        })
-
-    </script>
-
 
 @endpush

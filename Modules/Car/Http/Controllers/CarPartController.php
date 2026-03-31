@@ -3,13 +3,17 @@
 namespace Modules\Car\Http\Controllers;
 
 use App\Models\CarPart;
+use App\Models\CarPartGallery;
 use App\Models\CarPartTranslation;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
 use Modules\Brand\Entities\Brand;
 use Modules\Car\Http\Requests\CarPartRequest;
+use Modules\City\Entities\City;
+use Modules\Country\Entities\Country;
 use Modules\Language\Entities\Language;
 
 class CarPartController extends Controller
@@ -27,10 +31,17 @@ class CarPartController extends Controller
     {
         $brands = Brand::with('translate')->where('status', 'enable')->get();
         $users = User::where('status', 'enable')->get();
+        $ireland = Country::whereRaw('LOWER(name) = ?', ['ireland'])->first();
+        $cities = collect();
+        if ($ireland) {
+            $cities = City::with('translate')->where('country_id', $ireland->id)->get();
+        }
 
         return view('car::car_parts.create', [
             'brands' => $brands,
             'users' => $users,
+            'ireland' => $ireland,
+            'cities' => $cities,
         ]);
     }
 
@@ -39,20 +50,36 @@ class CarPartController extends Controller
         $carPart = new CarPart();
         $carPart->agent_id = $request->agent_id;
         $carPart->brand_id = $request->brand_id;
-        $carPart->slug = $request->slug;
+        $carPart->city_id = $request->city_id;
+        $carPart->slug = $this->generateUniqueSlug($request->title, (int) $request->agent_id);
         $carPart->condition = $request->condition;
         $carPart->regular_price = $request->regular_price;
-        $carPart->offer_price = $request->offer_price;
+        $carPart->offer_price = null;
         $carPart->part_number = $request->part_number;
         $carPart->compatibility = $request->compatibility;
-
-        if ($request->thumb_image) {
-            $carPart->thumb_image = uploadFile($request->thumb_image, 'uploads/custom-images');
-        }
 
         $carPart->approved_by_admin = 'approved';
         $carPart->status = 'enable';
         $carPart->save();
+
+        $uploadedImages = $request->file('images', []);
+        foreach ($uploadedImages as $index => $image) {
+            if (!$image) {
+                continue;
+            }
+
+            $imagePath = uploadFile($image, 'uploads/custom-images');
+
+            if ($index === 0 && empty($carPart->thumb_image)) {
+                $carPart->thumb_image = $imagePath;
+                $carPart->save();
+            }
+
+            $gallery = new CarPartGallery();
+            $gallery->car_part_id = $carPart->id;
+            $gallery->image = $imagePath;
+            $gallery->save();
+        }
 
         $languages = Language::all();
         foreach ($languages as $language) {
@@ -61,8 +88,8 @@ class CarPartController extends Controller
             $t->lang_code = $language->lang_code;
             $t->title = $request->title;
             $t->description = $request->description;
-            $t->seo_title = $request->seo_title ? $request->seo_title : $request->title;
-            $t->seo_description = $request->seo_description ? $request->seo_description : $request->title;
+            $t->seo_title = $request->title;
+            $t->seo_description = $request->title;
             $t->save();
         }
 
@@ -74,10 +101,15 @@ class CarPartController extends Controller
 
     public function edit(Request $request, int $id)
     {
-        $carPart = CarPart::findOrFail($id);
+        $carPart = CarPart::with('galleries')->findOrFail($id);
 
         $brands = Brand::with('translate')->where('status', 'enable')->get();
         $users = User::where('status', 'enable')->get();
+        $ireland = Country::whereRaw('LOWER(name) = ?', ['ireland'])->first();
+        $cities = collect();
+        if ($ireland) {
+            $cities = City::with('translate')->where('country_id', $ireland->id)->get();
+        }
 
         $translation = CarPartTranslation::where('car_part_id', $carPart->id)->where('lang_code', $request->get('lang_code', admin_lang()))->first();
 
@@ -87,6 +119,8 @@ class CarPartController extends Controller
             'users' => $users,
             'translation' => $translation,
             'lang_code' => $request->get('lang_code', admin_lang()),
+            'ireland' => $ireland,
+            'cities' => $cities,
         ]);
     }
 
@@ -96,18 +130,34 @@ class CarPartController extends Controller
 
         $carPart->agent_id = $request->agent_id;
         $carPart->brand_id = $request->brand_id;
-        $carPart->slug = $request->slug;
+        $carPart->city_id = $request->city_id;
+        $carPart->slug = $this->generateUniqueSlug($request->title, (int) $request->agent_id, $carPart->id);
         $carPart->condition = $request->condition;
         $carPart->regular_price = $request->regular_price;
-        $carPart->offer_price = $request->offer_price;
+        $carPart->offer_price = null;
         $carPart->part_number = $request->part_number;
         $carPart->compatibility = $request->compatibility;
 
-        if ($request->thumb_image) {
-            $carPart->thumb_image = uploadFile($request->thumb_image, 'uploads/custom-images', $carPart->thumb_image);
-        }
-
         $carPart->save();
+
+        $uploadedImages = $request->file('images', []);
+        foreach ($uploadedImages as $index => $image) {
+            if (!$image) {
+                continue;
+            }
+
+            $imagePath = uploadFile($image, 'uploads/custom-images');
+
+            if ($index === 0 && empty($carPart->thumb_image)) {
+                $carPart->thumb_image = $imagePath;
+                $carPart->save();
+            }
+
+            $gallery = new CarPartGallery();
+            $gallery->car_part_id = $carPart->id;
+            $gallery->image = $imagePath;
+            $gallery->save();
+        }
 
         $translation = CarPartTranslation::firstOrNew([
             'car_part_id' => $carPart->id,
@@ -115,8 +165,8 @@ class CarPartController extends Controller
         ]);
         $translation->title = $request->title;
         $translation->description = $request->description;
-        $translation->seo_title = $request->seo_title ? $request->seo_title : $request->title;
-        $translation->seo_description = $request->seo_description ? $request->seo_description : $request->title;
+        $translation->seo_title = $request->title;
+        $translation->seo_description = $request->title;
         $translation->save();
 
         $notification = trans('translate.Updated Successfully');
@@ -134,5 +184,25 @@ class CarPartController extends Controller
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
 
         return redirect()->back()->with($notification);
+    }
+
+    private function generateUniqueSlug(string $title, int $userId, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($title);
+        if ($baseSlug === '') {
+            $baseSlug = 'car-part';
+        }
+
+        $slug = $baseSlug . '-' . $userId;
+        $counter = 1;
+
+        while (CarPart::when($ignoreId, function ($query) use ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
+        })->where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $userId . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 }

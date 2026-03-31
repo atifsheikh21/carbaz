@@ -22,7 +22,7 @@
         </div>
     </section>
 
-    <section class="brand-car brand-car-two py-120px">
+    <section class="brand-car brand-car-two py-120px forum-feed">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8">
@@ -37,80 +37,97 @@
                         }
                     @endphp
 
-                    <div class="brand-car-item p-4 shadow-sm rounded-3 mb-4">
-                        <div class="brand-car-inner">
-                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
-                                <div>
-                                    <div class="d-flex flex-wrap align-items-center gap-2">
-                                        <strong>{{ $request->user?->name }}</strong>
-                                        <span class="text-muted">{{ $request->created_at?->format('d M, Y') }}</span>
-                                    </div>
-                                    <div class="mt-2">
-                                        <span class="badge {{ $statusClass }}">{{ $status }}</span>
-                                    </div>
-                                </div>
+                    <div class="forum-thread__topbar mb-3">
+                        <a href="{{ route('car-part-requests.index') }}" class="forum-thread__back">&larr; {{ __('translate.Go Back') }}</a>
+                        <a href="{{ route('car-part-requests.create') }}" class="thm-btn-two">{{ __('translate.New Post') }}</a>
+                    </div>
 
-                                <a href="{{ route('car-part-requests.index') }}" class="thm-btn-two">{{ __('translate.Back') }}</a>
+                    <div class="brand-car-item p-4 shadow-sm rounded-3 mb-4 forum-card forum-thread">
+                        <div class="forum-thread__row">
+                            <div class="forum-thread__side">
+                                <div class="forum-thread__avatar">
+                                    <img src="{{ getImageOrPlaceholder($request->user?->image, '96x96') }}" alt="User" />
+                                </div>
+                                <div class="forum-thread__user">
+                                    <div class="forum-thread__username">{{ $request->user?->name }}</div>
+                                    <div class="forum-thread__meta">{{ __('translate.Category') }}: {{ __('translate.Car Part Requests') }}</div>
+                                </div>
+                                <span class="badge {{ $statusClass }} forum-thread__status">{{ $status }}</span>
                             </div>
 
-                            <h3 class="mb-2">{{ __('translate.Part Description') }}</h3>
-                            <p class="text-muted mb-4">{{ $request->part_description }}</p>
+                            <div class="forum-thread__content">
+                                <div class="forum-thread__content-top">
+                                    <a class="forum-thread__title" href="{{ route('car-part-requests.show', $request->id) }}">{{ $request->title }}</a>
+                                    <div class="forum-thread__time">{{ $request->created_at?->format('l, d F Y h:i A') }}</div>
+                                </div>
 
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-4">
-                                    <div class="p-3 border rounded-3 h-100">
-                                        <div class="text-muted">{{ __('translate.Car Make') }}</div>
-                                        <div class="fw-semibold">{{ $request->car_make ?? '-' }}</div>
+                                <div class="forum-thread__text">{{ $request->part_description }}</div>
+
+                                @if (!empty($request->image))
+                                    <div class="forum-thread__media">
+                                        <img src="{{ getImageOrPlaceholder($request->image, '900x700') }}" alt="Request image" />
                                     </div>
+                                @endif
+
+                                <div class="forum-thread__tags">
+                                    @if (!empty($request->car_make))
+                                        <span class="forum-thread__tag">{{ $request->car_make }}</span>
+                                    @endif
+                                    @if (!empty($request->car_model))
+                                        <span class="forum-thread__tag">{{ $request->car_model }}</span>
+                                    @endif
+                                    @if (!empty($request->car_year))
+                                        <span class="forum-thread__tag">{{ $request->car_year }}</span>
+                                    @endif
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="p-3 border rounded-3 h-100">
-                                        <div class="text-muted">{{ __('translate.Car Model') }}</div>
-                                        <div class="fw-semibold">{{ $request->car_model ?? '-' }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="p-3 border rounded-3 h-100">
-                                        <div class="text-muted">{{ __('translate.Car Year') }}</div>
-                                        <div class="fw-semibold">{{ $request->car_year ?? '-' }}</div>
-                                    </div>
+
+                                @if ($request->additional_notes)
+                                    <div class="forum-thread__notes">{{ $request->additional_notes }}</div>
+                                @endif
+
+                                <div class="forum-thread__actions">
+                                    <a href="#replies" class="forum-thread__action">{{ __('translate.View') }}</a>
+                                    <a href="#reply-form" class="forum-thread__action">{{ __('translate.Reply') }}</a>
                                 </div>
                             </div>
-
-                            @if ($request->additional_notes)
-                                <h3 class="mb-2">{{ __('translate.Additional Notes') }}</h3>
-                                <p class="text-muted mb-0">{{ $request->additional_notes }}</p>
-                            @endif
                         </div>
                     </div>
 
-                    <div class="brand-car-item p-4 shadow-sm rounded-3 mb-4">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                            <h3 class="mb-0">{{ __('translate.Replies') }}</h3>
-                            <span class="text-muted">{{ $request->replies->count() }}</span>
-                        </div>
+                    <div id="replies" class="brand-car-item p-4 shadow-sm rounded-3 mb-4 forum-card forum-thread">
+                        <div class="forum-thread__count">{{ __('translate.Replies') }}: {{ $request->replies->count() }}</div>
 
                         @forelse ($request->replies as $reply)
-                            <div class="p-3 border rounded-3 mb-3">
-                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-                                    <strong>{{ $reply->user?->name }}</strong>
-                                    <span class="text-muted">{{ $reply->created_at?->format('d M, Y') }}</span>
+                            <div class="forum-thread__row forum-thread__row--reply">
+                                <div class="forum-thread__side">
+                                    <div class="forum-thread__avatar">
+                                        <img src="{{ getImageOrPlaceholder($reply->user?->image, '96x96') }}" alt="User" />
+                                    </div>
+                                    <div class="forum-thread__user">
+                                        <div class="forum-thread__username">{{ $reply->user?->name }}</div>
+                                    </div>
                                 </div>
 
-                                <p class="mb-0 text-muted mt-2">{{ $reply->message }}</p>
-
-                                @if (!is_null($reply->offer_price))
-                                    <div class="mt-2">
-                                        <span class="badge bg-primary">{{ __('translate.Offer Price') }}: {{ currency($reply->offer_price) }}</span>
+                                <div class="forum-thread__content">
+                                    <div class="forum-thread__content-top">
+                                        <div class="forum-thread__title">{{ __('translate.Reply') }}</div>
+                                        <div class="forum-thread__time">{{ $reply->created_at?->format('l, d F Y h:i A') }}</div>
                                     </div>
-                                @endif
+
+                                    <div class="forum-thread__text">{{ $reply->message }}</div>
+
+                                    @if (!is_null($reply->offer_price))
+                                        <div class="forum-thread__tags">
+                                            <span class="forum-thread__tag">{{ __('translate.Offer Price') }}: {{ currency($reply->offer_price) }}</span>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         @empty
-                            <p class="mb-0">{{ __('translate.No replies yet') }}</p>
+                            <div class="forum-thread__empty">{{ __('translate.No replies yet') }}</div>
                         @endforelse
                     </div>
 
-                    <div class="brand-car-item p-4 shadow-sm rounded-3">
+                    <div id="reply-form" class="brand-car-item p-4 shadow-sm rounded-3 forum-card">
                         <h3 class="mb-3">{{ __('translate.Reply') }}</h3>
                         <form method="POST" action="{{ route('car-part-requests.reply', $request->id) }}">
                             @csrf

@@ -3,7 +3,7 @@
 use Modules\Car\Http\Controllers\CarController;
 use Modules\Car\Http\Controllers\CarPartController;
 use Modules\Car\Http\Controllers\Frontend\CarController as FrontendCarController;
-use Modules\Car\Http\Controllers\Frontend\CarPartController as FrontendCarPartController;
+use Modules\Car\Http\Controllers\Frontend\FrontendCarPartController;
 
 
 Route::group(['middleware' => ['XSS','DEMO']], function () {

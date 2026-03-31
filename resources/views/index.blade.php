@@ -549,12 +549,15 @@
                                                                 </a>
                                                             @else
                                                                 @php
-                                                                    $isInWishlist = App\Models\Wishlist::where(
-                                                                        'car_id',
-                                                                        $car->id,
-                                                                    )
-                                                                        ->where('user_id', Auth::user()->id)
-                                                                        ->first();
+                                                                    $isInWishlist = false;
+                                                                    if (\Illuminate\Support\Facades\Schema::hasTable('wishlists')) {
+                                                                        $isInWishlist = App\Models\Wishlist::where(
+                                                                            'car_id',
+                                                                            $car->id,
+                                                                        )
+                                                                            ->where('user_id', Auth::user()->id)
+                                                                            ->first();
+                                                                    }
                                                                 @endphp
                                                                 <a href="{{ route('user.add-to-wishlist', $car->id) }}"
                                                                     class="icon {{ $isInWishlist ? 'active' : '' }}">
@@ -913,8 +916,12 @@
                                                 </p>
                                             </div>
 
+                                            @php
+                                                $partTranslation = $part?->translations?->firstWhere('lang_code', front_lang())
+                                                    ?? $part?->translations?->firstWhere('lang_code', 'en');
+                                            @endphp
                                             <a href="{{ route('car-part', $part->slug) }}">
-                                                <h3>{{ html_decode($part?->frontTranslate?->title) }}</h3>
+                                                <h3>{{ html_decode($partTranslation?->title) }}</h3>
                                             </a>
                                         </div>
                                     </div>

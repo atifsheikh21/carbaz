@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Modules\Subscription\Entities\SubscriptionPlan;
 use Modules\Subscription\Entities\SubscriptionHistory;
 use App\Models\Wishlist;
@@ -11,6 +12,9 @@ use App\Models\Review;
 use App\Rules\Captcha;
 use Hash, Image, File, Str;
 use Modules\Car\Entities\Car;
+use Modules\City\Entities\City;
+use Modules\Country\Entities\Country;
+use App\Models\CarPart;
 
 class ProfileController extends Controller
 {
@@ -28,19 +32,26 @@ class ProfileController extends Controller
 
         $total_car = Car::where('agent_id', $user->id)->count();
 
+        $total_car_part = CarPart::where('agent_id', $user->id)->count();
+
         $total_featured_car = Car::where('agent_id', $user->id)->where('is_featured', 'enable')->count();
 
         $total_wishlist = Wishlist::where('user_id', $user->id)->count();
 
-        return view('profile.dashboard', ['user' => $user, 'cars' => $cars, 'total_car' => $total_car, 'total_featured_car' => $total_featured_car, 'total_wishlist' => $total_wishlist]);
+        return view('profile.dashboard', ['user' => $user, 'cars' => $cars, 'total_car' => $total_car, 'total_car_part' => $total_car_part, 'total_featured_car' => $total_featured_car, 'total_wishlist' => $total_wishlist]);
     }
 
     public function edit(Request $request)
     {
         $user = Auth::guard('web')->user();
 
+        $ireland = Country::where('code', 'IE')->orWhere('name', 'Ireland')->first();
+        $cities = City::where('country_id', $ireland?->id ?? 0)->get();
+
         return view('profile.edit', [
             'user' => $user,
+            'ireland' => $ireland,
+            'cities' => $cities,
         ]);
     }
 
@@ -50,34 +61,62 @@ class ProfileController extends Controller
             'name'=>'required',
             'email'=>'required',
             'phone'=>'required',
-            'address'=>'required|max:220',
+            'vehicle_company_name' => 'nullable|string|max:255',
+            'vehicle_company_address' => 'nullable|string|max:220',
+            'part_company_name' => 'nullable|string|max:255',
+            'part_company_address' => 'nullable|string|max:220',
         ];
         $customMessages = [
             'name.required' => trans('translate.Name is required'),
             'email.required' => trans('translate.Email is required'),
             'phone.required' => trans('translate.Phone is required'),
-            'address.required' => trans('translate.Address is required')
         ];
         $this->validate($request, $rules,$customMessages);
 
         $user = Auth::guard('web')->user();
         $user->name = $request->name;
         $user->phone = $request->phone;
-        $user->address = $request->address;
-        $user->designation = $request->designation;
-        $user->google_map = $request->google_map;
+
         $user->about_me = $request->about_me;
-        $user->instagram = $request->instagram;
-        $user->facebook = $request->facebook;
-        $user->linkedin = $request->linkedin;
-        $user->twitter = $request->twitter;
-        $user->sunday = $request->sunday;
-        $user->monday = $request->monday;
-        $user->tuesday = $request->tuesday;
-        $user->wednesday = $request->wednesday;
-        $user->thursday = $request->thursday;
-        $user->friday = $request->friday;
-        $user->saturday = $request->saturday;
+        $user->vehicle_company_name = $request->vehicle_company_name;
+        $user->vehicle_company_address = $request->vehicle_company_address;
+        $user->part_company_name = $request->part_company_name;
+        $user->part_company_address = $request->part_company_address;
+
+        if ($request->has('instagram')) {
+            $user->instagram = $request->instagram;
+        }
+        if ($request->has('facebook')) {
+            $user->facebook = $request->facebook;
+        }
+        if ($request->has('linkedin')) {
+            $user->linkedin = $request->linkedin;
+        }
+        if ($request->has('twitter')) {
+            $user->twitter = $request->twitter;
+        }
+
+        if ($request->has('sunday')) {
+            $user->sunday = $request->sunday;
+        }
+        if ($request->has('monday')) {
+            $user->monday = $request->monday;
+        }
+        if ($request->has('tuesday')) {
+            $user->tuesday = $request->tuesday;
+        }
+        if ($request->has('wednesday')) {
+            $user->wednesday = $request->wednesday;
+        }
+        if ($request->has('thursday')) {
+            $user->thursday = $request->thursday;
+        }
+        if ($request->has('friday')) {
+            $user->friday = $request->friday;
+        }
+        if ($request->has('saturday')) {
+            $user->saturday = $request->saturday;
+        }
         $user->save();
 
         $notification= trans('translate.Your profile updated successfully');
@@ -144,6 +183,13 @@ class ProfileController extends Controller
 
 
     public function pricing_plan(){
+
+        $user = Auth::guard('web')->user();
+        if($user && !$user->is_dealer){
+            $notification = trans('translate.You are not allowed to access this page');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('user.dashboard')->with($notification);
+        }
 
         $subscription_plans = SubscriptionPlan::orderBy('serial', 'asc')->where('status', 'active')->get();
 

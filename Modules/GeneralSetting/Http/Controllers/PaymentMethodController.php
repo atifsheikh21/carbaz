@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Models\PaypalPayment;
 use App\Models\StripePayment;
+use App\Models\WorldpayPayment;
 use App\Models\RazorpayPayment;
 use App\Models\Flutterwave;
 use App\Models\BankPayment;
@@ -28,6 +29,9 @@ class PaymentMethodController extends Controller
     public function index(){
         $paypal = PaypalPayment::first();
         $stripe = StripePayment::first();
+        $worldpay = WorldpayPayment::firstOrCreate([], [
+            'status' => 0,
+        ]);
         $razorpay = RazorpayPayment::first();
         $flutterwave = Flutterwave::first();
         $bank = BankPayment::first();
@@ -36,8 +40,22 @@ class PaymentMethodController extends Controller
         $instamojo = InstamojoPayment::first();
 
         $currency_list = MultiCurrency::get();
+        $worldpay_currency_list = MultiCurrency::whereIn('currency_code', ['EUR', 'GBP'])
+            ->orderByRaw("CASE WHEN currency_code = 'EUR' THEN 0 WHEN currency_code = 'GBP' THEN 1 ELSE 2 END")
+            ->get();
+        if ($worldpay_currency_list->isEmpty()) {
+            $worldpay_currency_list = $currency_list;
+        }
 
-        return view('generalsetting::gateway.payment_method', compact('paypal','stripe','razorpay','bank','paystack','flutterwave','instamojo','currency_list', 'mollie'));
+        $worldpay_default_currency = $worldpay_currency_list->firstWhere('currency_code', 'EUR')
+            ?? $worldpay_currency_list->firstWhere('currency_code', 'GBP')
+            ?? $worldpay_currency_list->first();
+
+        if (!$worldpay->currency_id && $worldpay_default_currency) {
+            $worldpay->currency_id = $worldpay_default_currency->id;
+        }
+
+        return view('generalsetting::gateway.payment_method', compact('paypal','stripe','worldpay','razorpay','bank','paystack','flutterwave','instamojo','currency_list', 'mollie', 'worldpay_currency_list', 'worldpay_default_currency'));
     }
 
     public function updateStripe(Request $request){
@@ -68,6 +86,41 @@ class PaymentMethodController extends Controller
             $stripe->save();
         }
 
+
+        $notification=trans('translate.Updated Successfully');
+        $notification=array('messege'=>$notification,'alert-type'=>'success');
+        return redirect()->back()->with($notification);
+    }
+
+    public function updateWorldpay(Request $request){
+
+        $rules = [
+            'service_key' => $request->status ? 'required' : '',
+            'client_key' => $request->status ? 'required' : '',
+            'currency_id' => $request->status ? 'required' : '',
+        ];
+        $customMessages = [
+            'service_key.required' => 'Worldpay service key is required',
+            'client_key.required' => 'Worldpay client key is required',
+            'currency_id.required' => trans('translate.Currency name is required'),
+        ];
+
+        $request->validate($rules,$customMessages);
+
+        $worldpay = WorldpayPayment::firstOrCreate([], [
+            'status' => 0,
+        ]);
+        $worldpay->service_key = $request->service_key;
+        $worldpay->client_key = $request->client_key;
+        $worldpay->currency_id = $request->currency_id;
+        $worldpay->status = $request->status ? 1 : 0;
+        $worldpay->save();
+
+        if($request->file('image')) {
+            $image_path = uploadFile($request->file('image'), 'uploads/website-images', $worldpay->image);
+            $worldpay->image = $image_path;
+            $worldpay->save();
+        }
 
         $notification=trans('translate.Updated Successfully');
         $notification=array('messege'=>$notification,'alert-type'=>'success');

@@ -146,6 +146,19 @@
                                                                                     </div>
 
                                                                                     <div class="col-12">
+                                                                                        <div class="crancy__item-form--group mg-top-form-20">
+                                                                                            <label class="crancy__item-label">{{ __('Fee Free Mode') }} </label>
+                                                                                            <div class="crancy-ptabs__notify-switch  crancy-ptabs__notify-switch--two">
+                                                                                                <label class="crancy__item-switch">
+                                                                                                <input name="fee_free_mode" {{ $general_setting->fee_free_mode == 'enable' ? 'checked' : '' }} type="checkbox" >
+                                                                                                <span class="crancy__item-switch--slide crancy__item-switch--round"></span>
+                                                                                                </label>
+                                                                                            </div>
+                                                                                            <small>{{ __('Enable this to allow free trial / free posting for dealers and private users. Disable it to require payment for all.') }}</small>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-12">
                                                                                         <div class="crancy__item-form--group  mg-top-form-20">
                                                                                             <label class="crancy__item-label">{{__('Timezone')}}</label>
                                                                                             <select class="form-select crancy__item-input" name="timezone">

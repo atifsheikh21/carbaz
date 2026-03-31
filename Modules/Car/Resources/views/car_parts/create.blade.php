@@ -43,13 +43,6 @@
 
                                     <div class="col-md-6 mg-top-form-20">
                                         <div class="crancy__item-form--group">
-                                            <label class="crancy__item-label">{{ __('translate.Slug') }} *</label>
-                                            <input class="crancy__item-input" type="text" name="slug" value="{{ old('slug') }}" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 mg-top-form-20">
-                                        <div class="crancy__item-form--group">
                                             <label class="crancy__item-label">{{ __('translate.Brand') }}</label>
                                             <select class="form-select crancy__item-input" name="brand_id">
                                                 <option value="">{{ __('translate.Select Brand') }}</option>
@@ -72,15 +65,27 @@
 
                                     <div class="col-md-6 mg-top-form-20">
                                         <div class="crancy__item-form--group">
-                                            <label class="crancy__item-label">{{ __('translate.Regular Price') }} *</label>
-                                            <input class="crancy__item-input" type="text" name="regular_price" value="{{ old('regular_price') }}" required>
+                                            <label class="crancy__item-label">{{ __('translate.Country') }} *</label>
+                                            <input class="crancy__item-input" type="text" value="Ireland" readonly>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6 mg-top-form-20">
                                         <div class="crancy__item-form--group">
-                                            <label class="crancy__item-label">{{ __('translate.Offer Price') }}</label>
-                                            <input class="crancy__item-input" type="text" name="offer_price" value="{{ old('offer_price') }}">
+                                            <label class="crancy__item-label">{{ __('translate.City') }} *</label>
+                                            <select class="form-select crancy__item-input" name="city_id" required>
+                                                <option value="">{{ __('translate.Select City') }}</option>
+                                                @foreach($cities as $city)
+                                                    <option value="{{ $city->id }}">{{ $city->translate?->name ?? $city->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mg-top-form-20">
+                                        <div class="crancy__item-form--group">
+                                            <label class="crancy__item-label">{{ __('translate.Price') }} *</label>
+                                            <input class="crancy__item-input" type="text" name="regular_price" value="{{ old('regular_price') }}" required>
                                         </div>
                                     </div>
 
@@ -102,6 +107,13 @@
                                         <div class="crancy__item-form--group">
                                             <label class="crancy__item-label">{{ __('translate.Description') }} *</label>
                                             <textarea class="crancy__item-input" name="description" rows="6" required>{{ old('description') }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mg-top-form-20">
+                                        <div class="crancy__item-form--group">
+                                            <label class="crancy__item-label">{{ __('translate.Images') }} *</label>
+                                            <input class="crancy__item-input" type="file" name="images[]" multiple accept="image/*" required>
                                         </div>
                                     </div>
 

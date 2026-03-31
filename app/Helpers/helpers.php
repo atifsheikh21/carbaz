@@ -161,6 +161,10 @@ function generateLang($path = ''){
 if (!function_exists('getImageOrPlaceholder')) {
     function getImageOrPlaceholder(?string $imagePath, string $size = '800x600'): string
     {
+        if ($imagePath && env('FILESYSTEM_DISK') == 's3') {
+            return Storage::disk('s3')->url($imagePath);
+        }
+
         if ($imagePath && file_exists(public_path($imagePath))) {
             return asset($imagePath);
         }
@@ -186,6 +190,14 @@ function uploadFile($file, $directory, $old_file = null){
     }else{
         // Local storage
         $destinationPath = public_path($directory);
+        if (!is_dir($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        if (!is_dir($destinationPath) || !is_writable($destinationPath)) {
+            throw new RuntimeException('Upload directory is not writable: ' . $destinationPath);
+        }
+
         $file->move($destinationPath, $file_name);
         // Update the file path to match the local storage path
         $file_path = $directory . '/' . $file_name;

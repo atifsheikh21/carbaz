@@ -15,6 +15,6 @@ use Modules\ContactMessage\Http\Controllers\API\ContactMessageController;
 */
 
 
-Route::group(['middleware' => ['XSS','HtmlSpecialchars','DEMO']], function () {
+Route::group(['middleware' => ['XSS','HtmlSpecialchars','DEMO'], 'as' => 'api.'], function () {
     Route::post('store-contact-message', [ContactMessageController::class, 'store_contact_message'])->name('store-contact-message');
 });

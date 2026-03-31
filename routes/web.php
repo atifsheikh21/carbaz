@@ -45,9 +45,9 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
 
         Route::controller(HomeController::class)->group(function () {
 
-            Route::get('/', 'landing')->name('landing');
-            Route::get('/landing', 'landing')->name('landing.page');
-            Route::get('/home', 'index')->name('home');
+            Route::get('/', 'landing')->name('home');
+            Route::get('/landing', 'landing')->name('landing');
+            Route::get('/old-home', 'index')->name('old-home');
             Route::get('/about-us', 'about_us')->name('about-us');
             Route::get('/contact-us', 'contact_us')->name('contact-us');
             Route::get('/terms-conditions', 'terms_conditions')->name('terms-conditions');
@@ -104,6 +104,7 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
         // });
 
         Route::controller(PaymentController::class)->group(function () {
+            Route::post('/pay-via-worldpay/{id}', 'pay_via_worldpay')->name('pay-via-worldpay');
             Route::post('/pay-via-stripe/{id}', 'pay_via_stripe')->name('pay-via-stripe');
             Route::post('/pay-via-bank/{id}', 'pay_via_bank')->name('pay-via-bank');
             Route::post('/pay-via-razorpay/{id}', 'pay_via_razorpay')->name('pay-via-razorpay');
@@ -113,6 +114,9 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
             Route::get('/mollie-payment-success', 'mollie_payment_success')->name('mollie-payment-success');
             Route::get('/pay-via-instamojo/{id}', 'pay_via_instamojo')->name('pay-via-instamojo');
             Route::get('/response-instamojo', 'instamojo_response')->name('response-instamojo');
+            Route::post('/pay-individual-ad-via-worldpay', 'pay_individual_ad_via_worldpay')->name('pay-individual-ad-via-worldpay');
+            Route::post('/pay-individual-ad-via-stripe', 'pay_individual_ad_via_stripe')->name('pay-individual-ad-via-stripe');
+            Route::post('/activate-dealer-free-trial', 'activate_dealer_free_trial')->name('activate-dealer-free-trial');
         });
 
         Route::get('/pay-via-paypal/{id}', [PaypalController::class, 'pay_via_paypal'])->name('pay-via-paypal');

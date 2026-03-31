@@ -40,7 +40,13 @@
 
                     <!-- Dashboard  -->
                     <div class="row gy-5">
-                        <div class=" col-lg-4 col-md-6">
+                        @php
+                            $__u = Auth::guard('web')->user();
+                            $__isDealer = (bool) optional($__u)->is_dealer;
+                            $__canSellVehicle = !$__isDealer || (bool) optional($__u)->is_vehicle_seller;
+                            $__canSellPart = !$__isDealer || (bool) optional($__u)->is_part_seller;
+                        @endphp
+                        <div class=" col-lg-3 col-md-6">
                             <div class="dashboard-item">
                                 <div class="dashboard-inner">
                                     <div class="dashboard-inner-text">
@@ -50,7 +56,11 @@
                                         <a class="d-none" href="#">{{ __('translate.View All') }}</a>
                                         @else
                                         <h3 class="counter">{{ $total_car }}</h3>
-                                        <a href="{{ route('user.car.index') }}">{{ __('translate.View All') }}</a>
+                                        @if($__canSellVehicle)
+                                            <a href="{{ route('user.car.index') }}">{{ __('translate.View All') }}</a>
+                                        @else
+                                            <a class="d-none" href="#">{{ __('translate.View All') }}</a>
+                                        @endif
                                         @endif
                                     </div>
 
@@ -100,7 +110,43 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="  col-lg-4 col-md-6">
+
+                        <div class=" col-lg-3 col-md-6">
+                            <div class="dashboard-item" style="background-color:#e7fffd">
+                                <div class="dashboard-inner">
+                                    <div class="dashboard-inner-text">
+                                        <h5>{{ __('Total Car Parts') }}</h5>
+                                        @if ($setting && $setting->add_listing == 'disable') 
+                                        <h3 class="counter">{{0}}</h3>
+                                        <a class="d-none" href="#">{{ __('translate.View All') }}</a>
+                                        @else
+                                        <h3 class="counter">{{ $total_car_part }}</h3>
+                                        @if($__canSellPart)
+                                            <a href="{{ route('user.car-part.index') }}">{{ __('translate.View All') }}</a>
+                                        @else
+                                            <a class="d-none" href="#">{{ __('translate.View All') }}</a>
+                                        @endif
+                                        @endif
+                                    </div>
+
+                                    <div class="dashboard-inner-img-main">
+                                        <div class="dashboard-inner-img">
+                                            <span>
+                                                <svg width="61" height="36" viewBox="0 0 61 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M54.4837 9.72929L53.5107 7.78346L54.4837 6.81055H58.3753L59.3482 8.75443L58.3753 9.72929H54.4837Z" fill="#F5B953"/>
+                                                    <path d="M5.83784 9.72929L6.81076 7.78346L5.83784 6.81055H1.94618L0.973267 8.75443L1.94618 9.72929H5.83784Z" fill="#F5B953"/>
+                                                    <path d="M42.8086 31.828L45.7273 33.0792L55.4565 32.1063V29.1876L52.5377 25.2959V25.4457L40.8618 27.2408L19.4586 27.2417L7.78361 25.4457L7.78264 25.2949L4.86487 29.1876V32.1063L14.594 33.0792L17.5128 31.828L18.4857 31.1324L19.4586 33.0782H40.8627L41.8356 31.1324L42.8086 31.828Z" fill="#243242"/>
+                                                    <path d="M52.5378 11.6767L50.7661 8.13235C50.0102 6.62141 48.9361 5.29241 47.6168 4.23679L47.6158 4.23582C45.7537 2.74531 43.479 1.86191 41.0992 1.70332L30.1607 0.974609L19.2223 1.7043C16.8425 1.86288 14.5678 2.74629 12.7057 4.23679L12.7047 4.23777C11.3854 5.29338 10.3113 6.62238 9.55537 8.13332L7.78369 11.6767" fill="#C7E2FC"/>
+                                                    <path d="M7.78369 11.6738H52.5378V23.3488H7.78369V11.6738Z" fill="#F5B953"/>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="  col-lg-3 col-md-6">
                             <div class="dashboard-item two">
                                 <div class="dashboard-inner">
                                     <div class="dashboard-inner-text">
@@ -110,7 +156,11 @@
                                         <a class="d-none" href="#">{{ __('translate.View All') }}</a>
                                         @else
                                         <h3 class="counter">{{ $total_featured_car }}</h3>
-                                        <a href="{{ route('user.car.index') }}">{{ __('translate.View All') }}</a>
+                                        @if($__canSellVehicle)
+                                            <a href="{{ route('user.car.index') }}">{{ __('translate.View All') }}</a>
+                                        @else
+                                            <a class="d-none" href="#">{{ __('translate.View All') }}</a>
+                                        @endif
                                         @endif
                                     </div>
 
@@ -159,7 +209,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class=" col-lg-4 col-md-6">
+                        <div class=" col-lg-3 col-md-6">
                             <div class="dashboard-item three">
                                 <div class="dashboard-inner">
                                     <div class="dashboard-inner-text">

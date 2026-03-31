@@ -1,12 +1,360 @@
 @extends('layout')
 @section('title')
-    <title>{{ $seo_setting ? $seo_setting->seo_title : 'Car Listing' }}</title>
-    <meta name="title" content="{{ $seo_setting ? $seo_setting->seo_title : 'Car Listing' }}">
+    <title>{{ $seo_setting ? $seo_setting->seo_title : 'Car Ad' }}</title>
+    <meta name="title" content="{{ $seo_setting ? $seo_setting->seo_title : 'Car Ad' }}">
     <meta name="description" content="{!! $seo_setting ? strip_tags(clean($seo_setting->seo_description)) : 'Browse cars for sale' !!}">
 @endsection
 
 @section('body-content')
 <main>
+    @php
+        $__carBrandModelsJson = json_encode($carBrandModels ?? [], JSON_UNESCAPED_UNICODE);
+    @endphp
+    <div class="lp-mobile d-block d-md-none">
+        <div class="lp-mobile__filter">
+            <button class="lp-mobile__filter-label" type="button" data-bs-toggle="offcanvas" data-bs-target="#lpMobileFilter" aria-controls="lpMobileFilter">Filter</button>
+            <form class="lp-mobile__filter-form" method="GET" action="{{ route('listings') }}">
+                <input class="lp-mobile__filter-input" type="text" name="search" value="{{ request()->get('search') }}" placeholder="search car & part by key word">
+            </form>
+        </div>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="lpMobileFilter" aria-labelledby="lpMobileFilterLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="lpMobileFilterLabel">Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form method="GET" action="{{ route('listings') }}">
+                    <input type="hidden" name="search" value="{{ request()->get('search') }}">
+
+                    <div class="mb-3">
+                        <label class="form-label">City</label>
+                        <select class="form-select" name="location">
+                            <option value="">{{ __('translate.Select City') }}</option>
+                            @foreach ($cities as $city)
+                                <option {{ request()->get('location') == $city->id ? 'selected' : '' }} value="{{ $city->id }}">{{ $city->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Dealer or Private</label>
+                        <select class="form-select" name="seller_type">
+                            <option value="">Select seller type</option>
+                            <option value="dealer" {{ request()->get('seller_type') === 'dealer' ? 'selected' : '' }}>Dealer</option>
+                            <option value="private" {{ request()->get('seller_type') === 'private' ? 'selected' : '' }}>Private</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Brand</label>
+                        <select class="form-select" name="brand_id" data-model-source="car" data-model-target="#listing_mobile_model">
+                            <option value="">{{ __('translate.Select Brand') }}</option>
+                            @foreach ($brands as $brandSlug => $brandLabel)
+                                <option {{ request()->get('brand_id') === $brandSlug ? 'selected' : '' }} value="{{ $brandSlug }}">{{ $brandLabel }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Model</label>
+                        <select class="form-select" name="model" id="listing_mobile_model" data-placeholder="Select brand model" data-selected="{{ request()->get('model') }}" {{ request()->get('brand_id') ? '' : 'disabled' }}>
+                            <option value="">Select brand model</option>
+                            @foreach (($selectedCarModels ?? []) as $modelOption)
+                                <option value="{{ $modelOption }}" {{ request()->get('model') === $modelOption ? 'selected' : '' }}>{{ $modelOption }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Engine Size</label>
+                        <select class="form-select" name="engine_size">
+                            <option value="">Select engine size</option>
+                            @foreach (($engineSizes ?? collect()) as $engineSize)
+                                <option value="{{ $engineSize }}" {{ request()->get('engine_size') == $engineSize ? 'selected' : '' }}>{{ $engineSize }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Transmission</label>
+                        <select class="form-select" name="transmission">
+                            <option value="">Manual or Automatic</option>
+                            <option value="Manual" {{ request()->get('transmission') === 'Manual' ? 'selected' : '' }}>Manual</option>
+                            <option value="Automatic" {{ request()->get('transmission') === 'Automatic' ? 'selected' : '' }}>Automatic</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Fuel Type</label>
+                        <select class="form-select" name="fuel_type">
+                            <option value="">Select fuel type</option>
+                            <option value="Diesel" {{ request()->get('fuel_type') === 'Diesel' ? 'selected' : '' }}>Diesel</option>
+                            <option value="Petrol" {{ request()->get('fuel_type') === 'Petrol' ? 'selected' : '' }}>Petrol</option>
+                            <option value="Electric" {{ request()->get('fuel_type') === 'Electric' ? 'selected' : '' }}>Electric</option>
+                            <option value="Petrol Hybrid" {{ request()->get('fuel_type') === 'Petrol Hybrid' ? 'selected' : '' }}>Petrol Hybrid</option>
+                        </select>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label">Min Year</label>
+                            <select class="form-select" name="min_year">
+                                <option value="">Minimum year</option>
+                                @for ($year = 1980; $year <= 2026; $year++)
+                                    <option value="{{ $year }}" {{ (string) request()->get('min_year') === (string) $year ? 'selected' : '' }}>{{ $year }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Max Year</label>
+                            <select class="form-select" name="max_year">
+                                <option value="">Maximum year</option>
+                                @for ($year = 1980; $year <= 2026; $year++)
+                                    <option value="{{ $year }}" {{ (string) request()->get('max_year') === (string) $year ? 'selected' : '' }}>{{ $year }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mt-1">
+                        <div class="col-6">
+                            <label class="form-label">Min Mileage</label>
+                            <input class="form-control" type="number" name="min_mileage" value="{{ request()->get('min_mileage') }}" placeholder="Min mileage">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Max Mileage</label>
+                            <input class="form-control" type="number" name="max_mileage" value="{{ request()->get('max_mileage') }}" placeholder="Max mileage">
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mt-1">
+                        <div class="col-6">
+                            <label class="form-label">Min Price</label>
+                            <select class="form-select" name="min_price">
+                                <option value="">Minimum price</option>
+                                @foreach ([500,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,12000,14000,16000,18000,20000,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,80000,85000,90000,95000,100000,125000,150000,175000,200000,250000,300000,350000,400000,450000,500000] as $priceOption)
+                                    <option value="{{ $priceOption }}" {{ (string) request()->get('min_price') === (string) $priceOption ? 'selected' : '' }}>{{ number_format($priceOption) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Max Price</label>
+                            <select class="form-select" name="max_price">
+                                <option value="">Maximum price</option>
+                                @foreach ([500,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,12000,14000,16000,18000,20000,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,80000,85000,90000,95000,100000,125000,150000,175000,200000,250000,300000,350000,400000,450000,500000] as $priceOption)
+                                    <option value="{{ $priceOption }}" {{ (string) request()->get('max_price') === (string) $priceOption ? 'selected' : '' }}>{{ number_format($priceOption) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-dark">Apply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="lp-mobile__tabs">
+            <a class="lp-mobile__tab" href="{{ url()->previous() }}">back</a>
+            <a class="lp-mobile__tab lp-mobile__tab--active" href="{{ route('listings', request()->query()) }}">car ad</a>
+            <a class="lp-mobile__tab" href="{{ route('car-parts', request()->query()) }}">part ad</a>
+            <a class="lp-mobile__tab lp-mobile__tab--right" href="{{ route('home') }}">HOME</a>
+        </div>
+
+        <div class="lp-mobile__list">
+            @php
+                $cityNameMap = [];
+                try {
+                    $cityIds = $cars->pluck('city_id')->filter()->unique()->values();
+                    if ($cityIds->count() > 0) {
+                        $cityNameMap = Modules\City\Entities\City::whereIn('id', $cityIds)->pluck('name', 'id')->toArray();
+                    }
+                } catch (\Throwable $e) {
+                    $cityNameMap = [];
+                }
+            @endphp
+            @forelse($cars as $car)
+                @php
+                    $dealer = $car?->dealer;
+                    $dealerFlagRaw = $car?->dealer?->is_dealer ?? null;
+                    $dealerFlagNorm = strtolower(trim((string) $dealerFlagRaw));
+                    $sellerTypeNorm = strtolower(trim((string) ($car->seller_type ?? '')));
+                    $isDealerSeller = in_array($dealerFlagNorm, ['1', 'true', 'yes'], true) || str_contains($sellerTypeNorm, 'dealer');
+                    $isVehicleSeller = (bool) ($dealer?->is_vehicle_seller ?? false);
+                    $sellerDisplayName = $isDealerSeller && $isVehicleSeller
+                        ? html_decode($dealer?->vehicle_company_name)
+                        : html_decode($dealer?->name);
+                    $sellerName = strtoupper(trim((string) $sellerDisplayName));
+                    $sellerLocation = null;
+                    if (!empty($car?->city_id)) {
+                        $sellerLocation = strtoupper((string) ($cityNameMap[$car->city_id] ?? ''));
+                    }
+                    $picsCount = (int) ($car->galleries_count ?? 0);
+                    $sellerPhone = preg_replace('/\s+/', '', (string) ($car?->dealer?->phone ?? ''));
+                    $rawPrice = $car->offer_price ?: $car->regular_price;
+                    $numericPrice = is_numeric($rawPrice) ? (float) $rawPrice : null;
+                @endphp
+                <div class="lp-mobile-card">
+                    <a class="dealer-mobile-card-link" href="{{ route('listing', $car->slug) }}" aria-label="{{ strtoupper(trim((string) html_decode($car->title))) }}"></a>
+                    <div class="lp-mobile-card__top">
+                        <div class="lp-mobile-card__top-left">{{ $sellerName !== '' ? $sellerName : ' ' }}</div>
+                        <div class="lp-mobile-card__top-right">{{ $sellerLocation ?: ' ' }}</div>
+                    </div>
+
+                    <div class="lp-mobile-card__media">
+                        <div class="lp-mobile-card__media-link">
+                            <img src="{{ getImageOrPlaceholder($car->thumb_image, '640x480') }}" alt="thumb">
+                        </div>
+                        <div class="lp-mobile-card__heart">
+                            @guest('web')
+                                <a href="javascript:;" class="before_auth_wishlist" aria-label="wishlist"></a>
+                            @else
+                                @php
+                                    $isInWishlist = App\Models\Wishlist::where('car_id',$car->id)->where('user_id',Auth::user()->id)->first();
+                                @endphp
+                                <a href="{{ route('user.add-to-wishlist', $car->id) }}" class="{{ $isInWishlist ? 'active' : '' }}" aria-label="wishlist"></a>
+                            @endguest
+                        </div>
+                        @if($picsCount > 0)
+                            <div class="lp-mobile-card__pics">+{{ $picsCount }} PIC</div>
+                        @endif
+                    </div>
+
+                    <div class="lp-mobile-card__body">
+                        <div class="lp-mobile-card__title">{{ strtoupper(trim((string) html_decode($car->title))) }}</div>
+                        <div class="lp-mobile-card__call">
+                            @if($sellerPhone)
+                                <a href="tel:{{ $sellerPhone }}">CALL</a>
+                            @endif
+                        </div>
+                        <div class="lp-mobile-card__meta">
+                            @if(!empty($car->year))
+                                <div>{{ html_decode($car->year) }}</div>
+                            @endif
+                            @if(!empty($car->motorcheck_fuel))
+                                <div>{{ html_decode($car->motorcheck_fuel) }}</div>
+                            @elseif(!empty($car->fuel_type))
+                                <div>{{ html_decode($car->fuel_type) }}</div>
+                            @endif
+                            @if(!empty($car->mileage))
+                                <div>{{ html_decode($car->mileage) }}</div>
+                            @endif
+                            @if(!empty($car->motorcheck_last_date_of_sale))
+                                <div>{{ is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 10) : '' }}</div>
+                            @endif
+                        </div>
+
+                        <div class="lp-mobile-card__bottom">
+                            <div class="lp-mobile-card__label">{{ $isDealerSeller ? 'DEALER' : 'PRIVATE' }}</div>
+                            <div class="lp-mobile-card__price">
+                                @if(!is_null($numericPrice))
+                                    €{{ number_format($numericPrice, 0, '.', ',') }}
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="lp-mobile__empty">{{ __('translate.Listing Not Found!') }}</div>
+            @endforelse
+        </div>
+
+        @if ($cars->hasPages())
+            <div class="py-3">
+                {{ $cars->links('pagination_box') }}
+            </div>
+        @endif
+    </div>
+
+    @push('style_section')
+    <style>
+        .dealer-mobile-card-link{
+            display:none;
+        }
+        @media (max-width: 991.98px){
+            .lp-mobile-card{
+                position:relative;
+            }
+            .dealer-mobile-card-link{
+                display:block;
+                position:absolute;
+                inset:0;
+                z-index:1;
+            }
+            .lp-mobile-card__heart,
+            .lp-mobile-card__call{
+                z-index:3;
+            }
+        }
+    </style>
+    @endpush
+
+    @push('js_section')
+    <script>
+        (function () {
+            const modelMaps = {
+                car: {!! $__carBrandModelsJson !!}
+            };
+
+            function populateModelSelect(brandSelect) {
+                const source = brandSelect.getAttribute('data-model-source');
+                const targetSelector = brandSelect.getAttribute('data-model-target');
+                const target = document.querySelector(targetSelector);
+
+                if (!source || !targetSelector || !target) {
+                    return;
+                }
+
+                const selectedBrand = String(brandSelect.value || '');
+                const models = (modelMaps[source] && modelMaps[source][selectedBrand]) ? modelMaps[source][selectedBrand] : [];
+                const currentValue = target.getAttribute('data-selected') || target.value || '';
+                const placeholder = target.getAttribute('data-placeholder') || 'Select brand model';
+
+                target.innerHTML = '';
+
+                const placeholderOption = document.createElement('option');
+                placeholderOption.value = '';
+                placeholderOption.textContent = placeholder;
+                target.appendChild(placeholderOption);
+
+                models.forEach(function (modelName) {
+                    const option = document.createElement('option');
+                    option.value = modelName;
+                    option.textContent = modelName;
+                    if (currentValue && currentValue === modelName) {
+                        option.selected = true;
+                    }
+                    target.appendChild(option);
+                });
+
+                target.disabled = models.length === 0;
+                if (models.length === 0) {
+                    target.value = '';
+                }
+
+                if (window.jQuery && window.jQuery.fn.select2 && window.jQuery(target).hasClass('select2-hidden-accessible')) {
+                    window.jQuery(target).trigger('change.select2');
+                }
+            }
+
+            document.querySelectorAll('[data-model-source="car"]').forEach(function (brandSelect) {
+                brandSelect.addEventListener('change', function () {
+                    const target = document.querySelector(brandSelect.getAttribute('data-model-target'));
+                    if (target) {
+                        target.setAttribute('data-selected', '');
+                    }
+                    populateModelSelect(brandSelect);
+                });
+
+                populateModelSelect(brandSelect);
+            });
+        })();
+    </script>
+    @endpush
+
+    <div class="d-none d-md-block">
     <!-- banner-part-start  -->
 
     <section class="inner-banner">
@@ -14,7 +362,7 @@
         <div class="container">
         <div class="col-lg-12">
             <div class="inner-banner-df">
-                <h1 class="inner-banner-taitel">{{ __('translate.Car Listing') }}</h1>
+                <h1 class="inner-banner-taitel">{{ __('Car Ad') }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
@@ -36,238 +384,145 @@
                     <form action="" id="search_form">
                         <div class="inventory-main-box">
                             <div class="inventory-taitel">
-                                <h5>{{ __('translate.Location') }}</h5>
+                                <h5>Choose City</h5>
                             </div>
 
                             <div class="location-box">
-
-                                <select class="form-control select2" name="country" id="country_id">
-                                    <option value="">{{ __('translate.Select Country') }}</option>
-                                    @foreach ($countries as $country)
-                                        <option {{ request()->get('country') == $country->id ? 'selected' : '' }} value="{{ $country->id }}">{{ $country->name }}</option>
-                                    @endforeach
-                                </select>
-
-                                <button type="button" class="icon">
-                                    <span>
-                                    <i class="fa-solid fa-location-dot"></i>
-                                    </span>
-                                </button>
-                            </div>
-
-
-                            <div class="location-box">
-
                                 <select class="form-control select2" name="location" id="city_id">
                                     <option value="">{{ __('translate.Select City') }}</option>
                                     @foreach ($cities as $city)
                                         <option {{ request()->get('location') == $city->id ? 'selected' : '' }} value="{{ $city->id }}">{{ $city->name }}</option>
                                     @endforeach
                                 </select>
-
-
                             </div>
 
-
-
-                            <!-- Select Your Brand  -->
-                            <div class="accordion" id="accordionPanelsStayOpenExample">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                                            aria-controls="panelsStayOpen-collapseOne">
-                                            {{ __('translate.Select Brand') }}
-                                        </button>
-                                    </h2>
-                                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                                        aria-labelledby="panelsStayOpen-headingOne">
-                                        <div class="accordion-body">
-                                            <span class="select-Brand-box">
-                                                @if (request()->has('brands'))
-                                                    @php
-                                                        $brand_arr = request()->get('brands');
-                                                    @endphp
-
-                                                    @foreach ($brands as $brand)
-                                                    <span class="form-check">
-                                                        <input {{ in_array($brand->id, $brand_arr) ? 'checked' : '' }} name="brands[]" class="form-check-input" type="checkbox"
-                                                            id="flexCheckDefault-{{ $brand->id }}" value="{{ $brand->id }}">
-                                                        <label class="form-check-label" for="flexCheckDefault-{{ $brand->id }}">
-                                                            {{ $brand->name }}
-                                                        </label>
-                                                    </span>
-                                                    @endforeach
-                                                @else
-                                                    @foreach ($brands as $brand)
-                                                        <span class="form-check">
-                                                            <input name="brands[]" class="form-check-input" type="checkbox"
-                                                                id="flexCheckDefault-{{ $brand->id }}" value="{{ $brand->id }}">
-                                                            <label class="form-check-label" for="flexCheckDefault-{{ $brand->id }}">
-                                                                {{ $brand->name }}
-                                                            </label>
-                                                        </span>
-                                                    @endforeach
-                                                @endif
-
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="inventory-taitel mt-20px">
+                                <h5>Dealer or Private</h5>
                             </div>
 
-
-                            <!-- Condition  -->
-                            <div class="accordion" id="accordionPanelsStayOpenExample1">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="panelsStayOpen-headingtwo">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#panelsStayOpen-collapsetwo" aria-expanded="true"
-                                            aria-controls="panelsStayOpen-collapsetwo">
-                                            {{ __('translate.Condition') }}
-                                        </button>
-                                    </h2>
-                                    <div id="panelsStayOpen-collapsetwo" class="accordion-collapse collapse show"
-                                        aria-labelledby="panelsStayOpen-headingtwo">
-                                        <div class="accordion-body">
-                                            <span class="select-Brand-box two four">
-
-                                                @if (request()->has('condition'))
-                                                    @php
-                                                        $condition_arr = request()->get('condition');
-                                                    @endphp
-
-                                                    <span class="form-check">
-                                                        <input {{ in_array('New', $condition_arr) ? 'checked' : '' }} class="form-check-input" type="checkbox" value="New"
-                                                            id="new_condition" name="condition[]">
-                                                        <label class="form-check-label" for="new_condition">
-                                                            {{ __('translate.New') }}
-                                                        </label>
-                                                    </span>
-                                                    <span class="form-check">
-                                                        <input  {{ in_array('Used', $condition_arr) ? 'checked' : '' }} class="form-check-input" type="checkbox" value="Used"
-                                                            id="used_condition" name="condition[]">
-                                                        <label class="form-check-label" for="used_condition">
-                                                            {{ __('translate.Used') }}
-                                                        </label>
-                                                    </span>
-
-                                                @else
-                                                    <span class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="New"
-                                                            id="new_condition" name="condition[]">
-                                                        <label class="form-check-label" for="new_condition">
-                                                            {{ __('translate.New') }}
-                                                        </label>
-                                                    </span>
-                                                    <span class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="Used"
-                                                            id="used_condition" name="condition[]">
-                                                        <label class="form-check-label" for="used_condition">
-                                                            {{ __('translate.Used') }}
-                                                        </label>
-                                                    </span>
-                                                @endif
-
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="location-box">
+                                <select class="form-control select2" name="seller_type">
+                                    <option value="">Select seller type</option>
+                                    <option value="dealer" {{ request()->get('seller_type') === 'dealer' ? 'selected' : '' }}>Dealer</option>
+                                    <option value="private" {{ request()->get('seller_type') === 'private' ? 'selected' : '' }}>Private</option>
+                                </select>
                             </div>
 
-
-                            <!-- Offer  -->
-                            <div class="accordion" id="accordionPanelsStayOpenExample3">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="panelsStayOpen-headingfour">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#panelsStayOpen-collapsefour" aria-expanded="true"
-                                            aria-controls="panelsStayOpen-collapsefour">
-                                            {{ __('translate.Purpose') }}
-                                        </button>
-                                    </h2>
-                                    <div id="panelsStayOpen-collapsefour" class="accordion-collapse collapse show"
-                                        aria-labelledby="panelsStayOpen-headingfour">
-                                        <div class="accordion-body">
-                                            <span class="select-Brand-box two four">
-
-                                                @if (request()->has('purpose'))
-                                                    @php
-                                                        $purpose_arr = request()->get('purpose');
-                                                    @endphp
-                                                    <span class="form-check">
-                                                        <input {{ in_array('Sale', $purpose_arr) ? 'checked' : '' }} class="form-check-input" type="checkbox" value="Sale"
-                                                            id="for_sale" name="purpose[]">
-                                                        <label class="form-check-label" for="for_sale">
-                                                            {{ __('translate.For Sale') }}
-                                                        </label>
-                                                    </span>
-
-                                                @else
-                                                    <span class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="Sale"
-                                                            id="for_sale" name="purpose[]">
-                                                        <label class="form-check-label" for="for_sale">
-                                                            {{ __('translate.For Sale') }}
-                                                        </label>
-                                                    </span>
-                                                @endif
-
-
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="inventory-taitel mt-20px">
+                                <h5>Select Brand Model</h5>
                             </div>
 
-                            <!-- Transmission -->
-                            <div class="accordion" id="accordionPanelsStayOpenExample4">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="panelsStayOpen-headingfive">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#panelsStayOpen-collapsefive" aria-expanded="true"
-                                            aria-controls="panelsStayOpen-collapsefive">
-                                            {{ __('translate.Features') }}
-                                        </button>
-                                    </h2>
-                                    <div id="panelsStayOpen-collapsefive" class="accordion-collapse collapse show"
-                                        aria-labelledby="panelsStayOpen-headingfive">
-                                        <div class="accordion-body">
-                                            <span class="select-Brand-box">
-                                                @if (request()->has('features'))
-                                                    @php
-                                                        $features_arr = request()->get('features');
-                                                    @endphp
+                            <div class="location-box">
+                                <select class="form-control select2" name="brand_id" data-model-source="car" data-model-target="#listing_desktop_model">
+                                    <option value="">{{ __('translate.Select Brand') }}</option>
+                                    @foreach ($brands as $brandSlug => $brandLabel)
+                                        <option {{ request()->get('brand_id') === $brandSlug ? 'selected' : '' }} value="{{ $brandSlug }}">{{ $brandLabel }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                                                    @foreach ($features as $index => $feature)
-                                                        <span class="form-check">
-                                                            <input {{ in_array($feature->id, $features_arr) ? 'checked' : '' }} class="form-check-input" type="checkbox" value="{{ $feature->id }}" name="features[]"
-                                                                id="feature{{ $index }}">
-                                                            <label class="form-check-label" for="feature{{ $index }}">
-                                                                {{ $feature->name }}
-                                                            </label>
-                                                        </span>
-                                                    @endforeach
+                            <div class="location-box">
+                                <select class="form-control select2" name="model" id="listing_desktop_model" data-placeholder="Select brand model" data-selected="{{ request()->get('model') }}" {{ request()->get('brand_id') ? '' : 'disabled' }}>
+                                    <option value="">Select brand model</option>
+                                    @foreach (($selectedCarModels ?? []) as $modelOption)
+                                        <option value="{{ $modelOption }}" {{ request()->get('model') === $modelOption ? 'selected' : '' }}>{{ $modelOption }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                                                @else
-                                                    @foreach ($features as $index => $feature)
-                                                        <span class="form-check">
-                                                            <input class="form-check-input" type="checkbox" value="{{ $feature->id }}" name="features[]"
-                                                                id="feature{{ $index }}">
-                                                            <label class="form-check-label" for="feature{{ $index }}">
-                                                                {{ $feature->name }}
-                                                            </label>
-                                                        </span>
-                                                    @endforeach
-                                                @endif
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="inventory-taitel mt-20px">
+                                <h5>Select Year Min and Maximum</h5>
+                            </div>
 
+                            <div class="location-box">
+                                <select class="form-control select2" name="min_year">
+                                    <option value="">Minimum year</option>
+                                    @for ($year = 1980; $year <= 2026; $year++)
+                                        <option value="{{ $year }}" {{ (string) request()->get('min_year') === (string) $year ? 'selected' : '' }}>{{ $year }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <div class="location-box">
+                                <select class="form-control select2" name="max_year">
+                                    <option value="">Maximum year</option>
+                                    @for ($year = 1980; $year <= 2026; $year++)
+                                        <option value="{{ $year }}" {{ (string) request()->get('max_year') === (string) $year ? 'selected' : '' }}>{{ $year }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <div class="inventory-taitel mt-20px">
+                                <h5>Select Engine Size</h5>
+                            </div>
+
+                            <div class="location-box">
+                                <select class="form-control select2" name="engine_size">
+                                    <option value="">Select engine size</option>
+                                    @foreach (($engineSizes ?? collect()) as $engineSize)
+                                        <option value="{{ $engineSize }}" {{ request()->get('engine_size') == $engineSize ? 'selected' : '' }}>{{ $engineSize }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="inventory-taitel mt-20px">
+                                <h5>Select Milage Min and Maximum</h5>
+                            </div>
+
+                            <div class="location-box">
+                                <input type="number" class="form-control" name="min_mileage" value="{{ request()->get('min_mileage') }}" placeholder="Min mileage">
+                            </div>
+
+                            <div class="location-box">
+                                <input type="number" class="form-control" name="max_mileage" value="{{ request()->get('max_mileage') }}" placeholder="Max mileage">
+                            </div>
+
+                            <div class="inventory-taitel mt-20px">
+                                <h5>Manual or Automatic</h5>
+                            </div>
+
+                            <div class="location-box">
+                                <select class="form-control select2" name="transmission">
+                                    <option value="">Manual or Automatic</option>
+                                    <option value="Manual" {{ request()->get('transmission') === 'Manual' ? 'selected' : '' }}>Manual</option>
+                                    <option value="Automatic" {{ request()->get('transmission') === 'Automatic' ? 'selected' : '' }}>Automatic</option>
+                                </select>
+                            </div>
+
+                            <div class="inventory-taitel mt-20px">
+                                <h5>Fuel Type</h5>
+                            </div>
+
+                            <div class="location-box">
+                                <select class="form-control select2" name="fuel_type">
+                                    <option value="">Patrol or Diesel or Electric or Petrol Hybrid</option>
+                                    <option value="Diesel" {{ request()->get('fuel_type') === 'Diesel' ? 'selected' : '' }}>Diesel</option>
+                                    <option value="Petrol" {{ request()->get('fuel_type') === 'Petrol' ? 'selected' : '' }}>Petrol</option>
+                                    <option value="Electric" {{ request()->get('fuel_type') === 'Electric' ? 'selected' : '' }}>Electric</option>
+                                    <option value="Petrol Hybrid" {{ request()->get('fuel_type') === 'Petrol Hybrid' ? 'selected' : '' }}>Petrol Hybrid</option>
+                                </select>
+                            </div>
+
+                            <div class="inventory-taitel mt-20px">
+                                <h5>Select Price Min and Maximum</h5>
+                            </div>
+
+                            <div class="location-box">
+                                <select class="form-control select2" name="min_price">
+                                    <option value="">Minimum price</option>
+                                    @foreach ([500,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,12000,14000,16000,18000,20000,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,80000,85000,90000,95000,100000,125000,150000,175000,200000,250000,300000,350000,400000,450000,500000] as $priceOption)
+                                        <option value="{{ $priceOption }}" {{ (string) request()->get('min_price') === (string) $priceOption ? 'selected' : '' }}>{{ number_format($priceOption) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="location-box">
+                                <select class="form-control select2" name="max_price">
+                                    <option value="">Maximum price</option>
+                                    @foreach ([500,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,12000,14000,16000,18000,20000,25000,30000,35000,40000,45000,50000,55000,60000,65000,70000,75000,80000,85000,90000,95000,100000,125000,150000,175000,200000,250000,300000,350000,400000,450000,500000] as $priceOption)
+                                        <option value="{{ $priceOption }}" {{ (string) request()->get('max_price') === (string) $priceOption ? 'selected' : '' }}>{{ number_format($priceOption) }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <input type="hidden" value="{{ request()->get('search') }}" name="search" id="inside_form_search">
@@ -291,7 +546,7 @@
                 </div>
 
                 <div class="col-lg-9">
-                    <div class="inventory-ber">
+                    <div class="inventory-ber" style="display: none;">
                         <div class="inventory-ber-left">
                             <div class="inventory-sarch-ber-item">
                                 <div class="inventory-sarch-ber">
@@ -343,7 +598,24 @@
                             <div class="row g-5">
                                 @forelse ($cars as $index => $car)
                                     <div class="col-lg-4  col-sm-6 col-md-6">
+                                        @php
+                                            $dealer = $car?->dealer;
+                                            $dealerFlagRaw = $dealer?->is_dealer ?? null;
+                                            $dealerFlagNorm = strtolower(trim((string) $dealerFlagRaw));
+                                            $sellerTypeNorm = strtolower(trim((string) ($car->seller_type ?? '')));
+                                            $isDealerSeller = in_array($dealerFlagNorm, ['1', 'true', 'yes'], true) || str_contains($sellerTypeNorm, 'dealer');
+                                            $isVehicleSeller = (bool) ($dealer?->is_vehicle_seller ?? false);
+                                            $sellerDisplayName = $isDealerSeller && $isVehicleSeller
+                                                ? html_decode($dealer?->vehicle_company_name)
+                                                : html_decode($dealer?->name);
+                                            $sellerName = strtoupper(trim((string) $sellerDisplayName));
+                                        @endphp
                                         <div class="brand-car-item">
+                                            @if ($isDealerSeller)
+                                                <div class="listing-list-seller">
+                                                    {{ $sellerName }}
+                                                </div>
+                                            @endif
                                             <div class="brand-car-item-img">
                                                 <img src="{{ getImageOrPlaceholder($car->thumb_image, '330x215') }}" alt="thumb">
 
@@ -475,7 +747,12 @@
                                                 </div>
 
                                                 <div class="brand-car-btm-txt-btm">
-                                                    <h6 class="brand-car-btm-txt"><span>{{ __('translate.Listed by') }} :</span>{{ html_decode($car?->dealer?->name) }}
+                                                    <h6 class="brand-car-btm-txt">
+                                                        @if ($isDealerSeller)
+                                                            <span class="listing-dealer-name">DEALER</span>
+                                                        @else
+                                                            <span class="listing-private-name">PRIVATE</span>
+                                                        @endif
                                                     </h6>
                                                 </div>
                                             </div>
@@ -601,7 +878,27 @@
                             <div class="row g-5 brand-car-two">
                                 @forelse ($cars as $index => $car)
                                     <div class=" col-xxl-12  col-xl-12  col-lg-12  col-sm-12 ">
-                                        <div class="listing-list-card">
+                                            @php
+                                                $dealer = $car?->dealer;
+                                                $dealerFlagRaw = $dealer?->is_dealer ?? null;
+                                                $dealerFlagNorm = strtolower(trim((string) $dealerFlagRaw));
+                                                $sellerTypeNorm = strtolower(trim((string) ($car->seller_type ?? '')));
+                                                $isDealerSeller = in_array($dealerFlagNorm, ['1', 'true', 'yes'], true) || str_contains($sellerTypeNorm, 'dealer');
+                                                $isVehicleSeller = (bool) ($dealer?->is_vehicle_seller ?? false);
+                                                $sellerName = $isDealerSeller && $isVehicleSeller
+                                                    ? html_decode($dealer?->vehicle_company_name)
+                                                    : html_decode($dealer?->name);
+                                            @endphp
+
+                                        <div class="d-none d-lg-block">
+                                            <div class="listing-list-card {{ $isDealerSeller ? 'has-seller-bar' : '' }}">
+
+                                            @if ($isDealerSeller)
+                                                <div class="listing-list-seller">
+                                                    {{ $sellerName }}
+                                                </div>
+                                            @endif
+
                                             <div class="listing-list-media">
                                                 <a href="{{ route('listing', $car->slug) }}">
                                                     <img src="{{ getImageOrPlaceholder($car->thumb_image, '330x215') }}" alt="thumb">
@@ -637,11 +934,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="listing-list-seller">
-                                                <span class="seller-pill {{ ($car->seller_type ?? null) === 'Personal' ? 'seller-pill--personal' : '' }}">{{ html_decode($car?->dealer?->name) }}</span>
-                                            </div>
-
-                                            <div class="listing-list-content">
+                                            <div class="listing-list-content {{ $isDealerSeller ? 'is-dealer' : 'is-private' }}">
                                                 <div class="listing-list-top-actions">
                                                     @php
                                                         $sellerPhone = preg_replace('/\s+/', '', (string) ($car?->dealer?->phone ?? ''));
@@ -651,65 +944,185 @@
                                                     @endif
                                                 </div>
 
-                                                <a href="{{ route('listing', $car->slug) }}" class="listing-list-title">
-                                                    @php
-                                                        $apiTitle = trim((string) ($car->motorcheck_make ?? ''));
-                                                        $apiVersion = trim((string) ($car->motorcheck_version ?? ''));
-                                                        $titleText = trim($apiTitle . ' ' . $apiVersion);
-                                                    @endphp
-                                                    {{ $titleText !== '' ? $titleText : html_decode($car->title) }}
-                                                </a>
+                                                <div class="listing-list-inner">
+                                                    <div class="listing-list-info">
+                                                        <a href="{{ route('listing', $car->slug) }}" class="listing-list-title">
+                                                            @php
+                                                                $apiTitle = trim((string) ($car->motorcheck_make ?? ''));
+                                                                $apiVersion = trim((string) ($car->motorcheck_version ?? ''));
+                                                                $titleText = trim($apiTitle . ' ' . $apiVersion);
+                                                            @endphp
+                                                            {{ $titleText !== '' ? $titleText : html_decode($car->title) }}
+                                                        </a>
 
-                                                <div class="listing-list-meta">
-                                                    @php
-                                                        $saleYear = null;
-                                                        if (!empty($car->motorcheck_last_date_of_sale)) {
-                                                            try {
-                                                                $saleYear = \Carbon\Carbon::parse($car->motorcheck_last_date_of_sale)->format('Y');
-                                                            } catch (\Throwable $e) {
-                                                                $saleYear = is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 4) : null;
-                                                            }
-                                                        }
-                                                    @endphp
-                                                    @if ($saleYear)
-                                                        <span>{{ $saleYear }}</span>
-                                                    @endif
-
-                                                    @if (!empty($car->motorcheck_fuel))
-                                                        <span>{{ html_decode($car->motorcheck_fuel) }}</span>
-                                                    @elseif (!empty($car->fuel_type))
-                                                        <span>{{ html_decode($car->fuel_type) }}</span>
-                                                    @endif
-
-                                                    @if (!empty($car->mileage))
-                                                        <span>{{ html_decode($car->mileage) }}</span>
-                                                    @endif
-                                                </div>
-
-                                                <div class="listing-list-bottom-left">
-                                                    <div class="listing-list-date">
-                                                        @php
-                                                            $nctDate = $car->motorcheck_nct_expiry_date ?? null;
-                                                            $nctText = '';
-                                                            if ($nctDate) {
-                                                                try {
-                                                                    $nctText = 'NCT ' . \Carbon\Carbon::parse($nctDate)->format('M Y');
-                                                                } catch (\Throwable $e) {
-                                                                    $nctText = 'NCT ' . (string) $nctDate;
+                                                        <div class="listing-list-meta">
+                                                            @php
+                                                                $saleYear = null;
+                                                                if (!empty($car->motorcheck_last_date_of_sale)) {
+                                                                    try {
+                                                                        $saleYear = \Carbon\Carbon::parse($car->motorcheck_last_date_of_sale)->format('Y');
+                                                                    } catch (\Throwable $e) {
+                                                                        $saleYear = is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 4) : null;
+                                                                    }
                                                                 }
-                                                            }
-                                                        @endphp
-                                                        {{ $nctText }}
+                                                            @endphp
+                                                            @if ($saleYear)
+                                                                <span>{{ $saleYear }}</span>
+                                                            @endif
+
+                                                            @if (!empty($car->motorcheck_fuel))
+                                                                <span>{{ html_decode($car->motorcheck_fuel) }}</span>
+                                                            @elseif (!empty($car->fuel_type))
+                                                                <span>{{ html_decode($car->fuel_type) }}</span>
+                                                            @endif
+
+                                                            @if (!empty($car->mileage))
+                                                                <span>{{ html_decode($car->mileage) }}</span>
+                                                            @endif
+                                                           
+                                                            
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="listing-list-pricecol">
+                                                        <div class="listing-price">
+                                                            @php
+                                                                $rawPrice = $car->offer_price ?: $car->regular_price;
+                                                                $numericPrice = is_numeric($rawPrice) ? (float) $rawPrice : null;
+                                                            @endphp
+                                                            @if (!is_null($numericPrice))
+                                                                €{{ number_format($numericPrice, 0, '.', ',') }}
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                <div class="listing-list-price-bottom-right">
-                                                    <div class="listing-price">
-                                                        @if ($car->offer_price)
-                                                            {{ currency_ie_plain($car->offer_price) }}
-                                                        @else
-                                                            {{ currency_ie_plain($car->regular_price) }}
-                                                        @endif
+                                                <div class="listing-list-bottom-label">
+                                                    @if ($isDealerSeller)
+                                                        <span class="listing-dealer-name">DEALER</span>
+                                                    @else
+                                                        <span class="listing-private-name">PRIVATE</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="listing-card--mobile d-block d-lg-none">
+                                            <div class="brand-car-item">
+                                                <div class="brand-car-item-img">
+                                                    <a href="{{ route('listing', $car->slug) }}">
+                                                        <img src="{{ getImageOrPlaceholder($car->thumb_image, '304x217') }}" alt="thumb">
+                                                    </a>
+
+                                                    <div class="brand-car-item-img-text">
+                                                        <div class="text-df">
+                                                            @if ($car->offer_price)
+                                                                <p class="text">{{ calculate_percentage($car->regular_price, $car->offer_price) }}% {{ __('translate.Off') }}</p>
+                                                            @endif
+
+                                                            @if ($car->condition == 'New')
+                                                                <p class="text text-two ">{{ __('translate.New') }}</p>
+                                                            @else
+                                                                <p class="text text-two ">{{ __('translate.Used') }}</p>
+                                                            @endif
+                                                        </div>
+
+                                                        <div class="icon-main">
+                                                            @guest('web')
+                                                                <a  href="javascript:;" class="icon before_auth_wishlist">
+                                                                    <span>
+                                                                        <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z" stroke-width="1.3" stroke-linejoin="round"></path>
+                                                                        </svg>
+                                                                    </span>
+                                                                </a>
+                                                            @else
+                                                                @php
+                                                                    $isInWishlist = App\Models\Wishlist::where('car_id',$car->id)->where('user_id',Auth::user()->id)->first();
+                                                                @endphp
+                                                                <a href="{{ route('user.add-to-wishlist', $car->id) }}" class="icon {{ $isInWishlist ? 'active' : '' }}">
+                                                                    <span>
+                                                                        <svg width="18" height="16" viewBox="0 0 18 16" fill="{{ $isInWishlist ? 'currentColor' : 'none' }}" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z" stroke-width="1.3" stroke-linejoin="round"/>
+                                                                        </svg>
+                                                                    </span>
+                                                                </a>
+                                                            @endif
+
+                                                            <a href="{{ route('add-to-compare', $car->id) }}" class="icon">
+                                                                <span>
+                                                                    <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M1 10V9C1 6.23858 3.23858 4 6 4H17L14 1" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        <path d="M17 10V11C17 13.7614 14.7614 16 12 16H1L4 19" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="brand-car-inner">
+                                                    <div class="brand-car-inner-item">
+                                                        <span>{{ $car?->brand?->name }}</span>
+                                                        <p>
+                                                            @if ($car->offer_price)
+                                                                {{ currency($car->offer_price) }}
+                                                            @else
+                                                                {{ currency($car->regular_price) }}
+                                                            @endif
+                                                        </p>
+                                                    </div>
+
+                                                    <a href="{{ route('listing', $car->slug) }}">
+                                                        <h3>{{ html_decode($car->title) }}</h3>
+                                                    </a>
+
+                                                    <div class="brand-car-inner-item-main">
+                                                        <div class="brand-car-inner-item-two">
+                                                            <div class="brand-car-inner-item-thumb">
+                                                                <span>
+                                                                    <svg width="21" height="18" viewBox="0 0 21 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M20 10.2935C20 7.75456 18.9535 5.45057 17.2608 3.77159C17.2476 3.7544 17.2335 3.73758 17.2175 3.72192C17.2015 3.70626 17.1843 3.69249 17.1668 3.67963C15.4505 2.02368 13.0953 1 10.5 1C7.90472 1 5.54953 2.02374 3.83318 3.67963C3.81561 3.69255 3.79848 3.70632 3.78247 3.72192C3.76646 3.73758 3.75238 3.75434 3.73918 3.77159C2.0465 5.45057 1 7.75456 1 10.2935C1 12.7755 1.98794 15.1089 3.78179 16.8642C3.78204 16.8644 3.78229 16.8647 3.78253 16.865C3.78272 16.8651 3.78285 16.8653 3.78303 16.8654C3.78328 16.8656 3.78353 16.8659 3.78378 16.8661C3.87498 16.9553 3.99452 16.9999 4.11407 16.9999C4.23368 16.9999 4.35328 16.9553 4.44448 16.866C4.45227 16.8584 4.45931 16.8503 4.46641 16.8422L5.90617 15.4337C6.08864 15.2552 6.08864 14.9658 5.90617 14.7873C5.72371 14.6089 5.42787 14.6089 5.24547 14.7873L4.12192 15.8864C2.81179 14.4602 2.05173 12.6653 1.9472 10.7505H3.53616C3.79418 10.7505 4.00337 10.546 4.00337 10.2935C4.00337 10.041 3.79418 9.83642 3.53616 9.83642H1.94732C2.05596 7.86974 2.86107 6.08137 4.12497 4.70343L5.24547 5.79958C5.33667 5.88879 5.45628 5.9334 5.57582 5.9334C5.69537 5.9334 5.81497 5.88879 5.90617 5.79958C6.08864 5.62102 6.08864 5.33167 5.90617 5.15318L4.78573 4.05697C6.19435 2.82055 8.0224 2.03295 10.0328 1.92673V3.48108C10.0328 3.73356 10.242 3.93814 10.5 3.93814C10.758 3.93814 10.9672 3.73356 10.9672 3.48108V1.92673C12.9776 2.03295 14.8056 2.82061 16.2143 4.05703L15.0938 5.15318C14.9113 5.33173 14.9113 5.62108 15.0938 5.79958C15.185 5.88879 15.3046 5.9334 15.4241 5.9334C15.5437 5.9334 15.6633 5.88879 15.7545 5.79958L16.875 4.70343C18.1389 6.08143 18.944 7.86974 19.0526 9.83642H17.4637C17.2057 9.83642 16.9965 10.041 16.9965 10.2935C16.9965 10.546 17.2057 10.7505 17.4637 10.7505H19.0527C18.9481 12.6653 18.1881 14.4603 16.878 15.8865L15.7545 14.7873C15.5721 14.6089 15.2762 14.6089 15.0938 14.7873C14.9113 14.9659 14.9113 15.2552 15.0938 15.4337L16.5568 16.8649C16.648 16.9541 16.7676 16.9987 16.8871 16.9987C16.9469 16.9987 17.0067 16.9876 17.0629 16.9653C17.1192 16.943 17.1719 16.9095 17.2175 16.8649C19.0118 15.1096 20 12.7758 20 10.2935Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
+                                                                        <path d="M12.6465 5.05246C12.4068 4.95855 12.135 5.07238 12.039 5.30676L10.6889 8.60366C10.626 8.59708 10.5631 8.59257 10.5001 8.59257C9.8425 8.59257 9.24852 8.94889 8.94981 9.52246C8.63759 10.1221 8.71758 10.8385 9.16361 11.4387C9.20921 11.5001 9.26652 11.5562 9.32969 11.6012C9.69206 11.8589 10.0968 11.9951 10.5001 11.9951C11.1577 11.9951 11.7517 11.6388 12.0504 11.0652C12.3626 10.4656 12.2826 9.74922 11.8369 9.14938C11.7913 9.08783 11.7338 9.03152 11.6705 8.98643C11.6364 8.96217 11.6016 8.94005 11.5668 8.91799L12.9064 5.64663C13.0024 5.41237 12.886 5.1463 12.6465 5.05246ZM11.2177 10.6502C11.0793 10.9159 10.8043 11.0809 10.5 11.0809C10.3004 11.0809 10.0995 11.0127 9.90268 10.8782C9.67842 10.5631 9.63437 10.2216 9.78245 9.93735C9.92075 9.67171 10.1957 9.50668 10.5001 9.50668C10.5971 9.50668 10.6944 9.52313 10.7915 9.55513C10.7947 9.55641 10.7976 9.55805 10.8008 9.55933C10.8111 9.56329 10.8213 9.56652 10.8316 9.56975C10.9207 9.60321 11.0094 9.64928 11.0974 9.70937C11.3216 10.0244 11.3657 10.3659 11.2177 10.6502Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
+                                                                    </svg>
+                                                                </span>
+                                                            </div>
+                                                            <span>{{ html_decode($car->mileage) }}</span>
+                                                        </div>
+
+                                                        <div class="brand-car-inner-item-two">
+                                                            <div class="brand-car-inner-item-thumb">
+                                                                <span>
+                                                                    <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M15.8901 3.09765L14.3901 1.76431C14.2436 1.63409 14.0063 1.63409 13.8598 1.76431C13.7133 1.89453 13.7133 2.10547 13.8598 2.23565L15.0947 3.33331L13.8598 4.43096C13.7895 4.49346 13.75 4.57809 13.75 4.66665V5.66665C13.75 6.40202 14.4227 6.99999 15.25 6.99999V12.6666C15.25 12.8505 15.0819 13 14.875 13C14.6681 13 14.5 12.8506 14.5 12.6666V12C14.5 11.4485 13.9953 11 13.375 11H13V2.33334C13 1.59797 12.3273 1 11.5 1H4.00001C3.17275 1 2.50001 1.59797 2.50001 2.33334V14.3333C1.67275 14.3333 1 14.9313 1 15.6667V16.6667C1 16.8509 1.16773 17 1.37501 17H14.125C14.3323 17 14.5 16.8509 14.5 16.6667V15.6667C14.5 14.9313 13.8273 14.3333 13 14.3333V11.6667H13.375C13.5819 11.6667 13.75 11.8161 13.75 12V12.6667C13.75 13.2181 14.2546 13.6667 14.875 13.6667C15.4954 13.6667 16 13.2181 16 12.6667V3.33334C16 3.24478 15.9604 3.16015 15.8901 3.09765ZM3.25003 2.33334C3.25003 1.96584 3.58658 1.66669 4.00001 1.66669H11.5C11.9134 1.66669 12.25 1.96584 12.25 2.33334V14.3333H3.24999L3.25003 2.33334Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
+                                                                        <path d="M11.041 2.52344H4.29103C4.08375 2.52344 3.91602 2.66929 3.91602 2.84954V6.76876C3.91602 6.94901 4.08375 7.09487 4.29103 7.09487H11.041C11.2483 7.09487 11.416 6.94901 11.416 6.76876V2.84951C11.416 2.66929 11.2483 2.52344 11.041 2.52344Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
+                                                                    </svg>
+                                                                </span>
+                                                            </div>
+                                                            <span>{{ html_decode($car->fuel_type) }}</span>
+                                                        </div>
+
+                                                        <div class="brand-car-inner-item-two">
+                                                            <div class="brand-car-inner-item-thumb">
+                                                                <span>
+                                                                    <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M17.9167 8.23819H17.2833C17.0314 8.23819 16.7897 8.3586 16.6116 8.57293C16.4334 8.78726 16.3333 9.07795 16.3333 9.38106V9.76202H15.7V7.85723C15.7 7.55412 15.5999 7.26343 15.4218 7.0491C15.2436 6.83477 15.002 6.71436 14.75 6.71436H13.8C13.716 6.71436 13.6355 6.67422 13.5761 6.60278C13.5167 6.53134 13.4833 6.43444 13.4833 6.3334V5.57149C13.4833 5.26838 13.3832 4.97769 13.2051 4.76336C13.0269 4.54903 12.7853 4.42862 12.5333 4.42862H11.2667V3.28574H12.85C13.102 3.28574 13.3436 3.16533 13.5218 2.951C13.6999 2.73667 13.8 2.44598 13.8 2.14287C13.8 1.83976 13.6999 1.54907 13.5218 1.33474C13.3436 1.12041 13.102 1 12.85 1H6.51667C6.26471 1 6.02307 1.12041 5.84491 1.33474C5.66676 1.54907 5.56667 1.83976 5.56667 2.14287C5.56667 2.44598 5.66676 2.73667 5.84491 2.951C6.02307 3.16533 6.26471 3.28574 6.51667 3.28574H8.1V4.42862H6.51667C6.26471 4.42862 6.02307 4.54903 5.84491 4.76336C5.66676 4.97769 5.56667 5.26838 5.56667 5.57149C5.56667 5.67252 5.5333 5.76942 5.47392 5.84087C5.41453 5.91231 5.33399 5.95245 5.25 5.95245H4.3C4.04804 5.95245 3.80641 6.07285 3.62825 6.28719C3.45009 6.50152 3.35 6.79221 3.35 7.09532V8.61915H2.4V7.09532C2.4 6.79221 2.29991 6.50152 2.12175 6.28719C1.94359 6.07285 1.70196 5.95245 1.45 5.95245C1.19804 5.95245 0.956408 6.07285 0.778249 6.28719C0.600089 6.50152 0.5 6.79221 0.5 7.09532L0.5 13.1906C0.5 13.4937 0.600089 13.7844 0.778249 13.9988C0.956408 14.2131 1.19804 14.3335 1.45 14.3335C1.70196 14.3335 1.94359 14.2131 2.12175 13.9988C2.29991 13.7844 2.4 13.4937 2.4 13.1906V11.6668H3.35V13.5716C3.35 13.8747 3.45009 14.1654 3.62825 14.3797C3.80641 14.5941 4.04804 14.7145 4.3 14.7145H5.62113C5.70511 14.7145 5.78564 14.7546 5.84502 14.8261L7.37388 16.6653C7.46185 16.7719 7.56651 16.8563 7.68181 16.9138C7.7971 16.9713 7.92073 17.0006 8.04553 17.0002H14.75C15.002 17.0002 15.2436 16.8798 15.4218 16.6655C15.5999 16.4511 15.7 16.1604 15.7 15.8573V14.3335H16.3333V14.7145C16.3333 15.0176 16.4334 15.3083 16.6116 15.5226C16.7897 15.7369 17.0314 15.8573 17.2833 15.8573H17.9167C18.3364 15.8567 18.7389 15.6559 19.0357 15.2988C19.3325 14.9417 19.4995 14.4575 19.5 13.9526V10.143C19.4995 9.63798 19.3325 9.15384 19.0357 8.79676C18.7389 8.43967 18.3364 8.23879 17.9167 8.23819Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
+                                                                    </svg>
+                                                                </span>
+                                                            </div>
+                                                            <span>{{ html_decode($car->engine_size) }}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="brand-car-btm-txt-btm">
+                                                        <h6 class="brand-car-btm-txt">
+                                                            @if ($isDealerSeller)
+                                                                <span class="listing-dealer-name">DEALER</span>
+                                                            @else
+                                                                <span class="listing-private-name">PRIVATE</span>
+                                                            @endif
+                                                        </h6>
                                                     </div>
                                                 </div>
                                             </div>
@@ -850,6 +1263,7 @@
 
 
 </main>
+    </div>
 @endsection
 
 
@@ -859,6 +1273,19 @@
         (function($) {
             "use strict"
             $(document).ready(function () {
+
+                if(window.matchMedia && window.matchMedia('(max-width: 767.98px)').matches){
+                    $('.inventory-main-box .accordion-collapse.show').each(function(){
+                        var $collapse = $(this);
+                        var id = $collapse.attr('id');
+                        $collapse.removeClass('show');
+                        if(id){
+                            var $btn = $('.inventory-main-box [data-bs-toggle="collapse"][data-bs-target="#'+id+'"]').first();
+                            $btn.addClass('collapsed');
+                            $btn.attr('aria-expanded', 'false');
+                        }
+                    });
+                }
 
                 $("#outside_form_search").on("keyup",function(e){
                     let inputValue = $(this).val();

@@ -10,13 +10,18 @@ use Modules\Subscription\Entities\SubscriptionPlan;
 use Modules\Subscription\Entities\SubscriptionHistory;
 use Modules\Car\Entities\Car;
 
+use App\Models\IndividualAdPayment;
+
 use App\Models\StripePayment;
+use App\Models\WorldpayPayment;
 use App\Models\PaypalPayment;
 use App\Models\RazorpayPayment;
 use App\Models\Flutterwave;
 use App\Models\PaystackAndMollie;
 use App\Models\InstamojoPayment;
 use App\Models\BankPayment;
+use Illuminate\Support\Facades\Schema;
+use Modules\GeneralSetting\Entities\Setting;
 
 class PaymentController extends Controller
 {
@@ -29,6 +34,12 @@ class PaymentController extends Controller
 
         $user = Auth::guard('web')->user();
 
+        if($user && !$user->is_dealer){
+            $notification = trans('translate.You are not allowed to access this page');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('user.dashboard')->with($notification);
+        }
+
         $subscription_plan = SubscriptionPlan::where('id', $id)->where('status', 'active')->firstOrFail();
 
         if($subscription_plan->plan_price == '0.00'){
@@ -40,7 +51,8 @@ class PaymentController extends Controller
         }
 
         $paypal = PaypalPayment::first();
-        $stripe = StripePayment::first();
+        $stripe = Schema::hasTable('stripe_payments') ? StripePayment::first() : null;
+        $worldpay = Schema::hasTable('worldpay_payments') ? WorldpayPayment::first() : null;
         $razorpay = RazorpayPayment::first();
         $flutterwave = Flutterwave::first();
         $paystack = PaystackAndMollie::first();
@@ -52,6 +64,7 @@ class PaymentController extends Controller
             'user' => $user,
             'subscription_plan' => $subscription_plan,
             'stripe' => $stripe,
+            'worldpay' => $worldpay,
             'paypal' => $paypal,
             'razorpay' => $razorpay,
             'flutterwave' => $flutterwave,
@@ -60,6 +73,119 @@ class PaymentController extends Controller
             'instamojo' => $instamojo,
             'bank' => $bank,
         ]);
+    }
+
+    public function pay_individual_ad_via_stripe(Request $request){
+        return $this->pay_individual_ad_via_worldpay($request);
+    }
+
+    public function pay_individual_ad_via_worldpay(Request $request){
+
+        if(env('APP_MODE') == 'DEMO'){
+            $notification = trans('translate.This Is Demo Version. You Can Not Change Anything');
+            $notification=array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->back()->with($notification);
+        }
+
+        $user = Auth::guard('web')->user();
+        $setting = Setting::first();
+        $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+
+        if(!$user || $user->is_dealer){
+            $notification = trans('translate.You are not allowed to access this page');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('user.dashboard')->with($notification);
+        }
+
+        if($feeFreeModeEnabled || app()->environment('local') || env('INDIVIDUAL_AD_PAYMENT_DUMMY') == 'true'){
+
+            $amountEur = 5.00;
+
+            IndividualAdPayment::create([
+                'user_id' => $user->id,
+                'car_id' => null,
+                'amount' => $feeFreeModeEnabled ? 0 : $amountEur,
+                'currency' => 'EUR',
+                'payment_method' => $feeFreeModeEnabled ? 'Free' : 'Worldpay',
+                'status' => 'success',
+                'transaction_id' => $feeFreeModeEnabled ? 'fee_free_mode' : 'worldpay_placeholder',
+                'consumed_at' => null,
+            ]);
+
+            $notification = trans('translate.Your payment has been made successful. Thanks for your purchase');
+            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            return redirect()->route('user.car.create', ['purpose' => 'Sale'])->with($notification);
+        }
+
+        $notification = __('Worldpay live checkout is not connected yet. Add the live keys and integration details later to enable real payments.');
+        $notification = array('messege'=>$notification,'alert-type'=>'error');
+        return redirect()->back()->with($notification);
+    }
+
+    public function activate_dealer_free_trial(Request $request)
+    {
+
+        if(env('APP_MODE') == 'DEMO'){
+            $notification = trans('translate.This Is Demo Version. You Can Not Change Anything');
+            $notification=array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->back()->with($notification);
+        }
+
+        $setting = Setting::first();
+        if(!$setting || $setting->fee_free_mode != 'enable'){
+            $notification = trans('translate.You are not allowed to access this page');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('pricing-plan')->with($notification);
+        }
+
+        $user = Auth::guard('web')->user();
+        if(!$user || !$user->is_dealer){
+            $notification = trans('translate.You are not allowed to access this page');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('user.dashboard')->with($notification);
+        }
+
+        $hasActiveTrial = SubscriptionHistory::where('user_id', $user->id)
+            ->where('payment_method', 'Free')
+            ->where('transaction', 'dealer_free_trial')
+            ->where('status', 'active')
+            ->where(function ($query) {
+                $query->where('expiration_date', 'lifetime')
+                    ->orWhere('expiration_date', '>=', date('Y-m-d'));
+            })
+            ->exists();
+
+        if($hasActiveTrial){
+            $notification = trans('translate.Your enrollment have successfully done');
+            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            return redirect()->route('user.dashboard')->with($notification);
+        }
+
+        $expiration_date = date('Y-m-d', strtotime('+90 days'));
+
+        SubscriptionHistory::where('user_id', $user->id)->update(['status' => 'expired']);
+
+        $purchase = new SubscriptionHistory();
+        $purchase->order_id = substr(rand(0,time()),0,10);
+        $purchase->user_id = $user->id;
+        $purchase->subscription_plan_id = 0;
+        $purchase->max_car = (int) (env('DEALER_FREE_TRIAL_MAX_CAR') ?: 999999);
+        $purchase->featured_car = (int) (env('DEALER_FREE_TRIAL_FEATURED_CAR') ?: 0);
+        $purchase->plan_name = '3 Month Free Trial';
+        $purchase->plan_price = 0;
+        $purchase->expiration = 'trial';
+        $purchase->expiration_date = $expiration_date;
+        $purchase->status = 'active';
+        $purchase->payment_method = 'Free';
+        $purchase->payment_status = 'success';
+        $purchase->transaction = 'dealer_free_trial';
+        $purchase->save();
+
+        Car::where('agent_id', $user->id)->update(['expired_date' => $expiration_date]);
+
+        $notification = trans('translate.Your enrollment have successfully done');
+        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        return redirect()->route('user.dashboard')->with($notification);
     }
 
 
@@ -86,35 +212,28 @@ class PaymentController extends Controller
         return redirect()->route('user.orders')->with($notification);
     }
 
-    public function pay_via_stripe(Request $request, $id){
+    public function pay_via_worldpay(Request $request, $id){
 
         $user = Auth::guard('web')->user();
 
         $subscription_plan = SubscriptionPlan::where('id', $id)->where('status', 'active')->firstOrFail();
 
-        $stripe = StripePayment::first();
-        $payable_amount = round($subscription_plan->plan_price * $stripe->currency->currency_rate,2);
-        Stripe\Stripe::setApiKey($stripe->stripe_secret);
+        if(app()->environment('local') || env('SUBSCRIPTION_PAYMENT_DUMMY') == 'true'){
+            $order = $this->create_order($user, $subscription_plan, 'Worldpay', 'success', 'worldpay_placeholder');
 
-        try{
-            $result = Stripe\Charge::create ([
-                "amount" => $payable_amount * 100,
-                "currency" => $stripe->currency->currency_code,
-                "source" => $request->stripeToken,
-                "description" => env('APP_NAME')
-            ]);
-        }catch(Exception $ex){
-            $notification = trans('translate.Something went wrong, please try again');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
-            return redirect()->back()->with($notification);
+            $notification = trans('translate.Your payment has been made successful. Thanks for your new purchase');
+            $notification = array('messege'=>$notification,'alert-type'=>'success');
+            return redirect()->route('user.orders')->with($notification);
         }
 
+        $notification = __('Worldpay live checkout is not connected yet. Add the live keys and integration details later to enable real payments.');
+        $notification = array('messege'=>$notification,'alert-type'=>'error');
+        return redirect()->back()->with($notification);
+    }
 
-        $order = $this->create_order($user, $subscription_plan,  'Stripe', 'success', $result->balance_transaction);
+    public function pay_via_stripe(Request $request, $id){
+        return $this->pay_via_worldpay($request, $id);
 
-        $notification = trans('translate.Your payment has been made successful. Thanks for your new purchase');
-        $notification = array('messege'=>$notification,'alert-type'=>'success');
-        return redirect()->route('user.orders')->with($notification);
     }
 
     public function pay_via_razorpay(Request $request, $id){

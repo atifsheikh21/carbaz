@@ -102,6 +102,7 @@ class GeneralSettingController extends Controller
         $general_setting->selected_theme = $request->selected_theme;
         $general_setting->timezone = $request->timezone;
         $general_setting->contact_message_mail = $request->contact_message_mail;
+        $general_setting->fee_free_mode = $request->fee_free_mode ? 'enable' : 'disable';
         $general_setting->save();
 
         $notification = trans('translate.Update Successfully');
@@ -113,29 +114,35 @@ class GeneralSettingController extends Controller
 
         $logo_setting = Setting::first();
 
-        if($request->logo) {
-            $image_path = uploadFile($request->logo, 'uploads/website-images', $logo_setting->logo);
-            $logo_setting->logo = $image_path;
-            $logo_setting->save();
-        }
+        try {
+            if($request->logo) {
+                $image_path = uploadFile($request->logo, 'uploads/website-images', $logo_setting->logo);
+                $logo_setting->logo = $image_path;
+                $logo_setting->save();
+            }
 
-        if($request->logo_2) {
-            $image_path = uploadFile($request->logo_2, 'uploads/website-images', $logo_setting->logo_2);
-            $logo_setting->logo_2 = $image_path;
-            $logo_setting->save();
-        }
+            if($request->logo_2) {
+                $image_path = uploadFile($request->logo_2, 'uploads/website-images', $logo_setting->logo_2);
+                $logo_setting->logo_2 = $image_path;
+                $logo_setting->save();
+            }
 
-        if($request->inner_logo) {
-            $image_path = uploadFile($request->inner_logo, 'uploads/website-images', $logo_setting->inner_logo);
-            $logo_setting->inner_logo = $image_path;
-            $logo_setting->save();
-        }
+            if($request->inner_logo) {
+                $image_path = uploadFile($request->inner_logo, 'uploads/website-images', $logo_setting->inner_logo);
+                $logo_setting->inner_logo = $image_path;
+                $logo_setting->save();
+            }
 
 
-        if($request->favicon) {
-            $image_path = uploadFile($request->favicon, 'uploads/website-images', $logo_setting->favicon);
-            $logo_setting->favicon = $image_path;
-            $logo_setting->save();
+            if($request->favicon) {
+                $image_path = uploadFile($request->favicon, 'uploads/website-images', $logo_setting->favicon);
+                $logo_setting->favicon = $image_path;
+                $logo_setting->save();
+            }
+        } catch (\Throwable $e) {
+            $notification = $e->getMessage();
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->back()->with($notification);
         }
 
         $notification = trans('translate.Update Successfully');

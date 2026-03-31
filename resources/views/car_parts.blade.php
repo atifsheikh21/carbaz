@@ -5,16 +5,180 @@
 
 @section('body-content')
 <main>
+    @php
+        $__partBrandModelsJson = json_encode($partBrandModels ?? [], JSON_UNESCAPED_UNICODE);
+    @endphp
+    <div class="lp-mobile d-block d-md-none">
+        <div class="lp-mobile__filter">
+            <button class="lp-mobile__filter-label" type="button" data-bs-toggle="offcanvas" data-bs-target="#lpMobileFilter" aria-controls="lpMobileFilter">Filter</button>
+            <form class="lp-mobile__filter-form" method="GET" action="{{ route('car-parts') }}">
+                <input class="lp-mobile__filter-input" type="text" name="search" value="{{ request()->get('search') }}" placeholder="search car & part by key word">
+            </form>
+        </div>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="lpMobileFilter" aria-labelledby="lpMobileFilterLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="lpMobileFilterLabel">Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form method="GET" action="{{ route('car-parts') }}">
+                    <input type="hidden" name="search" value="{{ request()->get('search') }}">
+
+                    <div class="mb-3">
+                        <label class="form-label">Brand</label>
+                        <select class="form-select" name="brand_id" data-model-source="part" data-model-target="#car_parts_mobile_model">
+                            <option value="">{{ __('translate.Select Brand') }}</option>
+                            @foreach ($brands as $brandSlug => $brandLabel)
+                                <option {{ request()->get('brand_id') === $brandSlug ? 'selected' : '' }} value="{{ $brandSlug }}">{{ $brandLabel }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Model</label>
+                        <select class="form-select" name="model" id="car_parts_mobile_model" data-placeholder="Select brand model" data-selected="{{ request()->get('model') }}" {{ request()->get('brand_id') ? '' : 'disabled' }}>
+                            <option value="">Select brand model</option>
+                            @foreach (($selectedPartModels ?? []) as $modelOption)
+                                <option value="{{ $modelOption }}" {{ request()->get('model') === $modelOption ? 'selected' : '' }}>{{ $modelOption }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label">Min Price</label>
+                            <input class="form-control" type="number" step="0.01" name="min_price" value="{{ request()->get('min_price') }}">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Max Price</label>
+                            <input class="form-control" type="number" step="0.01" name="max_price" value="{{ request()->get('max_price') }}">
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-dark">Apply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="lp-mobile__tabs">
+            <a class="lp-mobile__tab" href="{{ url()->previous() }}">back</a>
+            <a class="lp-mobile__tab" href="{{ route('listings', request()->query()) }}">car ad</a>
+            <a class="lp-mobile__tab lp-mobile__tab--active" href="{{ route('car-parts', request()->query()) }}">part ad</a>
+            <a class="lp-mobile__tab lp-mobile__tab--right" href="{{ route('home') }}">HOME</a>
+        </div>
+
+        <div class="lp-mobile__list">
+            @forelse($car_parts as $part)
+                @php
+                    $agent = $part?->agent;
+                    $partTranslation = $part?->translations?->firstWhere('lang_code', front_lang())
+                        ?? $part?->translations?->firstWhere('lang_code', 'en');
+                    $dealerFlagRaw = $agent?->is_dealer ?? null;
+                    $dealerFlagNorm = strtolower(trim((string) $dealerFlagRaw));
+                    $isDealerSeller = in_array($dealerFlagNorm, ['1', 'true', 'yes'], true);
+                    $isPartSeller = (bool) ($agent?->is_part_seller ?? false);
+                    $sellerDisplayName = $isDealerSeller && $isPartSeller
+                        ? html_decode($agent?->part_company_name)
+                        : html_decode($agent?->name);
+                    $sellerName = strtoupper(trim((string) $sellerDisplayName));
+                    $sellerTypeLabel = $isDealerSeller
+                        ? ($isPartSeller ? 'CAR PART SELLER' : 'DEALER')
+                        : 'PRIVATE';
+                    $picsCount = (int) ($part->galleries_count ?? 0);
+                    $sellerPhone = preg_replace('/\s+/', '', (string) ($agent?->phone ?? ''));
+                    $rawPrice = $part->offer_price ?: $part->regular_price;
+                    $numericPrice = is_numeric($rawPrice) ? (float) $rawPrice : null;
+                @endphp
+
+                <div class="lp-mobile-card">
+                    <a class="dealer-mobile-card-link" href="{{ route('car-part', $part->slug) }}" aria-label="{{ strtoupper(trim((string) html_decode($partTranslation?->title))) }}"></a>
+                    <div class="lp-mobile-card__top">
+                        <div class="lp-mobile-card__top-left">{{ $sellerName !== '' ? $sellerName : ' ' }}</div>
+                        <div class="lp-mobile-card__top-right"> </div>
+                    </div>
+
+                    <div class="lp-mobile-card__media">
+                        <img src="{{ getImageOrPlaceholder($part->thumb_image, '640x480') }}" alt="thumb">
+                        @if($picsCount > 0)
+                            <div class="lp-mobile-card__pics">+{{ $picsCount }} PIC</div>
+                        @endif
+                    </div>
+
+                    <div class="lp-mobile-card__body">
+                        <div class="lp-mobile-card__title">{{ strtoupper(trim((string) html_decode($partTranslation?->title))) }}</div>
+                        <div class="lp-mobile-card__call">
+                            @if($sellerPhone)
+                                <a href="tel:{{ $sellerPhone }}">CALL</a>
+                            @endif
+                        </div>
+
+                        <div class="lp-mobile-card__meta">
+                            @if(!empty($part?->brand?->name))
+                                <div>{{ html_decode($part?->brand?->name) }}</div>
+                            @endif
+                            @if(!empty($part->condition))
+                                <div>{{ html_decode($part->condition) }}</div>
+                            @endif
+                            @if(!empty($part->part_number))
+                                <div>{{ html_decode($part->part_number) }}</div>
+                            @endif
+                            @if(!empty($part->compatibility))
+                                <div>{{ html_decode($part->compatibility) }}</div>
+                            @endif
+                        </div>
+
+                        <div class="lp-mobile-card__bottom">
+                            <div class="lp-mobile-card__label">{{ $sellerTypeLabel }}</div>
+                            <div class="lp-mobile-card__price">
+                                @if(!is_null($numericPrice))
+                                    €{{ number_format($numericPrice, 0, '.', ',') }}
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="lp-mobile__empty">{{ __('translate.No Item Found') }}</div>
+            @endforelse
+        </div>
+    </div>
+
+    @push('style_section')
+    <style>
+        .dealer-mobile-card-link{
+            display:none;
+        }
+        @media (max-width: 991.98px){
+            .lp-mobile-card{
+                position:relative;
+            }
+            .dealer-mobile-card-link{
+                display:block;
+                position:absolute;
+                inset:0;
+                z-index:1;
+            }
+            .lp-mobile-card__call{
+                z-index:3;
+            }
+        }
+    </style>
+    @endpush
+
+    <div class="d-none d-md-block">
     <section class="inner-banner">
         <div class="inner-banner-img" style=" background-image: url({{ getImageOrPlaceholder($breadcrumb,'1905x300') }}) "></div>
         <div class="container">
             <div class="col-lg-12">
                 <div class="inner-banner-df">
-                    <h1 class="inner-banner-taitel">{{ __('translate.Car Parts') }}</h1>
+                    <h1 class="inner-banner-taitel">{{ __('Part Ad') }}</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ __('translate.Car Parts') }}</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ __('translate.Part Ad') }}</li>
                         </ol>
                     </nav>
                 </div>
@@ -33,10 +197,19 @@
                             </div>
 
                             <div class="location-box">
-                                <select class="form-control select2" name="brand_id">
+                                <select class="form-control select2" name="brand_id" data-model-source="part" data-model-target="#car_parts_desktop_model">
                                     <option value="">{{ __('translate.Select Brand') }}</option>
-                                    @foreach ($brands as $brand)
-                                        <option {{ request()->get('brand_id') == $brand->id ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                    @foreach ($brands as $brandSlug => $brandLabel)
+                                        <option {{ request()->get('brand_id') === $brandSlug ? 'selected' : '' }} value="{{ $brandSlug }}">{{ $brandLabel }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="location-box">
+                                <select class="form-control select2" name="model" id="car_parts_desktop_model" data-placeholder="Select brand model" data-selected="{{ request()->get('model') }}" {{ request()->get('brand_id') ? '' : 'disabled' }}>
+                                    <option value="">Select brand model</option>
+                                    @foreach (($selectedPartModels ?? []) as $modelOption)
+                                        <option value="{{ $modelOption }}" {{ request()->get('model') === $modelOption ? 'selected' : '' }}>{{ $modelOption }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -62,74 +235,94 @@
                 </div>
 
                 <div class="col-lg-9">
-                    <div class="inventory-ber">
-                        <div class="inventory-ber-left">
-                            <div class="inventory-sarch-ber-item">
-                                <div class="inventory-sarch-ber">
-                                    <input type="text" class="form-control" id="outside_form_search" name="search" placeholder="{{ __('translate.Search') }}" value="{{ request()->get('search') }}">
-                                    <button id="outside_form_btn" type="button" class="thm-btn-two">{{ __('translate.Search Now') }}</button>
-                                </div>
-
-                                <div class="inventory-sarch-ber-text">
-                                    <p>{{ __('translate.Switch tab for list or grid view layout') }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="inventory-ber-right">
-                            <div class="inventory-ber-right-btn">
-                                <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
-                                            <span>
-                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M6.88404 0.221924H2.58645C1.28267 0.221924 0.22168 1.28292 0.22168 2.5867V6.88375C0.22168 8.18753 1.28267 9.24853 2.58645 9.24853H6.88351C8.18729 9.24853 9.24828 8.18753 9.24828 6.88375V2.5867C9.24881 1.28292 8.18781 0.221924 6.88404 0.221924ZM7.67229 6.88428C7.67229 7.31887 7.31863 7.67254 6.88404 7.67254H2.58645C2.15186 7.67254 1.7982 7.31887 1.7982 6.88428V2.58722C1.7982 2.15263 2.15186 1.79897 2.58645 1.79897H6.88351C7.3181 1.79897 7.67177 2.15263 7.67177 2.58722L7.67229 6.88428ZM17.5161 0.221924H13.2185C11.9147 0.221924 10.8537 1.28292 10.8537 2.5867V6.88375C10.8537 8.18753 11.9147 9.24853 13.2185 9.24853H17.5161C18.8198 9.24853 19.8808 8.18753 19.8808 6.88375V2.5867C19.8808 1.28292 18.8204 0.221924 17.5161 0.221924ZM18.3043 6.88428C18.3043 7.31887 17.9507 7.67254 17.5161 7.67254H13.2185C12.7839 7.67254 12.4302 7.31887 12.4302 6.88428V2.58722C12.4302 2.15263 12.7839 1.79897 13.2185 1.79897H17.5161C17.9507 1.79897 18.3043 2.15263 18.3043 2.58722V6.88428ZM6.88404 10.3479H2.58645C1.28267 10.3479 0.22168 11.4089 0.22168 12.7127V17.0097C0.22168 18.3135 1.28267 19.3745 2.58645 19.3745H6.88351C8.18729 19.3745 9.24828 18.3135 9.24828 17.0097V12.7127C9.24881 11.4084 8.18781 10.3479 6.88404 10.3479ZM7.67229 17.0097C7.67229 17.4443 7.31863 17.798 6.88404 17.798H2.58645C2.15186 17.798 1.7982 17.4443 1.7982 17.0097V12.7127C1.7982 12.2781 2.15186 11.9244 2.58645 11.9244H6.88351C7.3181 11.9244 7.67177 12.2781 7.67177 12.7127L7.67229 17.0097ZM17.5161 10.3479H13.2185C11.9147 10.3479 10.8537 11.4089 10.8537 12.7127V17.0097C10.8537 18.3135 11.9147 19.3745 13.2185 19.3745H16.4293C16.8644 19.3745 17.2176 19.0214 17.2176 18.5862C17.2176 18.1511 16.8644 17.798 16.4293 17.798H13.2185C12.7839 17.798 12.4302 17.4443 12.4302 17.0097V12.7127C12.4302 12.2781 12.7839 11.9244 13.2185 11.9244H17.5161C17.9507 11.9244 18.3043 12.2781 18.3043 12.7127V16.3145C18.3043 16.7496 18.6575 17.1027 19.0926 17.1027C19.5277 17.1027 19.8808 16.7496 19.8808 16.3145V12.7127C19.8808 11.4084 18.8198 10.3479 17.5161 10.3479Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    
 
                     <div class="tab-content" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                             <div class="row g-5">
                                 @forelse ($car_parts as $part)
-                                    <div class="col-lg-4 col-sm-6 col-md-6">
-                                        <div class="brand-car-item">
-                                            <div class="brand-car-item-img">
-                                                <img src="{{ getImageOrPlaceholder($part->thumb_image, '330x215') }}" alt="thumb">
-                                                <div class="brand-car-item-img-text">
-                                                    <div class="text-df">
-                                                        @if ($part->offer_price)
-                                                            <p class="text">{{ calculate_percentage($part->regular_price, $part->offer_price) }}% {{ __('translate.Off') }}</p>
-                                                        @endif
-                                                        @if ($part->condition == 'New')
-                                                            <p class="text text-two">{{ __('translate.New') }}</p>
-                                                        @else
-                                                            <p class="text text-two">{{ __('translate.Used') }}</p>
-                                                        @endif
-                                                    </div>
+                                    <div class="col-12">
+                                            @php
+                                                $agent = $part?->agent;
+                                                $partTranslation = $part?->translations?->firstWhere('lang_code', front_lang())
+                                                    ?? $part?->translations?->firstWhere('lang_code', 'en');
+                                                $dealerFlagRaw = $agent?->is_dealer ?? null;
+                                                $dealerFlagNorm = strtolower(trim((string) $dealerFlagRaw));
+                                                $isDealerSeller = in_array($dealerFlagNorm, ['1', 'true', 'yes'], true);
+                                                $isPartSeller = (bool) ($agent?->is_part_seller ?? false);
+                                                $sellerName = $isDealerSeller && $isPartSeller
+                                                    ? html_decode($agent?->part_company_name)
+                                                    : html_decode($agent?->name);
+                                                $sellerTypeLabel = $isDealerSeller
+                                                    ? ($isPartSeller ? 'CAR PART SELLER' : 'DEALER')
+                                                    : 'PRIVATE';
+                                            @endphp
+
+                                        <div class="listing-list-card {{ $isDealerSeller ? 'has-seller-bar' : '' }}">
+                                            @if ($isDealerSeller)
+                                                <div class="listing-list-seller">
+                                                    {{ $sellerName }}
                                                 </div>
+                                            @endif
+
+                                            <div class="listing-list-media">
+                                                <a href="{{ route('car-part', $part->slug) }}">
+                                                    <img src="{{ getImageOrPlaceholder($part->thumb_image, '330x215') }}" alt="thumb">
+                                                </a>
                                             </div>
 
-                                            <div class="brand-car-inner">
-                                                <div class="brand-car-inner-item">
-                                                    <span>{{ $part?->brand?->name }}</span>
-                                                    <p>
-                                                        @if ($part->offer_price)
-                                                            {{ currency($part->offer_price) }}
-                                                        @else
-                                                            {{ currency($part->regular_price) }}
-                                                        @endif
-                                                    </p>
+                                            <div class="listing-list-content {{ $isDealerSeller ? 'is-dealer' : 'is-private' }}">
+                                                <div class="listing-list-top-actions">
+                                                    @php
+                                                        $partAgentPhone = preg_replace('/\s+/', '', (string) ($part?->agent?->phone ?? ''));
+                                                    @endphp
+                                                    @if ($partAgentPhone)
+                                                        <a class="listing-call-btn" href="tel:{{ $partAgentPhone }}">{{ __('CALL') }}</a>
+                                                    @endif
                                                 </div>
 
-                                                <a href="{{ route('car-part', $part->slug) }}">
-                                                    <h3>{{ html_decode($part->frontTranslate?->title) }}</h3>
-                                                </a>
+                                                <div class="listing-list-inner">
+                                                    <div class="listing-list-info">
+                                                        <a href="{{ route('car-part', $part->slug) }}" class="listing-list-title">
+                                                            {{ html_decode($partTranslation?->title) }}
+                                                        </a>
+
+                                                        <div class="listing-list-meta">
+                                                            @if (!empty($part?->brand?->name))
+                                                                <span>{{ $part?->brand?->name }}</span>
+                                                            @endif
+                                                            @if (!empty($part->condition))
+                                                                <span>{{ html_decode($part->condition) }}</span>
+                                                            @endif
+                                                            @if (!empty($part->part_number))
+                                                                <span>{{ html_decode($part->part_number) }}</span>
+                                                            @endif
+                                                            @if (!empty($part->compatibility))
+                                                                <span>{{ html_decode($part->compatibility) }}</span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="listing-list-pricecol">
+                                                        <div class="listing-price">
+                                                            @php
+                                                                $rawPrice = $part->offer_price ?: $part->regular_price;
+                                                                $numericPrice = is_numeric($rawPrice) ? (float) $rawPrice : null;
+                                                            @endphp
+                                                            @if (!is_null($numericPrice))
+                                                                €{{ number_format($numericPrice, 0, '.', ',') }}
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="listing-list-bottom-label">
+                                                    @if ($isDealerSeller)
+                                                        <span class="listing-dealer-name">{{ $sellerTypeLabel }}</span>
+                                                    @else
+                                                        <span class="listing-private-name">PRIVATE</span>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -150,11 +343,66 @@
         </div>
     </section>
 </main>
+    </div>
 @endsection
 
 @push('js_section')
 <script>
 (function () {
+    const partModelMaps = {!! $__partBrandModelsJson !!};
+
+    function populateModelSelect(brandSelect) {
+        const targetSelector = brandSelect.getAttribute('data-model-target');
+        const target = document.querySelector(targetSelector);
+
+        if (!targetSelector || !target) {
+            return;
+        }
+
+        const selectedBrand = String(brandSelect.value || '');
+        const models = partModelMaps[selectedBrand] || [];
+        const currentValue = target.getAttribute('data-selected') || target.value || '';
+        const placeholder = target.getAttribute('data-placeholder') || 'Select brand model';
+
+        target.innerHTML = '';
+
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.textContent = placeholder;
+        target.appendChild(placeholderOption);
+
+        models.forEach(function (modelName) {
+            const option = document.createElement('option');
+            option.value = modelName;
+            option.textContent = modelName;
+            if (currentValue && currentValue === modelName) {
+                option.selected = true;
+            }
+            target.appendChild(option);
+        });
+
+        target.disabled = models.length === 0;
+        if (models.length === 0) {
+            target.value = '';
+        }
+
+        if (window.jQuery && window.jQuery.fn.select2 && window.jQuery(target).hasClass('select2-hidden-accessible')) {
+            window.jQuery(target).trigger('change.select2');
+        }
+    }
+
+    document.querySelectorAll('[data-model-source="part"]').forEach(function (brandSelect) {
+        brandSelect.addEventListener('change', function () {
+            const target = document.querySelector(brandSelect.getAttribute('data-model-target'));
+            if (target) {
+                target.setAttribute('data-selected', '');
+            }
+            populateModelSelect(brandSelect);
+        });
+
+        populateModelSelect(brandSelect);
+    });
+
     const outsideBtn = document.getElementById('outside_form_btn');
     const outsideInput = document.getElementById('outside_form_search');
     const insideInput = document.getElementById('inside_form_search');

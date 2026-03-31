@@ -10,12 +10,12 @@
         <div class="container">
             <div class="col-lg-12">
                 <div class="inner-banner-df">
-                    <h1 class="inner-banner-taitel">{{ __('translate.Messages') }}</h1>
+                    <h1 class="inner-banner-taitel">{{ __('Messages') }}</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('user.dashboard') }}">{{ __('translate.Dashboard') }}</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ __('translate.Messages') }}</li>
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('user.dashboard') }}">{{ __('Dashboard') }}</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ __('Messages') }}</li>
                         </ol>
                     </nav>
                 </div>
@@ -31,7 +31,7 @@
                 <div class="col-lg-9">
                     <div class="dashboard-item">
                         <div class="dashboard-inner-text">
-                            <h5>{{ __('translate.Messages') }}</h5>
+                            <h5>{{ __('Messages') }}</h5>
                         </div>
 
                         <div class="table-responsive">
@@ -39,7 +39,7 @@
                                 <thead>
                                     <tr>
                                         <th>{{ __('translate.User') }}</th>
-                                        <th>{{ __('translate.Last Message') }}</th>
+                                        <th>{{ __('Last Message') }}</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -72,12 +72,12 @@
                                                 {{ $c->last_message_at ? $c->last_message_at->diffForHumans() : '' }}
                                             </td>
                                             <td class="text-end">
-                                                <a class="thm-btn-two" href="{{ route('user.messages.show', $c->id) }}">{{ __('translate.Open') }}</a>
+                                                <a class="thm-btn-two" href="{{ route('user.messages.show', $c->id) }}">{{ __('Open') }}</a>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3">{{ __('translate.No Data Found') }}</td>
+                                            <td colspan="3">{{ __('No Data Found') }}</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

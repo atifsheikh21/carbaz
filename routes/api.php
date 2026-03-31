@@ -13,7 +13,7 @@ use App\Http\Controllers\API\Auth\RegisterController;
 
 
 
-Route::group(['middleware' => ['HtmlSpecialchars', 'CurrencyLangaugeForAPI']], function () {
+Route::group(['middleware' => ['HtmlSpecialchars', 'CurrencyLangaugeForAPI'], 'as' => 'api.'], function () {
 
     Route::controller(HomeController::class)->group(function () {
 

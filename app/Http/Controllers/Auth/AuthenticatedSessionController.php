@@ -57,7 +57,7 @@ class AuthenticatedSessionController extends Controller
                             $notification= trans('translate.Login Successfully');
                             $notification=array('messege'=>$notification,'alert-type'=>'success');
 
-                            return redirect()->route('user.dashboard')->with($notification);
+                            return redirect()->route('home')->with($notification);
                         }
                     }else{
                         $notification= trans('translate.Invalid Password');
@@ -110,7 +110,7 @@ class AuthenticatedSessionController extends Controller
         $notification= trans('translate.Login Successfully');
         $notification=array('messege'=>$notification,'alert-type'=>'success');
 
-        return redirect()->route('user.dashboard')->with($notification);
+        return redirect()->route('home')->with($notification);
 
     }
 
@@ -139,7 +139,7 @@ class AuthenticatedSessionController extends Controller
         $notification= trans('translate.Login Successfully');
         $notification=array('messege'=>$notification,'alert-type'=>'success');
 
-        return redirect()->route('user.dashboard')->with($notification);
+        return redirect()->route('home')->with($notification);
 
     }
 

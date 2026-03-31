@@ -2,6 +2,8 @@
 @section('title')
     <title>{{ __('translate.Edit Profile') }}</title>
 @endsection
+
+
 @section('body-content')
 
 <main>
@@ -57,13 +59,6 @@
                                                 placeholder="{{ __('translate.Name') }}" name="name" value="{{ html_decode($user->name) }}">
                                         </div>
 
-                                        <div class="join-a-dealer-form-inner">
-                                            <label for="exampleFormControlInput1" class="form-label">{{ __('translate.Designation') }}
-                                                <span>*</span></label>
-                                            <input type="text" class="form-control" id="exampleFormControlInput1"
-                                                placeholder="{{ __('translate.Designation') }}" name="designation" value="{{ html_decode($user->designation) }}">
-                                        </div>
-
                                     </div>
 
                                     <div class="join-a-dealer-form-item">
@@ -86,27 +81,66 @@
                                     </div>
 
                                     <div class="join-a-dealer-form-item">
-
                                         <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput4" class="form-label">{{ __('translate.Address') }}
+                                            <label for="user_type" class="form-label">{{ __('User Type') }}
                                                 <span>*</span></label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput4"
-                                                placeholder="{{ __('translate.Address') }}" name="address" value="{{ html_decode($user->address) }}">
+                                            <input type="text" class="form-control" id="user_type" name="user_type" value="{{ $user->is_dealer ? __('translate.Dealer') : __('translate.Individual') }}" readonly>
                                         </div>
                                     </div>
 
                                     <div class="join-a-dealer-form-item">
 
                                         <div class="join-a-dealer-form-inner">
-                                            <label for="exampleFormControlTextarea5" class="form-label">{{ __('translate.Google Map Embed Link') }}
-                                                </label>
-                                            <textarea name="google_map" class="form-control" id="exampleFormControlTextarea5" rows="5"
-                                                placeholder="{{ __('translate.Google Map Embed Code') }}">{{ html_decode($user->google_map) }}</textarea>
+                                            <label for="country" class="form-label">{{ __('translate.Country') }}
+                                                <span>*</span></label>
+                                            <input type="text" class="form-control" id="country" name="country" value="Ireland" readonly>
                                         </div>
 
+                                        <div class="join-a-dealer-form-inner">
+                                            <label for="city_id" class="form-label">{{ __('translate.City') }}
+                                                <span>*</span></label>
+                                            <select class="form-control" id="city_id" name="city_id" disabled>
+                                                <option value="">{{ __('translate.Select City') }}</option>
+                                                @foreach ($cities as $city)
+                                                    <option value="{{ $city->id }}" {{ (string) $user->city_id === (string) $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
+
+                                    @if ($user->is_dealer)
+                                        <div class="join-a-dealer-form-item">
+                                            <div class="join-a-dealer-form-inner">
+                                                <label for="postal_code" class="form-label">{{ __('Post Code') }}
+                                                    <span>*</span></label>
+                                                <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{ html_decode($user->postal_code) }}" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="join-a-dealer-form-item">
+                                            <div class="join-a-dealer-form-inner">
+                                                <label for="vehicle_company_name" class="form-label">{{ __('Vehicle company name') }}</label>
+                                                <input type="text" class="form-control" id="vehicle_company_name" name="vehicle_company_name" value="{{ old('vehicle_company_name', html_decode($user->vehicle_company_name)) }}">
+                                            </div>
+
+                                            <div class="join-a-dealer-form-inner">
+                                                <label for="vehicle_company_address" class="form-label">{{ __('Vehicle company address') }}</label>
+                                                <input type="text" class="form-control" id="vehicle_company_address" name="vehicle_company_address" value="{{ old('vehicle_company_address', html_decode($user->vehicle_company_address)) }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="join-a-dealer-form-item">
+                                            <div class="join-a-dealer-form-inner">
+                                                <label for="part_company_name" class="form-label">{{ __('Car part company name') }}</label>
+                                                <input type="text" class="form-control" id="part_company_name" name="part_company_name" value="{{ old('part_company_name', html_decode($user->part_company_name)) }}">
+                                            </div>
+
+                                            <div class="join-a-dealer-form-inner">
+                                                <label for="part_company_address" class="form-label">{{ __('Car part company address') }}</label>
+                                                <input type="text" class="form-control" id="part_company_address" name="part_company_address" value="{{ old('part_company_address', html_decode($user->part_company_address)) }}">
+                                            </div>
+                                        </div>
+                                    @endif
 
                                     <div class="join-a-dealer-form-item">
 
@@ -122,199 +156,9 @@
 
                                 </div>
 
-                                <!-- Social Link  -->
-
-                                <h3 class="dealers-information two">{{ __('translate.Social Link') }}</h3>
-
-
-                                <div class="join-a-dealer-form-main two">
-
-                                    <div class="join-a-dealer-form-item">
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput10" class="form-label">{{ __('translate.Instagram') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput10"
-                                                placeholder="{{ __('translate.Instagram') }}" name="instagram" value="{{ html_decode($user->instagram) }}">
-
-                                            <div class="icon">
-                                                <span>
-                                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                            d="M5 0C2.23858 0 0 2.23858 0 5V15C0 17.7614 2.23858 20 5 20H15C17.7614 20 20 17.7614 20 15V5C20 2.23858 17.7614 0 15 0H5ZM16 5C16.5523 5 17 4.55228 17 4C17 3.44772 16.5523 3 16 3C15.4477 3 15 3.44772 15 4C15 4.55228 15.4477 5 16 5ZM15 10C15 12.7614 12.7614 15 10 15C7.23858 15 5 12.7614 5 10C5 7.23858 7.23858 5 10 5C12.7614 5 15 7.23858 15 10ZM10 13C11.6569 13 13 11.6569 13 10C13 8.34315 11.6569 7 10 7C8.34315 7 7 8.34315 7 10C7 11.6569 8.34315 13 10 13Z" />
-                                                    </svg>
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput11" class="form-label">{{ __('translate.Facebook') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput11"
-                                            placeholder="{{ __('translate.Facebook') }}" name="facebook" value="{{ html_decode($user->facebook) }}">
-
-                                            <div class="icon">
-                                                <span>
-                                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M16 0H4C1.79086 0 0 1.79086 0 4V16C0 18.2091 1.79086 20 4 20H8.5V14H5V11H8.5V9C8.5 6.79086 10.2909 5 12.5 5H15V8H12.5C11.9477 8 11.5 8.44772 11.5 9V11H15V14H11.5V20H16C18.2091 20 20 18.2091 20 16V4C20 1.79086 18.2091 0 16 0Z" />
-                                                    </svg>
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="join-a-dealer-form-item">
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput13" class="form-label">{{ __('translate.LinkedIn') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput13"
-                                            placeholder="{{ __('translate.LinkedIn') }}" name="linkedin" value="{{ html_decode($user->linkedin) }}">
-
-                                            <div class="icon">
-                                                <span>
-                                                    <svg width="19" height="20" viewBox="0 0 19 20" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                            d="M4 2C4 3.10457 3.10457 4 2 4C0.895431 4 0 3.10457 0 2C0 0.895431 0.895431 0 2 0C3.10457 0 4 0.895431 4 2ZM4 6.5V20H0V6.5H4ZM7 6.5H11V7.34141C11.6256 7.12031 12.2987 7 13 7C16.3137 7 19 9.68629 19 13V20H15V13C15 11.8954 14.1046 11 13 11C11.8954 11 11 11.8954 11 13V20H7V13V6.5Z" />
-                                                    </svg>
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput5" class="form-label">{{ __('translate.Twitter') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput5"
-                                            placeholder="{{ __('translate.Twitter') }}" name="twitter" value="{{ html_decode($user->twitter) }}">
-
-                                            <div class="icon">
-                                                <span>
-                                                    <svg width="18" height="16" viewBox="0 0 18 16" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M12.2863 0C10.1825 0 8.47695 1.79086 8.47695 4C8.47695 4.33382 8.5159 4.65809 8.58927 4.96808C6.56635 4.96808 3.51939 4.55908 0.974682 2.00961C0.636299 1.67059 0.0123287 1.89726 0.0358001 2.37567C0.412925 10.0627 3.70501 12.3049 5.40034 12.4444C4.3056 13.5257 2.71534 14.3791 1.11513 14.7622C0.692808 14.8633 0.58848 15.3256 1.00144 15.4599C2.14647 15.8323 3.78541 15.9758 4.66759 16C10.9084 16 15.9809 10.7471 16.0938 4.22229C16.9131 3.68945 17.438 2.5325 17.7329 1.71291C17.8047 1.5133 17.4775 1.28073 17.2817 1.36226C16.6696 1.61708 15.8926 1.67749 15.2306 1.46181C14.532 0.569266 13.4725 0 12.2863 0Z" />
-                                                    </svg>
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
+                                <div class="terms-and-conditions-btn">
+                                    <button type="submit" class="thm-btn-two">{{ __('translate.Update') }}</button>
                                 </div>
-
-                                <!-- Working days  -->
-
-                                <h3 class="dealers-information two">{{ __('translate.Working Days') }}</h3>
-
-                                <div class="join-a-dealer-form-main two">
-
-                                    <div class="join-a-dealer-form-item">
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput16" class="form-label">{{ __('translate.Sunday') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput16"
-                                                placeholder="{{ __('translate.Sunday') }}" name="sunday" value="{{ html_decode($user->sunday) }}">
-                                        </div>
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput17" class="form-label">{{ __('translate.Monday') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput17"
-                                            placeholder="{{ __('translate.Monday') }}" name="monday" value="{{ html_decode($user->monday) }}">
-
-                                        </div>
-
-                                    </div>
-
-
-
-                                    <div class="join-a-dealer-form-item">
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput18" class="form-label">{{ __('translate.Tuesday') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput18"
-                                            placeholder="{{ __('translate.Tuesday') }}" name="tuesday" value="{{ html_decode($user->tuesday) }}">
-
-                                        </div>
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput19" class="form-label">{{ __('translate.Wednesday') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput19"
-                                            placeholder="{{ __('translate.Wednesday') }}" name="wednesday" value="{{ html_decode($user->wednesday) }}">
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="join-a-dealer-form-item">
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput20" class="form-label">{{ __('translate.Thursday') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput20"
-                                            placeholder="{{ __('translate.thursday') }}" name="thursday" value="{{ html_decode($user->thursday) }}">
-
-                                        </div>
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput21" class="form-label">{{ __('translate.Friday') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput21"
-                                            placeholder="{{ __('translate.Friday') }}" name="friday" value="{{ html_decode($user->friday) }}">
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="join-a-dealer-form-item">
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <label for="exampleFormControlInput22" class="form-label">{{ __('translate.Saturday') }}
-                                                </label>
-
-                                            <input type="text" class="form-control" id="exampleFormControlInput22"
-                                            placeholder="{{ __('translate.Saturday') }}" name="saturday" value="{{ html_decode($user->saturday) }}">
-
-                                        </div>
-
-                                        <div class="join-a-dealer-form-inner">
-
-                                            <div class="terms-and-conditions-btn">
-                                                <button type="submit" class="thm-btn-two">{{ __('translate.Update') }}</button>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
 
 
                                 </div>

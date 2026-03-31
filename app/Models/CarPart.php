@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class CarPart extends Model
 {
@@ -13,6 +14,7 @@ class CarPart extends Model
     protected $fillable = [
         'agent_id',
         'brand_id',
+        'city_id',
         'slug',
         'condition',
         'regular_price',
@@ -39,20 +41,25 @@ class CarPart extends Model
         return $this->belongsTo(\Modules\Brand\Entities\Brand::class, 'brand_id');
     }
 
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\City\Entities\City::class, 'city_id');
+    }
+
     public function translations(): HasMany
     {
         return $this->hasMany(CarPartTranslation::class, 'car_part_id');
     }
 
-    public function translate(): BelongsTo
+    public function translate(): HasOne
     {
-        return $this->belongsTo(CarPartTranslation::class, 'id', 'car_part_id')
+        return $this->hasOne(CarPartTranslation::class, 'car_part_id', 'id')
             ->where('lang_code', function_exists('admin_lang') ? admin_lang() : 'en');
     }
 
-    public function frontTranslate(): BelongsTo
+    public function frontTranslate(): HasOne
     {
-        return $this->belongsTo(CarPartTranslation::class, 'id', 'car_part_id')
+        return $this->hasOne(CarPartTranslation::class, 'car_part_id', 'id')
             ->where('lang_code', function_exists('front_lang') ? front_lang() : 'en');
     }
 

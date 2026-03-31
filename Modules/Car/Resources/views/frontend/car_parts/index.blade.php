@@ -31,10 +31,70 @@
                     <div class="manage-car">
                         <div class="d-flex align-items-center justify-content-between" style="gap:12px;">
                             <h4 style="margin:0;">{{ __('translate.Car Parts') }}</h4>
-                            <a href="{{ route('user.car-part.create') }}" class="thm-btn-two">{{ __('translate.Create New') }}</a>
+                            @php
+                                $__u = Auth::guard('web')->user();
+                                $__isDealer = (bool) optional($__u)->is_dealer;
+                                $__canSellPart = !$__isDealer || (bool) optional($__u)->is_part_seller;
+                            @endphp
+                            @if($__canSellPart)
+                                <a href="{{ route('user.car-part.create') }}" class="thm-btn-two">{{ __('translate.Create New') }}</a>
+                            @endif
                         </div>
 
-                        <div class="car_list_table" style="margin-top:12px;">
+                        <div class="d-block d-md-none" style="margin-top:12px;">
+                            <div class="mc-mobile">
+                                <div class="mc-mobile__tabs" style="margin-top:0;">
+                                    <a class="mc-mobile__tab {{ ($status ?? 'all') === 'all' ? 'active' : '' }}" href="{{ route('user.car-part.index', ['status' => 'all']) }}">all ad {{ $totalCount ?? $carParts->total() }}</a>
+                                    <a class="mc-mobile__tab {{ ($status ?? 'all') === 'active' ? 'active' : '' }}" href="{{ route('user.car-part.index', ['status' => 'active']) }}">active ad {{ $activeCount ?? '' }}</a>
+                                    <a class="mc-mobile__tab {{ ($status ?? 'all') === 'inactive' ? 'active' : '' }}" href="{{ route('user.car-part.index', ['status' => 'inactive']) }}">ad not active {{ $inactiveCount ?? '' }}</a>
+                                </div>
+
+                                <div class="mc-mobile__list">
+                                    @forelse($carParts as $p)
+                                        @php
+                                            $t = $p->translations?->firstWhere('lang_code', admin_lang())
+                                                ?? $p->translations?->firstWhere('lang_code', 'en');
+                                        @endphp
+                                        <div class="mc-mobile__row">
+                                            <div class="mc-mobile__img">
+                                                <img src="{{ getImageOrPlaceholder($p->thumb_image, '120x90') }}" alt="thumb">
+                                            </div>
+
+                                            <div class="mc-mobile__body">
+                                                <div class="mc-mobile__title">{{ html_decode($t?->title) }}</div>
+                                                <div class="mc-mobile__actions">
+                                                    <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); document.getElementById('delete_part_{{ $p->id }}').submit();">remove</button>
+                                                    <a class="mc-mobile__action" href="{{ route('user.car-part.edit', $p->id) }}">edit</a>
+                                                </div>
+
+                                                <form id="delete_part_{{ $p->id }}" action="{{ route('user.car-part.destroy', $p->id) }}" method="POST" class="d-none">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                            </div>
+
+                                            <div class="mc-mobile__price">
+                                                @if ($p->offer_price)
+                                                    {{ currency($p->offer_price) }}
+                                                @else
+                                                    {{ currency($p->regular_price) }}
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="py-3" style="color:#8b8b8b;">{{ __('translate.No Data Found') }}</div>
+                                    @endforelse
+                                </div>
+
+                                @if ($carParts->hasPages())
+                                    <div class="py-3">
+                                        {{ $carParts->links('listing_paginate') }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="car_list_table d-none d-md-block" style="margin-top:12px;">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -48,7 +108,8 @@
                                 <tbody>
                                     @forelse($carParts as $p)
                                         @php
-                                            $t = $p->translate;
+                                            $t = $p->translations?->firstWhere('lang_code', admin_lang())
+                                                ?? $p->translations?->firstWhere('lang_code', 'en');
                                         @endphp
                                         <tr>
                                             <td>{{ html_decode($t?->title) }}</td>
@@ -85,7 +146,9 @@
                             </table>
                         </div>
 
-                        {{ $carParts->links('listing_paginate') }}
+                        <div class="d-none d-md-block">
+                            {{ $carParts->links('listing_paginate') }}
+                        </div>
                     </div>
                 </div>
 

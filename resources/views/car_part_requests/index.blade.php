@@ -9,7 +9,7 @@
         <div class="container">
             <div class="col-lg-12">
                 <div class="inner-banner-df">
-                    <h1 class="inner-banner-taitel">{{ __('translate.Car Part Requests') }}</h1>
+                    <h1 class="inner-banner-taitel">{{ __('translate.Community Forum') }}</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
@@ -21,66 +21,78 @@
         </div>
     </section>
 
-    <section class="brand-car brand-car-two py-120px">
+    <section class="brand-car brand-car-two py-120px forum-feed">
         <div class="container">
-            <div class="row align-items-end">
-                <div class="col-lg-6 col-sm-6 col-md-6">
-                    <div class="taitel two">
-                        <div class="taitel-img">
-                            <span>
-                                <svg width="188" height="6" viewBox="0 0 188 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M1 5C26.4245 1.98151 99.2187 -2.24439 187 5" stroke="#405FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </span>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="brand-car-item p-4 shadow-sm rounded-3 forum-card forum-board">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+                            <h2 class="mb-0 forum-board__title">{{ __('translate.Community Forum') }}</h2>
+                            <a class="thm-btn-two" href="{{ route('car-part-requests.create') }}">{{ __('translate.Create Request') }}</a>
                         </div>
-                        <span>{{ __('translate.Forum') }}</span>
-                    </div>
-                    <h2>{{ __('translate.Request a Car Part') }}</h2>
-                </div>
-                <div class="col-lg-6 col-sm-6 col-md-6 text-end">
-                    <a class="thm-btn-two" href="{{ route('car-part-requests.create') }}">{{ __('translate.Create Request') }}</a>
-                </div>
-            </div>
 
-            <div class="row mt-60px g-4">
-                @forelse ($requests as $item)
-                    <div class="col-lg-12">
-                        <div class="brand-car-item p-4 shadow-sm rounded-3">
-                            <div class="brand-car-inner">
-                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <strong class="mb-0">{{ $item->user?->name }}</strong>
-                                        <span class="text-muted">{{ $item->created_at?->format('d M, Y') }}</span>
+                        <form method="GET" action="{{ route('car-part-requests.index') }}" class="forum-board__filters">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-7">
+                                    <div class="forum-board__search">
+                                        <input type="text" name="q" class="form-control" placeholder="{{ __('translate.Search') }}..." value="{{ $search ?? '' }}">
                                     </div>
-
-                                    @php
-                                        $status = (string) $item->status;
-                                        $statusClass = 'bg-secondary';
-                                        if (strtolower($status) === 'open') {
-                                            $statusClass = 'bg-success';
-                                        }
-                                        if (strtolower($status) === 'closed') {
-                                            $statusClass = 'bg-dark';
-                                        }
-                                    @endphp
-                                    <span class="badge {{ $statusClass }}">{{ $status }}</span>
                                 </div>
-
-                                <a href="{{ route('car-part-requests.show', $item->id) }}" class="text-decoration-none">
-                                    <h3 class="mb-2">{{ $item->title }}</h3>
-                                </a>
-
-                                <p class="mb-0 text-muted">{{ \Illuminate\Support\Str::limit($item->part_description, 220) }}</p>
+                                <div class="col-md-5">
+                                    <select class="form-control" name="sort" onchange="this.form.submit()">
+                                        <option value="latest" {{ ($sort ?? 'latest') === 'latest' ? 'selected' : '' }}>{{ __('translate.Latest') }}</option>
+                                        <option value="oldest" {{ ($sort ?? 'latest') === 'oldest' ? 'selected' : '' }}>{{ __('translate.Oldest') }}</option>
+                                        <option value="most_replied" {{ ($sort ?? 'latest') === 'most_replied' ? 'selected' : '' }}>{{ __('translate.Most Replied') }}</option>
+                                    </select>
+                                </div>
                             </div>
+                        </form>
+
+                        <div class="forum-board__table mt-3">
+                            <div class="forum-board__thead">
+                                <div class="forum-board__th">{{ __('translate.Category') }}</div>
+                                <div class="forum-board__th text-center">{{ __('translate.Status') }}</div>
+                                <div class="forum-board__th text-end">{{ __('translate.Activity') }}</div>
+                            </div>
+
+                            @forelse ($requests as $item)
+                                @php
+                                    $status = (string) $item->status;
+                                    $statusClass = 'bg-secondary';
+                                    if (strtolower($status) === 'open') {
+                                        $statusClass = 'bg-success';
+                                    }
+                                    if (strtolower($status) === 'closed') {
+                                        $statusClass = 'bg-dark';
+                                    }
+
+                                    $activityAt = $item->replies_max_created_at ?: $item->created_at;
+                                @endphp
+
+                                <a class="forum-board__row" href="{{ route('car-part-requests.show', $item->id) }}">
+                                    <div class="forum-board__cell">
+                                        <div class="forum-board__category">
+                                            <div class="forum-board__icon"></div>
+                                            <div class="forum-board__cat-text">
+                                                <div class="forum-board__cat-title">{{ $item->title }}</div>
+                                                <div class="forum-board__cat-desc">{{ \Illuminate\Support\Str::limit($item->part_description, 90) }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="forum-board__cell text-center">
+                                        <span class="badge {{ $statusClass }} forum-board__status">{{ $status }}</span>
+                                    </div>
+                                    <div class="forum-board__cell text-end">
+                                        <div class="forum-board__activity">{{ $activityAt?->diffForHumans() }}</div>
+                                        <div class="forum-board__activity-sub">{{ __('translate.Replies') }}: {{ $item->replies_count }}</div>
+                                    </div>
+                                </a>
+                            @empty
+                                <div class="forum-board__empty">{{ __('translate.No Item Found') }}</div>
+                            @endforelse
                         </div>
                     </div>
-                @empty
-                    <div class="col-12">
-                        <div class="brand-car-item p-4 shadow-sm rounded-3">
-                            <p class="mb-0">{{ __('translate.No Item Found') }}</p>
-                        </div>
-                    </div>
-                @endforelse
+                </div>
             </div>
 
             <div class="row mt-60px">

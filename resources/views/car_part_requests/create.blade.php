@@ -22,56 +22,59 @@
         </div>
     </section>
 
-    <section class="brand-car brand-car-two py-120px">
+    <section class="brand-car brand-car-two py-120px forum-feed">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8">
-                    <div class="brand-car-item p-4 shadow-sm rounded-3">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                            <h3 class="mb-0">{{ __('translate.Create Request') }}</h3>
-                            <a class="thm-btn-two" href="{{ route('car-part-requests.index') }}">{{ __('translate.Back') }}</a>
+                <div class="col-lg-8 mx-auto">
+                    <div class="brand-car-item shadow-sm rounded-3 forum-card forum-composer">
+                        <div class="forum-composer__header">
+                            <h3 class="forum-composer__title">{{ __('translate.Create Request') }}</h3>
                         </div>
 
-                        <form method="POST" action="{{ route('car-part-requests.store') }}">
+                        <form method="POST" action="{{ route('car-part-requests.store') }}" enctype="multipart/form-data">
                             @csrf
 
-                            <div class="form-group mb-3">
-                                <label>{{ __('translate.Title') }}</label>
-                                <input type="text" name="title" class="form-control" value="{{ old('title') }}">
-                            </div>
+                            <div class="forum-composer__body">
+                                <div class="form-group forum-composer__group">
+                                    <label class="forum-composer__label">{{ __('translate.Title') }} <span class="text-danger">*</span></label>
+                                    <input type="text" name="title" class="form-control" placeholder="{{ __('translate.Enter discussion title') }}" value="{{ old('title') }}">
+                                </div>
 
-                            <div class="form-group mb-3">
-                                <label>{{ __('translate.Part Description') }}</label>
-                                <textarea name="part_description" class="form-control" rows="5">{{ old('part_description') }}</textarea>
-                            </div>
+                                <div class="form-group forum-composer__group">
+                                    <label class="forum-composer__label">{{ __('translate.Content') }} <span class="text-danger">*</span></label>
+                                    <textarea name="part_description" class="form-control" rows="8" placeholder="{{ __('translate.Write your discussion content...') }}">{{ old('part_description') }}</textarea>
+                                </div>
 
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <div class="form-group mb-3">
-                                        <label>{{ __('translate.Car Make') }}</label>
+                                <div class="forum-composer__row">
+                                    <div class="form-group forum-composer__group">
+                                        <label class="forum-composer__label">{{ __('translate.Car Make') }}</label>
                                         <input type="text" name="car_make" class="form-control" value="{{ old('car_make') }}">
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group mb-3">
-                                        <label>{{ __('translate.Car Model') }}</label>
+                                    <div class="form-group forum-composer__group">
+                                        <label class="forum-composer__label">{{ __('translate.Car Model') }}</label>
                                         <input type="text" name="car_model" class="form-control" value="{{ old('car_model') }}">
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group mb-3">
-                                        <label>{{ __('translate.Car Year') }}</label>
+                                    <div class="form-group forum-composer__group">
+                                        <label class="forum-composer__label">{{ __('translate.Car Year') }}</label>
                                         <input type="text" name="car_year" class="form-control" value="{{ old('car_year') }}">
                                     </div>
                                 </div>
+
+                                <div class="form-group forum-composer__group">
+                                    <label class="forum-composer__label">{{ __('translate.Additional Notes') }}</label>
+                                    <textarea name="additional_notes" class="form-control" rows="4">{{ old('additional_notes') }}</textarea>
+                                </div>
+
+                                <div class="form-group forum-composer__group">
+                                    <label class="forum-composer__label">{{ __('translate.Image') }} ({{ __('translate.Optional') }})</label>
+                                    <input type="file" name="image" class="form-control" accept="image/*">
+                                </div>
                             </div>
 
-                            <div class="form-group mb-4">
-                                <label>{{ __('translate.Additional Notes') }}</label>
-                                <textarea name="additional_notes" class="form-control" rows="4">{{ old('additional_notes') }}</textarea>
+                            <div class="forum-composer__footer">
+                                <a class="btn btn-light" href="{{ route('car-part-requests.index') }}">{{ __('translate.Cancel') }}</a>
+                                <button type="submit" class="btn btn-primary">{{ __('translate.Create Post') }}</button>
                             </div>
-
-                            <button type="submit" class="thm-btn-two">{{ __('translate.Submit') }}</button>
                         </form>
                     </div>
                 </div>

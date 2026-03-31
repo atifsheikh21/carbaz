@@ -46,16 +46,207 @@ use Modules\ContactMessage\Http\Requests\ContactMessageRequest;
 class HomeController extends Controller
 {
 
-    public function landing(Request $request)
+    protected function getIrelandMakerCatalog(): array
     {
-        if (Auth::guard('web')->check()) {
-            return redirect()->route('home');
+        return [
+            'audi' => ['label' => 'Audi', 'models' => ['A1', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q2', 'Q3', 'Q5', 'Q7', 'Q8', 'TT', 'e-tron']],
+            'alfa-romeo' => ['label' => 'Alfa Romeo', 'models' => ['Giulia', 'Giulietta', 'Mito', 'Stelvio', 'Tonale']],
+            'aston-martin' => ['label' => 'Aston Martin', 'models' => ['DB11', 'DB12', 'DBS', 'V8 Vantage', 'Vantage', 'DBX']],
+            'bentley' => ['label' => 'Bentley', 'models' => ['Bentayga', 'Continental', 'Flying Spur', 'Mulsanne']],
+            'bmw' => ['label' => 'BMW', 'models' => ['1 Series', '2 Series', '3 Series', '4 Series', '5 Series', '6 Series', '7 Series', '8 Series', 'X1', 'X2', 'X3', 'X4', 'X5', 'X6', 'X7', 'Z4', 'i3', 'i4', 'i5', 'i7', 'iX']],
+            'byd' => ['label' => 'BYD', 'models' => ['Atto 3', 'Dolphin', 'Seal', 'Seal U', 'Han', 'Tang']],
+            'chevrolet' => ['label' => 'Chevrolet', 'models' => ['Aveo', 'Camaro', 'Captiva', 'Cruze', 'Kalos', 'Lacetti', 'Orlando', 'Spark', 'Trax']],
+            'chrysler' => ['label' => 'Chrysler', 'models' => ['300C', 'Grand Voyager', 'Pacifica', 'Voyager']],
+            'citroen' => ['label' => 'Citroen', 'models' => ['Berlingo', 'C1', 'C3', 'C3 Aircross', 'C4', 'C4 Cactus', 'C4 Picasso', 'C5', 'C5 Aircross', 'Dispatch', 'DS3', 'Grand C4 Picasso', 'Relay']],
+            'cupra' => ['label' => 'Cupra', 'models' => ['Ateca', 'Born', 'Formentor', 'Leon', 'Tavascan']],
+            'dacia' => ['label' => 'Dacia', 'models' => ['Duster', 'Jogger', 'Logan', 'Sandero', 'Spring']],
+            'daewoo' => ['label' => 'Daewoo', 'models' => ['Kalos', 'Lacetti', 'Matiz']],
+            'daihatsu' => ['label' => 'Daihatsu', 'models' => ['Charade', 'Copen', 'Fourtrak', 'Sirion', 'Terios']],
+            'dodge' => ['label' => 'Dodge', 'models' => ['Caliber', 'Challenger', 'Charger', 'Journey', 'Nitro', 'RAM']],
+            'ds' => ['label' => 'DS', 'models' => ['DS 3', 'DS 4', 'DS 5', 'DS 7', 'DS 9']],
+            'fiat' => ['label' => 'Fiat', 'models' => ['500', '500L', '500X', 'Bravo', 'Doblo', 'Ducato', 'Fiorino', 'Grande Punto', 'Panda', 'Punto', 'Tipo']],
+            'ford' => ['label' => 'Ford', 'models' => ['B-Max', 'C-Max', 'EcoSport', 'Edge', 'Explorer', 'Fiesta', 'Focus', 'Fusion', 'Galaxy', 'Kuga', 'Ka', 'Mondeo', 'Mustang', 'Puma', 'Ranger', 'S-Max', 'Tourneo', 'Transit']],
+            'honda' => ['label' => 'Honda', 'models' => ['Accord', 'Civic', 'CR-V', 'FR-V', 'HR-V', 'Insight', 'Jazz', 'NSX', 'S2000', 'ZR-V']],
+            'hyundai' => ['label' => 'Hyundai', 'models' => ['Bayon', 'i10', 'i20', 'i30', 'Ioniq', 'Ioniq 5', 'Ioniq 6', 'ix20', 'ix35', 'Kona', 'Santa Fe', 'Tucson']],
+            'jaguar' => ['label' => 'Jaguar', 'models' => ['E-Pace', 'F-Pace', 'F-Type', 'I-Pace', 'XE', 'XF', 'XJ']],
+            'jeep' => ['label' => 'Jeep', 'models' => ['Avenger', 'Cherokee', 'Compass', 'Grand Cherokee', 'Renegade', 'Wrangler']],
+            'kia' => ['label' => 'Kia', 'models' => ['Carens', 'Ceed', 'EV3', 'EV6', 'EV9', 'Niro', 'Optima', 'Picanto', 'ProCeed', 'Rio', 'Sorento', 'Soul', 'Sportage', 'Stonic', 'Venga', 'XCeed']],
+            'land-rover' => ['label' => 'Land Rover', 'models' => ['Defender', 'Discovery', 'Discovery Sport', 'Freelander', 'Range Rover', 'Range Rover Evoque', 'Range Rover Sport', 'Range Rover Velar']],
+            'lexus' => ['label' => 'Lexus', 'models' => ['CT', 'ES', 'GS', 'IS', 'LC', 'LS', 'NX', 'RX', 'UX']],
+            'mazda' => ['label' => 'Mazda', 'models' => ['2', '3', '5', '6', 'CX-3', 'CX-30', 'CX-5', 'CX-60', 'CX-7', 'CX-9', 'MX-5', 'MX-30']],
+            'mercedes-benz' => ['label' => 'Mercedes-Benz', 'models' => ['A-Class', 'B-Class', 'C-Class', 'CLA', 'CLC', 'CLK', 'CLS', 'E-Class', 'EQA', 'EQB', 'EQC', 'EQE', 'EQS', 'G-Class', 'GLA', 'GLB', 'GLC', 'GLE', 'GLS', 'SL', 'S-Class', 'V-Class', 'Sprinter']],
+            'mg' => ['label' => 'MG', 'models' => ['HS', 'MG3', 'MG4', 'MG5', 'Marvel R', 'ZS']],
+            'mini' => ['label' => 'MINI', 'models' => ['Clubman', 'Countryman', 'Cooper', 'Convertible', 'Paceman']],
+            'mitsubishi' => ['label' => 'Mitsubishi', 'models' => ['ASX', 'Colt', 'Eclipse Cross', 'L200', 'Lancer', 'Outlander', 'Pajero', 'Space Star']],
+            'nissan' => ['label' => 'Nissan', 'models' => ['Almera', 'Ariya', 'Juke', 'Leaf', 'Micra', 'Navara', 'Note', 'NV200', 'Pathfinder', 'Pulsar', 'Qashqai', 'X-Trail']],
+            'opel' => ['label' => 'Opel', 'models' => ['Adam', 'Astra', 'Corsa', 'Crossland', 'Grandland', 'Insignia', 'Meriva', 'Mokka', 'Vivaro', 'Zafira']],
+            'peugeot' => ['label' => 'Peugeot', 'models' => ['107', '108', '2008', '208', '3008', '301', '308', '407', '408', '5008', '508', 'Boxer', 'Expert', 'Partner', 'RCZ']],
+            'polestar' => ['label' => 'Polestar', 'models' => ['Polestar 1', 'Polestar 2', 'Polestar 3', 'Polestar 4']],
+            'porsche' => ['label' => 'Porsche', 'models' => ['718', '911', 'Cayenne', 'Cayman', 'Macan', 'Panamera', 'Taycan']],
+            'renault' => ['label' => 'Renault', 'models' => ['Arkana', 'Austral', 'Captur', 'Clio', 'Espace', 'Fluence', 'Grand Scenic', 'Kadjar', 'Kangoo', 'Koleos', 'Laguna', 'Megane', 'Scenic', 'Symbioz', 'Trafic', 'Twingo', 'Zoe']],
+            'rover' => ['label' => 'Rover', 'models' => ['25', '45', '75', 'Mini']],
+            'saab' => ['label' => 'Saab', 'models' => ['9-3', '9-5', '900']],
+            'seat' => ['label' => 'SEAT', 'models' => ['Alhambra', 'Arona', 'Ateca', 'Ibiza', 'Leon', 'Mii', 'Toledo']],
+            'skoda' => ['label' => 'Skoda', 'models' => ['Citigo', 'Enyaq', 'Fabia', 'Kamiq', 'Karoq', 'Kodiaq', 'Octavia', 'Rapid', 'Scala', 'Superb', 'Yeti']],
+            'smart' => ['label' => 'Smart', 'models' => ['ForFour', 'ForTwo', '#1', '#3']],
+            'subaru' => ['label' => 'Subaru', 'models' => ['BRZ', 'Forester', 'Impreza', 'Legacy', 'Levorg', 'Outback', 'XV']],
+            'suzuki' => ['label' => 'Suzuki', 'models' => ['Across', 'Alto', 'Baleno', 'Grand Vitara', 'Ignis', 'Jimny', 'S-Cross', 'Splash', 'Swift', 'SX4', 'Vitara']],
+            'tesla' => ['label' => 'Tesla', 'models' => ['Model 3', 'Model S', 'Model X', 'Model Y']],
+            'toyota' => ['label' => 'Toyota', 'models' => ['Auris', 'Avensis', 'Aygo', 'bZ4X', 'C-HR', 'Camry', 'Celica', 'Corolla', 'GT86', 'Hilux', 'Land Cruiser', 'Prius', 'Proace', 'RAV4', 'Verso', 'Yaris']],
+            'vauxhall' => ['label' => 'Vauxhall', 'models' => ['Astra', 'Corsa', 'Crossland', 'Grandland', 'Insignia', 'Meriva', 'Mokka', 'Movano', 'Vivaro', 'Zafira']],
+            'volkswagen' => ['label' => 'Volkswagen', 'models' => ['Amarok', 'Arteon', 'Beetle', 'Caddy', 'California', 'Crafter', 'Golf', 'ID.3', 'ID.4', 'ID.5', 'ID.7', 'Jetta', 'Passat', 'Polo', 'Sharan', 'T-Cross', 'T-Roc', 'Taigo', 'Tiguan', 'Touareg', 'Touran', 'Transporter', 'Up!']],
+            'volvo' => ['label' => 'Volvo', 'models' => ['C30', 'C40', 'S40', 'S60', 'S80', 'S90', 'V40', 'V60', 'V90', 'XC40', 'XC60', 'XC70', 'XC90', 'EX30', 'EX40', 'EX90']],
+        ];
+    }
+
+    protected function getEnabledBrandSlugMap(): array
+    {
+        $map = [];
+        $brands = Brand::where('status', 'enable')->get();
+
+        foreach ($brands as $brand) {
+            $slug = Str::slug((string) $brand->name);
+            if ($slug === '') {
+                continue;
+            }
+
+            $map[$slug] ??= [];
+            $map[$slug][] = (int) $brand->id;
+        }
+
+        return $map;
+    }
+
+    protected function getMakerOptions(): array
+    {
+        $catalog = $this->getIrelandMakerCatalog();
+        $options = [];
+
+        foreach ($catalog as $slug => $item) {
+            $options[$slug] = $item['label'];
         }
 
         $brands = Brand::where('status', 'enable')->get();
+        foreach ($brands as $brand) {
+            $name = trim((string) $brand->name);
+            $slug = Str::slug($name);
+            if ($slug === '' || isset($options[$slug])) {
+                continue;
+            }
+            $options[$slug] = $name;
+        }
+
+        asort($options, SORT_NATURAL | SORT_FLAG_CASE);
+
+        return $options;
+    }
+
+    protected function resolveBrandIdsForSelection($selection): array
+    {
+        $selection = trim((string) $selection);
+        if ($selection === '') {
+            return [];
+        }
+
+        if (ctype_digit($selection)) {
+            return [(int) $selection];
+        }
+
+        $brandSlugMap = $this->getEnabledBrandSlugMap();
+
+        return $brandSlugMap[$selection] ?? [];
+    }
+
+    protected function getCarBrandModelsMap(): array
+    {
+        $catalog = $this->getIrelandMakerCatalog();
+        $map = [];
+        foreach ($catalog as $slug => $item) {
+            $map[$slug] = $item['models'];
+        }
+
+        $brandSlugMap = $this->getEnabledBrandSlugMap();
+        $rows = Car::query()
+            ->with('brand')
+            ->select('id', 'brand_id', 'car_model')
+            ->whereNotNull('brand_id')
+            ->whereNotNull('car_model')
+            ->where('car_model', '!=', '')
+            ->get();
+
+        foreach ($rows as $row) {
+            $brandName = trim((string) optional($row->brand)->name);
+            $brandSlug = $brandName !== '' ? Str::slug($brandName) : null;
+            if (!$brandSlug && !empty($brandSlugMap[(string) $row->brand_id])) {
+                $brandSlug = (string) $row->brand_id;
+            }
+            $modelName = trim((string) $row->car_model);
+            if (!$brandSlug || $modelName === '') {
+                continue;
+            }
+
+            $map[$brandSlug] ??= [];
+            if (!in_array($modelName, $map[$brandSlug], true)) {
+                $map[$brandSlug][] = $modelName;
+            }
+        }
+
+        foreach ($map as &$models) {
+            sort($models, SORT_NATURAL | SORT_FLAG_CASE);
+        }
+        unset($models);
+
+        return $map;
+    }
+
+    protected function getPartBrandModelsMap(): array
+    {
+        $catalog = $this->getIrelandMakerCatalog();
+        $map = [];
+        foreach ($catalog as $slug => $item) {
+            $map[$slug] = $item['models'];
+        }
+
+        $rows = CarPart::query()
+            ->with('brand')
+            ->select('id', 'brand_id', 'compatibility')
+            ->whereNotNull('brand_id')
+            ->whereNotNull('compatibility')
+            ->where('compatibility', '!=', '')
+            ->get();
+
+        foreach ($rows as $row) {
+            $brandName = trim((string) optional($row->brand)->name);
+            $brandSlug = $brandName !== '' ? Str::slug($brandName) : null;
+            $modelName = trim((string) $row->compatibility);
+            if (!$brandSlug || $modelName === '') {
+                continue;
+            }
+
+            $map[$brandSlug] ??= [];
+            if (!in_array($modelName, $map[$brandSlug], true)) {
+                $map[$brandSlug][] = $modelName;
+            }
+        }
+
+        foreach ($map as &$models) {
+            sort($models, SORT_NATURAL | SORT_FLAG_CASE);
+        }
+        unset($models);
+
+        return $map;
+    }
+
+    public function landing(Request $request)
+    {
+        $brands = $this->getMakerOptions();
+        $carBrandModels = $this->getCarBrandModelsMap();
+        $partBrandModels = $this->getPartBrandModelsMap();
 
         return view('landing_search', [
             'brands' => $brands,
+            'carBrandModels' => $carBrandModels,
+            'partBrandModels' => $partBrandModels,
         ]);
     }
 
@@ -129,7 +320,7 @@ class HomeController extends Controller
         });
 
         $car_parts = Cache::remember($cache_key_prefix . '.car_parts', 60, function () {
-            return CarPart::with('brand', 'frontTranslate')->where(function ($query) {
+            return CarPart::with('brand', 'translations')->where(function ($query) {
                 $query->where('expired_date', null)
                     ->orWhere('expired_date', '>=', date('Y-m-d'));
             })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->orderBy('id', 'desc')->take(8)->get();
@@ -455,16 +646,22 @@ class HomeController extends Controller
 
         $seo_setting = SeoSetting::where('id', 10)->first();
 
-        $brands = Brand::where('status', 'enable')->get();
+        $brands = $this->getMakerOptions();
+        $carBrandModels = $this->getCarBrandModelsMap();
+        $cities = City::with('translate')->get();
+        $engineSizes = Car::query()
+            ->whereNotNull('engine_size')
+            ->where('engine_size', '!=', '')
+            ->distinct()
+            ->orderBy('engine_size')
+            ->pluck('engine_size');
 
-        $cars = Car::with('dealer', 'brand', 'front_translate')->where(function ($query) {
+        $cars = Car::with('dealer', 'brand', 'front_translate')
+            ->withCount('galleries')
+            ->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
         })->where(['status' => 'enable', 'approved_by_admin' => 'approved']);
-
-        if($request->country){
-            $cars = $cars->where('country_id', $request->country);
-        }
 
         if($request->location){
             $cars = $cars->where('city_id', $request->location);
@@ -484,11 +681,43 @@ class HomeController extends Controller
         }
 
         if($request->brand_id){
-            $cars = $cars->where('brand_id', $request->brand_id);
+            $brandIds = $this->resolveBrandIdsForSelection($request->brand_id);
+            if (count($brandIds) > 0) {
+                $cars = $cars->whereIn('brand_id', $brandIds);
+            } else {
+                $cars = $cars->whereRaw('1 = 0');
+            }
         }
 
         if($request->model){
             $cars = $cars->where('car_model', 'like', '%' . $request->model . '%');
+        }
+
+        if($request->seller_type){
+            $sellerType = strtolower(trim((string) $request->seller_type));
+            if ($sellerType === 'dealer') {
+                $cars = $cars->where(function ($query) {
+                    $query->where('seller_type', 'like', '%dealer%')
+                        ->orWhereHas('dealer', function ($dealerQuery) {
+                            $dealerQuery->where('is_dealer', 1);
+                        });
+                });
+            }
+
+            if ($sellerType === 'private') {
+                $cars = $cars->where(function ($query) {
+                    $query->whereNull('seller_type')
+                        ->orWhere('seller_type', 'not like', '%dealer%');
+                })->where(function ($query) {
+                    $query->whereDoesntHave('dealer')
+                        ->orWhereHas('dealer', function ($dealerQuery) {
+                            $dealerQuery->where(function ($innerQuery) {
+                                $innerQuery->whereNull('is_dealer')
+                                    ->orWhere('is_dealer', '!=', 1);
+                            });
+                        });
+                });
+            }
         }
 
         if($request->condition){
@@ -539,6 +768,29 @@ class HomeController extends Controller
             $cars = $cars->whereNotNull('year')->whereRaw('CAST(year AS UNSIGNED) <= ?', [(int)$request->max_year]);
         }
 
+        if($request->engine_size){
+            $cars = $cars->where('engine_size', $request->engine_size);
+        }
+
+        if($request->min_mileage){
+            $cars = $cars->whereNotNull('mileage')->whereRaw('CAST(mileage AS UNSIGNED) >= ?', [(int)$request->min_mileage]);
+        }
+
+        if($request->max_mileage){
+            $cars = $cars->whereNotNull('mileage')->whereRaw('CAST(mileage AS UNSIGNED) <= ?', [(int)$request->max_mileage]);
+        }
+
+        if($request->transmission){
+            $cars = $cars->where('transmission', $request->transmission);
+        }
+
+        if($request->fuel_type){
+            $cars = $cars->where(function ($query) use ($request) {
+                $query->where('fuel_type', $request->fuel_type)
+                    ->orWhere('motorcheck_fuel', $request->fuel_type);
+            });
+        }
+
         if($request->min_price){
             $cars = $cars->where('regular_price', '>=', $request->min_price);
         }
@@ -574,24 +826,18 @@ class HomeController extends Controller
 
         $listing_ads = AdsBanner::where('position_key', 'listing_page_sidebar')->first();
 
-        $cities = [];
-        if($request->country){
-
-            $cities = City::with('translate')->where('country_id', $request->country)->get();
-        }
-
         $features = Feature::with('translate')->get();
-
-        $countries = Country::latest()->get();
 
         return view('listing', [
             'seo_setting' => $seo_setting,
             'brands' => $brands,
+            'carBrandModels' => $carBrandModels,
+            'selectedCarModels' => $request->brand_id ? ($carBrandModels[(string) $request->brand_id] ?? []) : [],
             'cities' => $cities,
+            'engineSizes' => $engineSizes,
             'features' => $features,
             'cars' => $cars,
             'listing_ads' => $listing_ads,
-            'countries' => $countries,
         ]);
     }
 
@@ -620,7 +866,7 @@ class HomeController extends Controller
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
         })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('brand_id', $car->brand_id)->where('id', '!=', $car->id)->get()->take(6);
 
-        $dealer = User::where(['status' => 'enable' , 'is_banned' => 'no', 'is_dealer' => 1])->where('email_verified_at', '!=', null)->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer', 'address', 'email', 'phone', 'created_at')->where('id', $car->agent_id)->first();
+        $dealer = User::where(['status' => 'enable' , 'is_banned' => 'no'])->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer', 'is_vehicle_seller', 'vehicle_company_name', 'address', 'email', 'phone', 'created_at')->where('id', $car->agent_id)->first();
 
         $reviews = Review::with('user')->where('car_id', $car->id)->where('status', 'enable')->latest()->get();
 
@@ -674,7 +920,7 @@ class HomeController extends Controller
 
     public function dealer(Request $request, $username){
 
-        $dealer = User::where(['status' => 'enable' , 'is_banned' => 'no', 'is_dealer' => 1])->where('email_verified_at', '!=', null)->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer', 'address', 'email', 'phone','facebook','linkedin','twitter','instagram', 'about_me','created_at','sunday','monday','tuesday','wednesday','thursday','friday','saturday','google_map')->where('username', $username)->first();
+        $dealer = User::where(['status' => 'enable' , 'is_banned' => 'no'])->where('email_verified_at', '!=', null)->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer', 'is_vehicle_seller', 'vehicle_company_name', 'vehicle_company_address', 'is_part_seller', 'part_company_name', 'part_company_address', 'address', 'email', 'phone','facebook','linkedin','twitter','instagram', 'about_me','created_at','sunday','monday','tuesday','wednesday','thursday','friday','saturday','google_map')->where('username', $username)->first();
 
         if(!$dealer) abort(404);
 
@@ -683,13 +929,19 @@ class HomeController extends Controller
         $cars = Car::with('dealer', 'brand')->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('agent_id', $dealer->id)->paginate(9);
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('agent_id', $dealer->id)->paginate(9, ['*'], 'car_page');
+
+        $car_parts = CarPart::with(['agent', 'brand', 'translations'])->withCount('galleries')->where(function ($query) {
+            $query->where('expired_date', null)
+                ->orWhere('expired_date', '>=', date('Y-m-d'));
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('agent_id', $dealer->id)->paginate(9, ['*'], 'part_page');
 
         $dealer_ads = AdsBanner::where('position_key', 'dealer_detail_page_banner')->first();
 
         return view('dealer_detail', [
             'dealer' => $dealer,
             'cars' => $cars,
+            'car_parts' => $car_parts,
             'total_dealer_rating' => $total_dealer_rating,
             'dealer_ads' => $dealer_ads,
         ]);
@@ -720,9 +972,17 @@ class HomeController extends Controller
 
     public function pricing_plan(){
 
-        $subscription_plans = SubscriptionPlan::orderBy('serial', 'asc')->where('status', 'active')->get();
+        $user = Auth::guard('web')->user();
+        if($user && !$user->is_dealer){
+            $notification = trans('translate.You are not allowed to access this page');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('user.dashboard')->with($notification);
+        }
 
-        return view('pricing_plan', ['subscription_plans' => $subscription_plans]);
+        $subscription_plans = SubscriptionPlan::orderBy('serial', 'asc')->where('status', 'active')->get();
+        $setting = Setting::first();
+
+        return view('pricing_plan', ['subscription_plans' => $subscription_plans, 'setting' => $setting]);
     }
 
      public function join_as_dealer(){
@@ -839,15 +1099,27 @@ class HomeController extends Controller
 
     public function car_parts(Request $request)
     {
-        $brands = Brand::where('status', 'enable')->get();
+        $brands = $this->getMakerOptions();
+        $partBrandModels = $this->getPartBrandModelsMap();
 
-        $car_parts = CarPart::with('brand', 'frontTranslate')->where(function ($query) {
+        $car_parts = CarPart::with('brand', 'translations', 'agent')
+            ->withCount('galleries')
+            ->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
         })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->orderBy('id', 'desc');
 
         if($request->brand_id){
-            $car_parts = $car_parts->where('brand_id', $request->brand_id);
+            $brandIds = $this->resolveBrandIdsForSelection($request->brand_id);
+            if (count($brandIds) > 0) {
+                $car_parts = $car_parts->whereIn('brand_id', $brandIds);
+            } else {
+                $car_parts = $car_parts->whereRaw('1 = 0');
+            }
+        }
+
+        if($request->model){
+            $car_parts = $car_parts->where('compatibility', 'like', '%' . $request->model . '%');
         }
 
         if($request->min_price){
@@ -871,12 +1143,14 @@ class HomeController extends Controller
         return view('car_parts', [
             'car_parts' => $car_parts,
             'brands' => $brands,
+            'partBrandModels' => $partBrandModels,
+            'selectedPartModels' => $request->brand_id ? ($partBrandModels[(string) $request->brand_id] ?? []) : [],
         ]);
     }
 
     public function car_part($slug)
     {
-        $car_part = CarPart::with('brand', 'frontTranslate')->where(function ($query) {
+        $car_part = CarPart::with('brand', 'translations', 'galleries', 'agent')->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
         })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('slug', $slug)->firstOrFail();

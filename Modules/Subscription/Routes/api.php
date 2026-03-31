@@ -19,7 +19,7 @@ use Modules\Subscription\Http\Controllers\API\PaymentController;
 
 Route::group(['middleware' => ['XSS','DEMO', 'CurrencyLangaugeForAPI']], function () {
 
-    Route::group(['as'=> 'user.', 'prefix' => 'user', 'middleware' => ['auth:api']],function (){
+    Route::group(['as'=> 'api.user.', 'prefix' => 'user', 'middleware' => ['auth:api']],function (){
 
         Route::get('/pricing-plan', [PaymentController::class, 'pricing_plan'])->name('pricing-plan');
 

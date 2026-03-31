@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BootstrapDefaultsSeeder::class,
             SettingTranslationsSeeder::class,
+            IrelandLocationsSeeder::class,
             CarPartsDummySeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();

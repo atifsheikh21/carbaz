@@ -1,3 +1,232 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .car-card {
+        display: flex;
+        width: 70%;
+        max-width: 980px;
+        height: 210px;
+        background: #e5e5e5;
+        border: 4px solid #2d2d2d;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    .car-card__media {
+        position: relative;
+        width: 40%;
+        min-width: 280px;
+        height: 100%;
+    }
+
+    .car-card__image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .car-card__heart {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 32px;
+        height: 32px;
+        line-height: 0;
+    }
+
+    .car-card__location {
+        position: absolute;
+        left: 12px;
+        bottom: 12px;
+        padding: 6px 12px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #ffffff;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .car-card__dealer-logo {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        width: 72px;
+        height: auto;
+        opacity: 0.45;
+        filter: grayscale(100%);
+        pointer-events: none;
+        user-select: none;
+    }
+
+    .car-card__v-divider {
+        width: 4px;
+        background: #2d2d2d;
+        height: 100%;
+        flex: 0 0 auto;
+    }
+
+    .car-card__details {
+        width: 60%;
+        position: relative;
+        display: flex;
+        height: 100%;
+    }
+
+    .car-card__title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #2d2d2d;
+        line-height: 1.2;
+        margin-bottom: 6px;
+    }
+
+    .car-card__call {
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        z-index: 2;
+    }
+
+    .car-card__call-link {
+        color: #ff3b30;
+        font-size: 16px;
+        font-weight: 700;
+        text-decoration: none;
+        background: transparent;
+    }
+
+    .car-card__content {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        padding: 18px 20px;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .car-card__info {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .car-card__specs {
+        color: #666666;
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+
+    .car-card__spec {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .car-card__seller {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .car-card__dealer-badge {
+        background: #00c853;
+        color: #ffffff;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+    }
+
+    .car-card__price {
+        font-size: 52px;
+        font-weight: 700;
+        color: #2d2d2d;
+        line-height: 1;
+    }
+
+    .car-card__price-block {
+        flex: 0 0 auto;
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 6px;
+        padding-right: 20px;
+        min-width: 220px;
+    }
+
+    .car-card__dealer-name {
+        color: #ff3b30;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .car-card__warranty {
+        color: #00c853;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .car-card__private {
+        color: #00c853;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .car-card {
+            flex-direction: column;
+            width: 100%;
+            height: auto;
+        }
+
+        .car-card__media {
+            width: 100%;
+            min-width: 0;
+            height: 220px;
+        }
+
+        .car-card__v-divider {
+            width: 100%;
+            height: 4px;
+        }
+
+        .car-card__details {
+            width: 100%;
+        }
+
+        .car-card__call {
+            right: 16px;
+        }
+
+        .car-card__content {
+            padding: 16px;
+            align-items: flex-start;
+        }
+
+        .car-card__price-block {
+            padding-right: 0;
+            min-width: 0;
+            width: 100%;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .car-card__price {
+            font-size: 44px;
+        }
+    }
+}

@@ -6,6 +6,6 @@
 
 <ul class="{{ $class }}">
     @foreach($menuItems as $menuItem)
-        <x-menu::components.menu-item :menuItem="$menuItem" />
+        <x-menu-item :menuItem="$menuItem" />
     @endforeach
 </ul> 

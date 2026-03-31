@@ -20,6 +20,8 @@ use App\Http\Requests\RegisterRequest;
 use Mail;
 use Str;
 use Session;
+use Modules\City\Entities\City;
+use Modules\Country\Entities\Country;
 
 use Modules\GeneralSetting\Entities\SocialLoginInfo;
 
@@ -32,7 +34,14 @@ class RegisteredUserController extends Controller
     {
         $social_login = SocialLoginInfo::first();
 
-        return view('auth.register', ['social_login' => $social_login]);
+        $ireland = Country::where('code', 'IE')->orWhere('name', 'Ireland')->first();
+        $cities = City::where('country_id', $ireland?->id ?? 0)->get();
+
+        return view('auth.register', [
+            'social_login' => $social_login,
+            'ireland' => $ireland,
+            'cities' => $cities,
+        ]);
     }
 
     /**
@@ -43,12 +52,27 @@ class RegisteredUserController extends Controller
     public function store(RegisterRequest $request): RedirectResponse
     {
 
+        $isDealer = $request->input('user_type') === 'dealer';
+        $isVehicleSeller = $isDealer ? ((string) $request->input('is_vehicle_seller') === '1') : false;
+        $isPartSeller = $isDealer ? ((string) $request->input('is_part_seller') === '1') : false;
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'username' => Str::slug($request->name).'-'.date('Ymdhis'),
             'status' => 'enable',
             'is_banned' => 'no',
+            'is_dealer' => $isDealer ? 1 : 0,
+            'is_vehicle_seller' => $isVehicleSeller ? 1 : 0,
+            'is_part_seller' => $isPartSeller ? 1 : 0,
+            'vehicle_company_name' => ($isDealer && $isVehicleSeller) ? $request->input('vehicle_company_name') : null,
+            'vehicle_company_address' => ($isDealer && $isVehicleSeller) ? $request->input('vehicle_company_address') : null,
+            'part_company_name' => ($isDealer && $isPartSeller) ? $request->input('part_company_name') : null,
+            'part_company_address' => ($isDealer && $isPartSeller) ? $request->input('part_company_address') : null,
+            'country' => 'Ireland',
+            'city_id' => $request->city_id,
+            'address' => null,
+            'postal_code' => null,
             'password' => Hash::make($request->password),
             'verification_token' => Str::random(100),
         ]);

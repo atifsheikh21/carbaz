@@ -4,9 +4,11 @@ namespace Modules\Car\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Car\Entities\CarTranslation;
 use Modules\Brand\Entities\Brand;
 use App\Models\User;
+use Modules\Car\Entities\CarGallery;
 
 class Car extends Model
 {
@@ -24,11 +26,29 @@ class Car extends Model
     }
 
     public function dealer(){
-        return $this->belongsTo(User::class, 'agent_id')->select('id', 'name', 'email', 'image', 'phone');
+        return $this->belongsTo(User::class, 'agent_id')->select(
+            'id',
+            'name',
+            'email',
+            'image',
+            'phone',
+            'is_dealer',
+            'is_vehicle_seller',
+            'vehicle_company_name',
+            'vehicle_company_address',
+            'is_part_seller',
+            'part_company_name',
+            'part_company_address'
+        );
     }
 
     public function brand(){
         return $this->belongsTo(Brand::class);
+    }
+
+    public function galleries(): HasMany
+    {
+        return $this->hasMany(CarGallery::class, 'car_id');
     }
 
     public function translate(){

@@ -5,6 +5,45 @@
 
 @section('body-content')
 <main>
+    <style>
+        .car-part-upload-preview{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+            gap:14px;
+            margin-top:14px;
+        }
+        .car-part-upload-preview__item{
+            position:relative;
+            border:1px solid #d9d9d9;
+            border-radius:10px;
+            overflow:hidden;
+            background:#fff;
+        }
+        .car-part-upload-preview__item img{
+            width:100%;
+            height:120px;
+            object-fit:cover;
+            display:block;
+        }
+        .car-part-upload-preview__remove{
+            position:absolute;
+            top:8px;
+            right:8px;
+            border:0;
+            border-radius:50%;
+            width:28px;
+            height:28px;
+            background:rgba(0,0,0,.7);
+            color:#fff;
+            font-size:16px;
+            line-height:1;
+        }
+        .car-part-upload-preview__name{
+            padding:8px 10px;
+            font-size:12px;
+            word-break:break-word;
+        }
+    </style>
     <section class="inner-banner">
         <div class="inner-banner-img" style=" background-image: url({{ getImageOrPlaceholder($breadcrumb,'1905x300') }}) "></div>
         <div class="container">
@@ -44,17 +83,18 @@
 
                                 <div class="description-item two">
                                     <div class="description-item-inner">
-                                        <label class="form-label">{{ __('translate.Slug') }} <span>*</span></label>
-                                        <input type="text" class="form-control" name="slug" value="{{ old('slug') }}" required>
-                                    </div>
-                                    <div class="description-item-inner">
                                         <label class="form-label">{{ __('translate.Brand') }}</label>
                                         <select class="form-select select2" name="brand_id">
                                             <option value="">{{ __('translate.Select Brand') }}</option>
                                             @foreach($brands as $b)
-                                                <option value="{{ $b->id }}">{{ $b->translate?->name }}</option>
+                                                <option value="{{ $b->id }}" {{ (int) old('brand_id') === (int) $b->id ? 'selected' : '' }}>{{ $b->translate?->name }}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                    <div class="description-item-inner">
+                                        <label class="form-label">{{ __('translate.Country') }} <span>*</span></label>
+                                        <input type="hidden" name="country_id" value="{{ $ireland?->id }}">
+                                        <input type="text" class="form-control" value="{{ $ireland?->name ?? 'Ireland' }}" readonly>
                                     </div>
                                 </div>
 
@@ -74,23 +114,29 @@
 
                                 <div class="description-item two">
                                     <div class="description-item-inner">
-                                        <label class="form-label">{{ __('translate.Compatibility') }}</label>
-                                        <input type="text" class="form-control" name="compatibility" value="{{ old('compatibility') }}">
+                                        <label class="form-label">{{ __('translate.City') }} <span>*</span></label>
+                                        <select class="form-select select2" name="city_id" required>
+                                            <option value="">{{ __('translate.Select City') }}</option>
+                                            @foreach($cities as $city)
+                                                <option value="{{ $city->id }}" {{ (int) old('city_id') === (int) $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="description-item-inner">
-                                        <label class="form-label">{{ __('translate.Thumbnail Image') }}</label>
-                                        <input type="file" class="form-control" name="thumb_image">
+                                        <label class="form-label">{{ __('translate.Price') }} <span>*</span></label>
+                                        <input type="text" class="form-control" name="regular_price" value="{{ old('regular_price') }}" required>
                                     </div>
                                 </div>
 
                                 <div class="description-item two">
                                     <div class="description-item-inner">
-                                        <label class="form-label">{{ __('translate.Regular Price') }} <span>*</span></label>
-                                        <input type="text" class="form-control" name="regular_price" value="{{ old('regular_price') }}" required>
+                                        <label class="form-label">{{ __('translate.Compatibility') }}</label>
+                                        <input type="text" class="form-control" name="compatibility" value="{{ old('compatibility') }}">
                                     </div>
                                     <div class="description-item-inner">
-                                        <label class="form-label">{{ __('translate.Offer Price') }}</label>
-                                        <input type="text" class="form-control" name="offer_price" value="{{ old('offer_price') }}">
+                                        <label class="form-label">{{ __('Images') }} <span>*</span></label>
+                                        <input type="file" class="form-control" name="images[]" id="carPartImages" accept="image/*" multiple required>
+                                        <div id="carPartImagesPreview" class="car-part-upload-preview"></div>
                                     </div>
                                 </div>
 
@@ -98,17 +144,6 @@
                                     <div class="description-item-inner" style="width:100%">
                                         <label class="form-label">{{ __('translate.Description') }} <span>*</span></label>
                                         <textarea class="form-control" name="description" rows="5" required>{{ old('description') }}</textarea>
-                                    </div>
-                                </div>
-
-                                <div class="description-item two">
-                                    <div class="description-item-inner">
-                                        <label class="form-label">{{ __('translate.SEO Title') }}</label>
-                                        <input type="text" class="form-control" name="seo_title" value="{{ old('seo_title') }}">
-                                    </div>
-                                    <div class="description-item-inner">
-                                        <label class="form-label">{{ __('translate.SEO Description') }}</label>
-                                        <input type="text" class="form-control" name="seo_description" value="{{ old('seo_description') }}">
                                     </div>
                                 </div>
 
@@ -124,4 +159,58 @@
         </div>
     </section>
 </main>
+<script>
+    (function () {
+        const input = document.getElementById('carPartImages');
+        const preview = document.getElementById('carPartImagesPreview');
+        if (!input || !preview) {
+            return;
+        }
+
+        let currentFiles = [];
+
+        function syncFiles() {
+            const dataTransfer = new DataTransfer();
+            currentFiles.forEach((file) => dataTransfer.items.add(file));
+            input.files = dataTransfer.files;
+        }
+
+        function renderPreview() {
+            preview.innerHTML = '';
+            currentFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'car-part-upload-preview__item';
+
+                const image = document.createElement('img');
+                image.alt = file.name;
+                image.src = URL.createObjectURL(file);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'car-part-upload-preview__remove';
+                removeBtn.textContent = '×';
+                removeBtn.addEventListener('click', function () {
+                    currentFiles.splice(index, 1);
+                    syncFiles();
+                    renderPreview();
+                });
+
+                const name = document.createElement('div');
+                name.className = 'car-part-upload-preview__name';
+                name.textContent = file.name;
+
+                item.appendChild(image);
+                item.appendChild(removeBtn);
+                item.appendChild(name);
+                preview.appendChild(item);
+            });
+        }
+
+        input.addEventListener('change', function (event) {
+            currentFiles = Array.from(event.target.files || []);
+            syncFiles();
+            renderPreview();
+        });
+    })();
+</script>
 @endsection

@@ -18,6 +18,7 @@ class CarPartRequest extends Model
         'car_model',
         'car_year',
         'additional_notes',
+        'image',
         'status',
     ];
 

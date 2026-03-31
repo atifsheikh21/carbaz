@@ -84,6 +84,7 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin', 'middleware' => ['XSS','DEMO
             Route::get('payment-method', 'index')->name('payment-method');
             Route::put('update-paypal', 'updatePaypal')->name('update-paypal');
             Route::put('update-stripe', 'updateStripe')->name('update-stripe');
+            Route::put('update-worldpay', 'updateWorldpay')->name('update-worldpay');
             Route::put('update-razorpay', 'updateRazorpay')->name('update-razorpay');
             Route::put('update-bank', 'updateBank')->name('update-bank');
             Route::put('update-mollie', 'updateMollie')->name('update-mollie');

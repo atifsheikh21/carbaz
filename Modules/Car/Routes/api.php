@@ -15,7 +15,7 @@ use Modules\Car\Http\Controllers\API\CarController;
 */
 
 
-Route::group(['middleware' => ['XSS','DEMO', 'CurrencyLangaugeForAPI']], function () {
+Route::group(['middleware' => ['XSS','DEMO', 'CurrencyLangaugeForAPI'], 'as' => 'api.'], function () {
 
 
     Route::group(['middleware' => ['HtmlSpecialchars', 'auth:api']], function () {

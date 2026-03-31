@@ -9,14 +9,38 @@ use Illuminate\Support\Facades\Auth;
 
 class CarPartRequestForumController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $sort = (string) $request->query('sort', 'latest');
+        $search = trim((string) $request->query('q', ''));
+
         $requests = CarPartRequest::with('user')
-            ->orderBy('id', 'desc')
-            ->paginate(15);
+            ->withCount('replies')
+            ->withMax('replies', 'created_at')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('part_description', 'like', "%{$search}%")
+                        ->orWhere('car_make', 'like', "%{$search}%")
+                        ->orWhere('car_model', 'like', "%{$search}%")
+                        ->orWhere('car_year', 'like', "%{$search}%");
+                });
+            });
+
+        if ($sort === 'oldest') {
+            $requests = $requests->orderBy('id', 'asc');
+        } elseif ($sort === 'most_replied') {
+            $requests = $requests->orderBy('replies_count', 'desc')->orderBy('id', 'desc');
+        } else {
+            $requests = $requests->orderBy('id', 'desc');
+        }
+
+        $requests = $requests->paginate(15)->withQueryString();
 
         return view('car_part_requests.index', [
             'requests' => $requests,
+            'sort' => $sort,
+            'search' => $search,
         ]);
     }
 
@@ -34,12 +58,17 @@ class CarPartRequestForumController extends Controller
             'car_model' => ['nullable', 'string', 'max:255'],
             'car_year' => ['nullable', 'string', 'max:255'],
             'additional_notes' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
         ]);
 
         $user = Auth::guard('web')->user();
 
         $validated['user_id'] = $user->id;
         $validated['status'] = 'open';
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = uploadFile($request->file('image'), 'uploads/car-part-requests');
+        }
 
         $requestModel = CarPartRequest::create($validated);
 

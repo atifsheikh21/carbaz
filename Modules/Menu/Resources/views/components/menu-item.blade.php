@@ -18,7 +18,7 @@
         </a>
         <ul class="d-menu">
             @foreach($menuItem->children->sortBy('sort_order') as $child)
-                <x-menu::components.menu-item :menuItem="$child" :level="$level + 1" />
+                <x-menu-item :menuItem="$child" :level="$level + 1" />
             @endforeach
         </ul>
     @else

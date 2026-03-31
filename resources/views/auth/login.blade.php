@@ -34,7 +34,7 @@
 
 
             <div class="row login-bg">
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="login-head">
                         <h3>{{ __('translate.Sign In') }}</h3>
 
@@ -112,13 +112,13 @@
 
                     </form>
 
-                    @if ($social_login->is_gmail == 1 || $social_login->is_facebook == 1)
+                    @if (optional($social_login)->is_gmail == 1 || optional($social_login)->is_facebook == 1)
                         <div class="login-text">
                             <p>{{ __('translate.OR') }}</p>
                         </div>
 
                         <div class="login-btn-item">
-                            @if ($social_login->is_gmail == 1)
+                            @if (optional($social_login)->is_gmail == 1)
                                 <button type="button" class="login-btn login_with_google">
                                     <span>
                                         <svg width="19" height="19" viewBox="0 0 19 19" fill="none"
@@ -154,10 +154,11 @@
                                     </span>
                                     {{ __('translate.Sign In with Google') }}
 
-                                </button>
+    
+                            </button>
                             @endif
 
-                            @if ($social_login->is_facebook == 1)
+                            @if (optional($social_login)->is_facebook == 1)
                             <button type="button" class="login-btn login_with_facebook">
                                 <span>
                                     <svg width="10" height="19" viewBox="0 0 10 19" fill="none"
@@ -180,11 +181,7 @@
 
                 </div>
 
-                <div class="col-lg-6">
-                    <div class="login-img">
-                        <img src="{{ getImageOrPlaceholder($setting->login_page_bg, '571x708') }}" alt="img">
-                    </div>
-                </div>
+                
             </div>
 
         </div>

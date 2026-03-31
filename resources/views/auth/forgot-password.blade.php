@@ -68,13 +68,13 @@
 
                     </form>
 
-                    @if ($social_login->is_gmail == 1 || $social_login->is_facebook == 1)
+                    @if (optional($social_login)->is_gmail == 1 || optional($social_login)->is_facebook == 1)
                         <div class="login-text">
                             <p>{{ __('translate.OR') }}</p>
                         </div>
 
                         <div class="login-btn-item">
-                            @if ($social_login->is_gmail == 1)
+                            @if (optional($social_login)->is_gmail == 1)
                                 <button type="button" class="login-btn login_with_google">
                                     <span>
                                         <svg width="19" height="19" viewBox="0 0 19 19" fill="none"
@@ -113,7 +113,7 @@
                                 </button>
                             @endif
 
-                            @if ($social_login->is_facebook == 1)
+                            @if (optional($social_login)->is_facebook == 1)
                             <button type="button" class="login-btn login_with_facebook">
                                 <span>
                                     <svg width="10" height="19" viewBox="0 0 10 19" fill="none"

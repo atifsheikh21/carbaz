@@ -84,7 +84,7 @@
                                                     </td>
 
                                                     <td class="crancy-table__column-2 crancy-table__data-2">
-                                                        <h4 class="crancy-table__product-title">{{ html_decode($car->translate->title) }}</h4>
+                                                        <h4 class="crancy-table__product-title">{{ html_decode($car?->translate?->title ?? '') }}</h4>
                                                     </td>
 
                                                     <td class="crancy-table__column-2 crancy-table__data-2">

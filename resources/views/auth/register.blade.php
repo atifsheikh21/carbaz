@@ -1,6 +1,6 @@
 @extends('layout')
 @section('title')
-    <title>{{ __('translate.Sign Up') }}</title>
+    <title>{{ __('Sign Up') }}</title>
 @endsection
 
 @section('body-content')
@@ -13,11 +13,11 @@
         <div class="container">
         <div class="col-lg-12">
             <div class="inner-banner-df">
-                <h1 class="inner-banner-taitel">{{ __('translate.Sign Up') }}</h1>
+                <h1 class="inner-banner-taitel">{{ __('Sign Up') }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ __('translate.Sign Up') }}</li>
+                        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ __('Sign Up') }}</li>
                     </ol>
                 </nav>
             </div>
@@ -35,39 +35,167 @@
 
 
             <div class="row login-bg">
-                <div class="col-lg-6">
+                <div class="col-12 col-md-12 col-lg-12">
                     <div class="login-head">
-                        <h3>{{ __('translate.Sign Up') }}</h3>
+                        <h3>{{ __('Sign Up') }}</h3>
 
-                        <span>{{ __('translate.Welcome to CARBAZ') }}</span>
+                        <span>{{ __('Welcome to CARBAZ') }}</span>
                     </div>
 
 
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
+                        <div class="login-form-item three">
+                            <div class="login-form-inner">
+                                <label for="user_type" class="form-label">{{ __('User Type') }}
+                                    <span>*</span> </label>
+                                <select class="form-control @error('user_type') is-invalid @enderror" id="user_type" name="user_type">
+                                    <option value="individual" {{ old('user_type', 'individual') == 'individual' ? 'selected' : '' }}>{{ __('PRIVATE') }} - {{ __('vehicle / car part or accessories seller') }}</option>
+                                    <option value="dealer" {{ old('user_type', 'individual') == 'dealer' ? 'selected' : '' }}>{{ __('DEALER') }} - {{ __('vehicle / car part or accessories seller') }}</option>
+                                </select>
+                                @error('user_type')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="login-form-item">
                             <div class="login-form-inner">
-                                <label for="exampleFormControlInput1" class="form-label">{{ __('translate.Name') }}
+                                <label for="name" class="form-label">{{ __('Name') }}
                                     <span>*</span> </label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1"
-                                    placeholder="{{ __('translate.Name') }}" name="name" value="{{ old('name') }}">
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
+                                    placeholder="{{ __('Name') }}" name="name" value="{{ old('name') }}">
+                                @error('name')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="login-form-item">
+                            <div class="login-form-inner">
+                                <label for="country" class="form-label">{{ __('Country') }}
+                                    <span>*</span> </label>
+                                <input type="text" class="form-control" id="country" name="country" value="Ireland" readonly>
+                            </div>
+                        </div>
+
+                        <div class="login-form-item">
+                            <div class="login-form-inner">
+                                <label for="city_id" class="form-label">{{ __('City') }}
+                                    <span>*</span> </label>
+                                <select class="form-control @error('city_id') is-invalid @enderror" id="city_id" name="city_id">
+                                    <option value="">{{ __('Select City') }}</option>
+                                    @foreach ($cities as $city)
+                                        <option value="{{ $city->id }}" {{ (string) old('city_id') === (string) $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('city_id')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div id="dealer_fields" style="display:none;">
+                            <input type="hidden" name="is_vehicle_seller" value="0">
+                            <input type="hidden" name="is_part_seller" value="0">
+
+                            <div class="login-form-item">
+                                <div class="login-form-inner">
+                                    <label class="form-label">{{ __('What do you want to sell?') }}
+                                        <span>*</span> </label>
+
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <label class="d-flex align-items-center gap-2">
+                                            <input class="form-check-input" type="checkbox" id="is_vehicle_seller" name="is_vehicle_seller" value="1" {{ old('is_vehicle_seller') == '1' ? 'checked' : '' }}>
+                                            <span>{{ __('Vehicles') }}</span>
+                                        </label>
+
+                                        <label class="d-flex align-items-center gap-2">
+                                            <input class="form-check-input" type="checkbox" id="is_part_seller" name="is_part_seller" value="1" {{ old('is_part_seller') == '1' ? 'checked' : '' }}>
+                                            <span>{{ __('Car Parts') }}</span>
+                                        </label>
+                                    </div>
+
+                                    @error('seller_modules')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                    @error('is_vehicle_seller')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                    @error('is_part_seller')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div id="vehicle_company_fields" style="display:none;">
+                                <div class="login-form-item">
+                                    <div class="login-form-inner">
+                                        <label for="vehicle_company_name" class="form-label">{{ __('Vehicle company name') }}
+                                            <span>*</span> </label>
+                                        <input type="text" class="form-control @error('vehicle_company_name') is-invalid @enderror" id="vehicle_company_name" name="vehicle_company_name" value="{{ old('vehicle_company_name') }}">
+                                        <small class="d-block mt-1">{{ __('This will be shown in your vehicle ads') }}</small>
+                                        @error('vehicle_company_name')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="login-form-item">
+                                    <div class="login-form-inner">
+                                        <label for="vehicle_company_address" class="form-label">{{ __('Vehicle company address') }}
+                                            <span>*</span> </label>
+                                        <input type="text" class="form-control @error('vehicle_company_address') is-invalid @enderror" id="vehicle_company_address" name="vehicle_company_address" value="{{ old('vehicle_company_address') }}">
+                                        @error('vehicle_company_address')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="part_company_fields" style="display:none;">
+                                <div class="login-form-item">
+                                    <div class="login-form-inner">
+                                        <label for="part_company_name" class="form-label">{{ __('Car part company name') }}
+                                            <span>*</span> </label>
+                                        <input type="text" class="form-control @error('part_company_name') is-invalid @enderror" id="part_company_name" name="part_company_name" value="{{ old('part_company_name') }}">
+                                        <small class="d-block mt-1">{{ __('This will be shown in your car part ads') }}</small>
+                                        @error('part_company_name')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="login-form-item">
+                                    <div class="login-form-inner">
+                                        <label for="part_company_address" class="form-label">{{ __('Car part company address') }}
+                                            <span>*</span> </label>
+                                        <input type="text" class="form-control @error('part_company_address') is-invalid @enderror" id="part_company_address" name="part_company_address" value="{{ old('part_company_address') }}">
+                                        @error('part_company_address')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="login-form-item three">
                             <div class="login-form-inner">
-                                <label for="exampleFormControlInput1" class="form-label">{{ __('translate.Email address') }}
+                                <label for="email" class="form-label">{{ __('Email address') }}
                                     <span>*</span> </label>
-                                <input type="email" class="form-control" id="exampleFormControlInput1"
-                                    placeholder="{{ __('translate.Email address') }}" name="email" value="{{ old('email') }}">
+                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
+                                    placeholder="{{ __('Email address') }}" name="email" value="{{ old('email') }}">
+                                @error('email')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
 
                         <div class="login-form-item two">
                             <div class="login-form-inner">
-                                <label class="form-label">{{ __('translate.Password') }}
+                                <label class="form-label">{{ __('Password') }}
                                     <span>*</span> </label>
                                 <input type="password" class="form-control"
                                     placeholder="......" name="password" id="input_password">
@@ -82,7 +210,7 @@
 
                         <div class="login-form-item two">
                             <div class="login-form-inner">
-                                <label class="form-label">{{ __('translate.Confirm Password') }}
+                                <label class="form-label">{{ __('Confirm Password') }}
                                     <span>*</span> </label>
                                 <input type="password" class="form-control"
                                     placeholder="......" name="password_confirmation" id="input_password_confirm">
@@ -106,7 +234,7 @@
 
 
                         <div class="login-form-item two">
-                            <button type="submit" class="thm-btn-two">{{ __('translate.Sign Up') }}</button>
+                            <button type="submit" class="thm-btn-two">{{ __('Sign Up') }}</button>
                         </div>
 
 
@@ -114,13 +242,13 @@
 
 
 
-                    @if ($social_login->is_gmail == 1 || $social_login->is_facebook == 1)
+                    @if (optional($social_login)->is_gmail == 1 || optional($social_login)->is_facebook == 1)
                         <div class="login-text">
-                            <p>{{ __('translate.OR') }}</p>
+                            <p>{{ __('OR') }}</p>
                         </div>
 
                         <div class="login-btn-item">
-                            @if ($social_login->is_gmail == 1)
+                            @if (optional($social_login)->is_gmail == 1)
                                 <button type="button" class="login-btn login_with_google">
                                     <span>
                                         <svg width="19" height="19" viewBox="0 0 19 19" fill="none"
@@ -129,7 +257,7 @@
                                                 d="M0.996094 5.25533C1.16824 4.84045 1.39908 4.46182 1.64948 4.0993C3.11666 1.9685 5.08464 0.611067 7.58081 0.163961C10.48 -0.355649 13.0818 0.353276 15.308 2.38338C15.3901 2.45991 15.394 2.50019 15.3158 2.58075C14.5098 3.40246 13.7078 4.2282 12.9096 5.05796C12.8235 5.14658 12.7844 5.13047 12.7022 5.05796C11.6107 4.05902 10.3235 3.60789 8.87584 3.74081C6.50487 3.96235 4.93597 5.29964 4.05566 7.54323C4.04001 7.57948 4.02436 7.6117 4.01262 7.64796C3.77005 7.45058 3.52356 7.25724 3.27707 7.0639C2.79584 6.68124 2.31851 6.29053 1.83337 5.9119C1.55558 5.69036 1.29344 5.44868 0.996094 5.25533Z"
                                                 fill="#C34131" />
                                             <path
-                                                d="M15.3197 16.727C14.8463 17.1862 14.3142 17.5688 13.743 17.887C12.6631 18.4912 11.505 18.8255 10.2804 18.9464C8.90324 19.0874 7.55343 18.9585 6.24275 18.4872C4.09479 17.7098 2.4359 16.3121 1.26998 14.2941C1.16434 14.1128 1.05479 13.9396 0.988281 13.7382C1.02349 13.714 1.06262 13.6979 1.09392 13.6697C1.62602 13.2468 2.15811 12.8198 2.69412 12.3969C3.13232 12.0465 3.57052 11.7 4.00872 11.3496C4.20434 11.8853 4.43909 12.4009 4.77165 12.8682C5.71456 14.1974 6.96265 15.0231 8.55111 15.2326C9.88136 15.4058 11.1529 15.1681 12.3071 14.423C12.3345 14.4068 12.3658 14.3907 12.3932 14.3746C12.5771 14.5156 12.7649 14.6526 12.9448 14.7976C13.5669 15.293 14.189 15.7884 14.8072 16.2919C14.9872 16.437 15.1789 16.5497 15.3197 16.727Z"
+                                                d="M15.3197 16.727C14.8463 17.1862 14.3142 17.5688 13.743 17.887C12.6631 18.4912 11.505 18.8255 10.2804 18.9464C8.90324 19.0874 7.55343 18.9585 6.24275 18.4872C4.09479 17.7098 2.4359 16.3121 1.26998 14.2941C1.16434 14.1128 1.05479 13.9396 0.988281 13.7382C0.839713 13.5173 0.753639 13.2595 0.655827 13.0097C0.299791 12.1034 0.0963414 11.1609 0.0259167 10.1861C-0.0718954 8.84479 0.108079 7.54778 0.550189 6.283C0.663652 5.96076 0.792764 5.64255 0.941438 5.33642C0.957088 5.30822 0.964913 5.27197 0.996213 5.25586C1.29356 5.4492 1.5557 5.69088 1.83348 5.90839C2.31863 6.28702 2.79595 6.67774 3.27719 7.0604C3.51976 7.25374 3.76625 7.44708 4.01274 7.64043C3.88754 8.10364 3.77408 8.57089 3.74278 9.05425C3.69191 9.77123 3.76234 10.4721 3.96579 11.1569C3.98535 11.2253 3.99709 11.2898 4.01274 11.3542Z"
                                                 fill="#61A053" />
                                             <path
                                                 d="M14.2618 11.47C14.2618 11.4579 14.2579 11.4458 14.2579 11.4378C14.2149 11.3653 14.1445 11.3854 14.0819 11.3854C12.5443 11.3854 11.0067 11.3854 9.46905 11.3854C9.28125 11.3854 9.28125 11.3854 9.28125 11.1961C9.28125 10.1246 9.28125 9.0532 9.28125 7.97773C9.28125 7.78036 9.28125 7.77633 9.47687 7.77633C12.2195 7.77633 14.9583 7.77633 17.7009 7.77633C17.7244 7.77633 17.7479 7.77633 17.7713 7.77633C17.8535 7.76827 17.8887 7.81258 17.9005 7.88911C17.9122 7.99384 17.9161 8.09857 17.9357 8.19927C18.01 8.56984 18.0257 8.94847 18.0374 9.32308C18.0491 9.73796 18.0648 10.1528 18.0139 10.5637C17.9748 10.8779 17.967 11.1961 17.9044 11.5062C17.8535 11.7681 17.8105 12.0339 17.744 12.2957C17.6853 12.5294 17.6383 12.763 17.5601 12.9926C17.4583 13.2906 17.3566 13.5887 17.2236 13.8747C17.1101 14.1204 17.0045 14.3661 16.8754 14.6038C16.8167 14.7125 16.7228 14.8132 16.7345 14.9542C16.5702 15.0227 16.5389 15.1838 16.488 15.3288C16.3198 15.4376 16.2376 15.6148 16.1516 15.788C16.1359 15.796 16.1124 15.796 16.1007 15.8081C15.9129 16.0055 15.7525 16.227 15.5451 16.4043C15.4982 16.4446 15.4278 16.4647 15.4043 16.5372C15.3808 16.6178 15.3339 16.6097 15.2791 16.5694C15.0952 16.4284 14.9035 16.2955 14.7274 16.1425C14.2501 15.7316 13.7454 15.3651 13.2642 14.9663C13.0568 14.7931 12.8416 14.636 12.6303 14.4708C12.556 14.4144 12.513 14.3661 12.6225 14.2815C12.9159 14.056 13.1781 13.7982 13.405 13.5041C13.4637 13.4276 13.5459 13.3591 13.538 13.2463C13.5967 13.2423 13.628 13.202 13.6515 13.1537C13.761 12.9362 13.9058 12.7469 13.9958 12.5132C14.121 12.191 14.2227 11.8647 14.301 11.5304C14.3088 11.4901 14.2931 11.478 14.2618 11.47Z"
@@ -154,12 +282,12 @@
                                                 fill="#6282CA" />
                                         </svg>
                                     </span>
-                                    {{ __('translate.Sign In with Google') }}
+                                    {{ __('Sign In with Google') }}
 
                                 </button>
                             @endif
 
-                            @if ($social_login->is_facebook == 1)
+                            @if (optional($social_login)->is_facebook ?? false)
                             <button type="button" class="login-btn login_with_facebook">
                                 <span>
                                     <svg width="10" height="19" viewBox="0 0 10 19" fill="none"
@@ -169,7 +297,7 @@
                                             fill="#3D6AD5" />
                                     </svg>
                                 </span>
-                                {{ __('translate.Sign In with Facebook') }}
+                                {{ __('Sign In with Facebook') }}
 
                             </button>
                             @endif
@@ -178,17 +306,13 @@
 
 
                     <div class="create-accoun-text">
-                        <p>{{ __('translate.Already have an account ?') }}<span><a href="{{ route('login') }}"> {{ __('translate.Sign In Here') }}</a></span></p>
+                        <p>{{ __('Already have an account ?') }}<span><a href="{{ route('login') }}"> {{ __('Sign In Here') }}</a></span></p>
                     </div>
 
 
                 </div>
 
-                <div class="col-lg-6">
-                    <div class="login-img">
-                        <img src="{{ getImageOrPlaceholder($setting->login_page_bg, '571x708') }}" alt="img">
-                    </div>
-                </div>
+                
             </div>
 
         </div>
@@ -209,6 +333,122 @@
     (function($) {
         "use strict"
         $(document).ready(function () {
+            function getSubmitButton() {
+                return document.querySelector('form[action="{{ route('register') }}"] button[type="submit"]');
+            }
+
+            function syncDealerFields() {
+                var userType = document.getElementById('user_type');
+                var dealerFields = document.getElementById('dealer_fields');
+                var vehicleCompanyFields = document.getElementById('vehicle_company_fields');
+                var partCompanyFields = document.getElementById('part_company_fields');
+                if (!userType || !dealerFields) return;
+
+                if (userType.value === 'dealer') {
+                    dealerFields.style.setProperty('display', 'block', 'important');
+                } else {
+                    dealerFields.style.setProperty('display', 'none', 'important');
+                    if (vehicleCompanyFields) vehicleCompanyFields.style.setProperty('display', 'none', 'important');
+                    if (partCompanyFields) partCompanyFields.style.setProperty('display', 'none', 'important');
+                }
+            }
+
+            function syncSellerCompanyFields() {
+                var userType = document.getElementById('user_type');
+                var vehicleSeller = document.getElementById('is_vehicle_seller');
+                var partSeller = document.getElementById('is_part_seller');
+                var vehicleCompanyFields = document.getElementById('vehicle_company_fields');
+                var partCompanyFields = document.getElementById('part_company_fields');
+
+                if (!userType || userType.value !== 'dealer') {
+                    if (vehicleCompanyFields) vehicleCompanyFields.style.setProperty('display', 'none', 'important');
+                    if (partCompanyFields) partCompanyFields.style.setProperty('display', 'none', 'important');
+                    return;
+                }
+
+                if (vehicleCompanyFields) {
+                    vehicleCompanyFields.style.setProperty('display', (vehicleSeller && vehicleSeller.checked) ? 'block' : 'none', 'important');
+                }
+                if (partCompanyFields) {
+                    partCompanyFields.style.setProperty('display', (partSeller && partSeller.checked) ? 'block' : 'none', 'important');
+                }
+            }
+
+            function isDealerFormValid() {
+                var userType = document.getElementById('user_type');
+                if (!userType || userType.value !== 'dealer') {
+                    return true;
+                }
+
+                var vehicleSeller = document.getElementById('is_vehicle_seller');
+                var partSeller = document.getElementById('is_part_seller');
+                var sellsVehicle = !!(vehicleSeller && vehicleSeller.checked);
+                var sellsPart = !!(partSeller && partSeller.checked);
+
+                if (!sellsVehicle && !sellsPart) {
+                    return false;
+                }
+
+                if (sellsVehicle) {
+                    var vehicleCompanyName = document.getElementById('vehicle_company_name');
+                    var vehicleCompanyAddress = document.getElementById('vehicle_company_address');
+                    if (!vehicleCompanyName || !vehicleCompanyAddress) return false;
+                    if (!vehicleCompanyName.value.trim() || !vehicleCompanyAddress.value.trim()) return false;
+                }
+
+                if (sellsPart) {
+                    var partCompanyName = document.getElementById('part_company_name');
+                    var partCompanyAddress = document.getElementById('part_company_address');
+                    if (!partCompanyName || !partCompanyAddress) return false;
+                    if (!partCompanyName.value.trim() || !partCompanyAddress.value.trim()) return false;
+                }
+
+                return true;
+            }
+
+            function syncSubmitState() {
+                var btn = getSubmitButton();
+                if (!btn) return;
+                btn.disabled = !isDealerFormValid();
+            }
+
+            var userType = document.getElementById('user_type');
+            var vehicleSeller = document.getElementById('is_vehicle_seller');
+            var partSeller = document.getElementById('is_part_seller');
+
+            if (userType) {
+                userType.addEventListener('change', function () {
+                    syncDealerFields();
+                    syncSellerCompanyFields();
+                    syncSubmitState();
+                });
+            }
+
+            if (vehicleSeller) {
+                vehicleSeller.addEventListener('change', function () {
+                    syncSellerCompanyFields();
+                    syncSubmitState();
+                });
+            }
+
+            if (partSeller) {
+                partSeller.addEventListener('change', function () {
+                    syncSellerCompanyFields();
+                    syncSubmitState();
+                });
+            }
+
+            document.addEventListener('input', function (e) {
+                var ids = ['vehicle_company_name', 'vehicle_company_address', 'part_company_name', 'part_company_address'];
+                if (e && e.target && ids.indexOf(e.target.id) !== -1) {
+                    syncSubmitState();
+                }
+            });
+
+            syncDealerFields();
+            syncSellerCompanyFields();
+            syncSubmitState();
+
             $("#password-field").on("click",function(e){
                 is_password = !is_password;
                 if(is_password){
