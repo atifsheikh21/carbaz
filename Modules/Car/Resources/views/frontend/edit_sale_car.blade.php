@@ -3,16 +3,41 @@
     <title>{{ __('translate.Edit Sale Car') }}</title>
 @endsection
 @section('body-content')
+@php
+    $authUser = Auth::guard('web')->user();
+    $sellerTypeLabel = ($authUser && $authUser->is_dealer) ? 'Dealer/Company' : 'Private';
+    $__vehicleSource = old('vehicle_source', !empty($car->motorcheck_reg) ? 'registered' : 'unregistered');
+@endphp
 
 <main>
     <!-- banner-part-start  -->
 
     <section class="inner-banner">
+    <style>
+        .place-ad-back-btn{
+            display:inline-block;
+            border:1px solid #cfcfcf;
+            background:#fff;
+            padding:10px 18px;
+            border-radius:4px;
+            font-weight:600;
+            color:#111;
+            text-decoration:none;
+            line-height:1;
+            position:absolute;
+            left:0;
+            top:0;
+        }
+        .place-ad-banner-col{position:relative;}
+    </style>
     <div class="inner-banner-img" style=" background-image: url({{ getImageOrPlaceholder($breadcrumb,'1905x300') }}) "></div>
         <div class="container">
         <div class="col-lg-12">
+            <div class="place-ad-banner-col">
+                <a href="#" class="place-ad-back-btn d-none d-md-inline-block" onclick="event.preventDefault(); history.back();">{{ __('Back') }}</a>
+            </div>
             <div class="inner-banner-df">
-                <h1 class="inner-banner-taitel">{{ __('translate.Edit Sale Car') }}</h1>
+                <h1 class="inner-banner-taitel">{{ $sellerTypeLabel }} - {{ __('Edit Ad') }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
@@ -32,15 +57,50 @@
                 @include('profile.sidebar')
 
                 <div class="col-lg-9">
-                    <form action="{{ route('user.car.update', $car->id) }}" method="POST" enctype="multipart/form-data">
+
+                    @if($car->galleries->count())
+                        <div class="car-images mb-4">
+                            <h3 class="car-images-taitel">{{ __('Images') }}</h3>
+                            <div class="car-images-inner">
+                                <div class="gallery-preview-grid" id="existing_gallery_grid">
+                                    @foreach($car->galleries as $gallery)
+                                        <div class="gallery-preview-card">
+                                            <img src="{{ asset($gallery->image) }}" alt="img">
+                                            <form action="{{ route('user.delete-gallery', $gallery->id) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to remove this image?') }}');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="gallery-preview-remove" aria-label="{{ __('Remove image') }}">&times;</button>
+                                            </form>
+                                            <div class="gallery-preview-meta">{{ __('Existing Image') }}</div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('user.car.update', $car->id) }}" method="POST" enctype="multipart/form-data" id="carEditForm">
                         @csrf
                         @method('PUT')
 
+                        @if($errors->any())
+                            <div class="alert alert-danger" style="margin-bottom: 20px;">
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <input type="hidden" name="agent_id" value="{{ Auth::guard('web')->user()->id }}">
+                        <input type="hidden" name="seller_type" value="{{ old('seller_type', $sellerTypeLabel) }}">
+
+                        <input type="hidden" name="vehicle_source" value="{{ $__vehicleSource }}">
 
                         <input type="hidden" name="purpose" value="{{ $car->purpose }}">
                         <input type="hidden" name="lang_code" value="{{ admin_lang() }}">
-                        <input type="hidden" name="translate_id" value="{{ $car_translate->id }}">
+                        <input type="hidden" name="translate_id" value="{{ $car_translate?->id }}">
                         <input type="hidden" id="slug" name="slug" value="{{ html_decode($car->slug) }}">
 
                         <div class="row gy-5">
@@ -61,33 +121,19 @@
 
                                         <div class="row">
                                             <div class="col-xl-6 col-lg-8">
-                                                <div class="choose-file-txt">
-                                                    <h6>{{ __('translate.New') }} <span>{{ __('translate.Choose File') }}</span> {{ __('translate.Upload') }}</h6>
-                                                    <input type="file" id="gallery_images_input" name="gallery_images[]" multiple accept="image/*">
+                                                <div class="modern-upload">
+                                                    <input type="file" id="gallery_images_input" name="gallery_images[]" class="modern-upload-input" multiple accept="image/jpeg,image/png">
+                                                    <label for="gallery_images_input" class="modern-upload-btn">{{ __('Upload photos') }}</label>
+                                                    <div class="modern-upload-sub">{{ __('PNG, JPG. Max 8 images.') }}</div>
+                                                    <div id="gallery_images_selected_text" class="modern-upload-selected">{{ __('No files selected') }}</div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div id="gallery_images_limit_note" class="mt-2"></div>
                                         <div id="gallery_preview_grid" class="gallery-preview-grid"></div>
-                                        @if($car->galleries->count())
-                                            <div class="gallery-preview-grid mt-3" id="existing_gallery_grid">
-                                                @foreach($car->galleries as $gallery)
-                                                    <div class="gallery-preview-card">
-                                                        <img src="{{ asset($gallery->image) }}" alt="img">
-                                                        <form action="{{ route('user.delete-gallery', $gallery->id) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to remove this image?') }}');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="gallery-preview-remove" aria-label="{{ __('Remove image') }}">&times;</button>
-                                                        </form>
-                                                        <div class="gallery-preview-meta">{{ __('Existing Image') }}</div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @endif
                                     </div>
                                 </div>
                             </div>
-
 
                             <!-- Name & Description Overview  -->
                             <div class="col-lg-12">
@@ -95,7 +141,7 @@
                                     <h3 class="car-images-taitel">{{ __('translate.Basic Information') }}</h3>
 
                                     <div class="car-images-inner">
-                                            <div class="description-item">
+                                            <div class="description-item" style="{{ $__vehicleSource === 'registered' ? 'display:none;' : '' }}">
                                                 <div class="description-item-inner">
                                                     <label for="registration_number" class="form-label">{{ __('Registration Number') }}</label>
                                                     <div class="input-group">
@@ -202,15 +248,27 @@
                                             <input type="hidden" name="motorcheck_co2_emissions" id="motorcheck_co2_emissions" value="{{ old('motorcheck_co2_emissions', $car->motorcheck_co2_emissions) }}">
                                             <input type="hidden" name="motorcheck_last_date_of_sale" id="motorcheck_last_date_of_sale" value="{{ old('motorcheck_last_date_of_sale', $car->motorcheck_last_date_of_sale) }}">
                                             <input type="hidden" name="motorcheck_raw" id="motorcheck_raw" value="{{ old('motorcheck_raw', $car->motorcheck_raw) }}">
+                                            <input type="hidden" name="year" id="year" value="{{ old('year', $car->year) }}">
 
                                             <div class="description-item two">
                                                 <div class="description-item-inner">
                                                     <label for="mileage" class="form-label">{{ __('translate.Mileage') }}
-                                                        <span>*</span> </label>
+                                                    </label>
                                                         <input class="form-control" type="text" name="mileage" id="mileage" value="{{ html_decode($car->mileage) }}" placeholder="{{ __('translate.Mileage') }}">
                                                 </div>
-                                            </div>
 
+                                                <div class="description-item-inner">
+                                                    <label for="mileage_unit" class="form-label">{{ __('Mileage Unit') }}
+                                                    </label>
+                                                    <select class="form-select" name="mileage_unit" id="mileage_unit">
+                                                        @php
+                                                            $__mileageUnit = old('mileage_unit', $car->mileage_unit ?: 'km');
+                                                        @endphp
+                                                        <option value="km" {{ $__mileageUnit === 'km' ? 'selected' : '' }}>{{ __('KM') }}</option>
+                                                        <option value="miles" {{ $__mileageUnit === 'miles' ? 'selected' : '' }}{{ __('Miles') }}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
 
                                     </div>
                                 </div>
@@ -229,91 +287,22 @@
                                                     placeholder="{{ __('translate.Title') }}" name="title" value="{{ html_decode($car_translate->title) }}">
                                             </div>
 
-                                            <div class="description-item-inner" id="wrap_brand" style="display:none;">
+                                            <div class="description-item-inner" id="wrap_brand" style="{{ $__vehicleSource === 'unregistered' ? '' : 'display:none;' }}">
                                                 <label for="brand" class="form-label">{{ __('translate.Brand') }}
                                                     <span>*</span> </label>
+                                                @php
+                                                    $__selectedBrandId = old('brand_id', $car->brand_id);
+                                                @endphp
                                                 <select class="form-select select2" name="brand_id" id="brand_id">
                                                     <option value="">{{ __('translate.Select Brand') }}</option>
                                                     @foreach ($brands as $brand)
-                                                        <option  {{ $brand->id == $car->brand_id ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->translate->name }}</option>
+                                                        <option {{ (string) $brand->id === (string) $__selectedBrandId ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->translate->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
 
-                                        <div id="vehicle_details_fields" style="display:none;">
-                                            <div class="description-item two">
-
-                                                <div class="description-item-inner" id="wrap_body_type">
-                                                    <label for="body_type" class="form-label">{{ __('translate.Body Type') }}
-                                                        <span>*</span> </label>
-                                                    <input type="text" class="form-control" id="body_type"
-                                                        placeholder="{{ __('translate.Body Type') }}" name="body_type" value="{{ html_decode($car->body_type) }}">
-                                                </div>
-
-                                                <div class="description-item-inner" id="wrap_engine_size">
-                                                    <label for="engine_size" class="form-label">{{ __('translate.Engine Size') }}
-                                                        <span>*</span> </label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="{{ __('translate.Engine Size') }}" name="engine_size" id="engine_size" value="{{ html_decode($car->engine_size) }}">
-                                                </div>
-
-                                            </div>
-
-                                            <div class="description-item two">
-                                                <div class="description-item-inner">
-                                                    <label for="interior_color" class="form-label">{{ __('translate.Interior Color') }}
-                                                        <span>*</span> </label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="{{ __('translate.Interior Color') }}" name="interior_color" id="interior_color" value="{{ html_decode($car->interior_color) }}">
-                                                </div>
-
-                                                <div class="description-item-inner" id="wrap_exterior_color">
-                                                    <label for="exterior_color" class="form-label">{{ __('translate.Exterior Color') }}
-                                                        <span>*</span> </label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="{{ __('translate.Exterior Color') }}" name="exterior_color" id="exterior_color" value="{{ html_decode($car->exterior_color) }}">
-                                                </div>
-
-                                                <div class="description-item-inner" id="wrap_year">
-                                                    <label for="year" class="form-label">{{ __('translate.Year') }}
-                                                        <span>*</span> </label>
-                                                        <input class="form-control" type="text" name="year" id="year" value="{{ html_decode($car->year) }}" placeholder="{{ __('translate.Year') }}">
-                                                </div>
-                                            </div>
-
-                                            <div class="description-item two">
-                                                <div class="description-item-inner" id="wrap_number_of_owner">
-                                                    <label for="number_of_owner" class="form-label">{{ __('translate.Number of Owner') }}
-                                                        <span>*</span> </label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="{{ __('translate.Number of Owner') }}" name="number_of_owner" id="number_of_owner" value="{{ html_decode($car->number_of_owner) }}">
-                                                </div>
-
-                                                <div class="description-item-inner" id="wrap_fuel_type">
-                                                    <label for="fuel_type" class="form-label">{{ __('translate.Fuel Type') }}
-                                                        <span>*</span> </label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="{{ __('translate.Fuel Type') }}" name="fuel_type" id="fuel_type" value="{{ html_decode($car->fuel_type) }}">
-                                                </div>
-
-                                                <div class="description-item-inner" id="wrap_transmission">
-                                                    <label for="transmission" class="form-label">{{ __('translate.Transmission') }}
-                                                        <span>*</span> </label>
-                                                    <input type="text" class="form-control"
-                                                        placeholder="{{ __('translate.Transmission') }}" name="transmission" id="transmission" value="{{ html_decode($car->transmission) }}">
-                                                </div>
-
-                                                <div class="description-item-inner" id="wrap_car_model">
-                                                    <label for="car_model" class="form-label">{{ __('translate.Car Model') }}
-                                                        <span>*</span> </label>
-                                                    <input class="form-control" type="text" name="car_model" id="car_model" value="{{ html_decode($car->car_model) }}" placeholder="{{ __('translate.Car Model') }}">
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <div class="description-item two">
-
                                             <div class="description-item-inner">
                                                 <label for="country" class="form-label">{{ __('translate.Country') }}
                                                     <span>*</span> </label>
@@ -331,97 +320,62 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-
                                         </div>
 
                                         <div class="description-item two">
-
                                             <div class="description-item-inner">
                                                 <label for="price" class="form-label">{{ __('translate.Price') }}
                                                     <span>*</span> </label>
                                                 <input type="text" class="form-control" placeholder="{{ __('translate.Price') }}"  name="price" value="{{ html_decode($car->regular_price) }}">
                                             </div>
+                                        </div>
 
+                                        @if(Auth::guard('web')->check() && Auth::guard('web')->user()?->is_dealer)
+                                        <div class="description-item two">
+                                            <div class="description-item-inner">
+                                                <label for="warranty_months" class="form-label">{{ __('Warranty') }}</label>
+                                                <select class="form-select" name="warranty_months" id="warranty_months">
+                                                    <option value="">{{ __('translate.Select') }}</option>
+                                                    @for($i = 1; $i <= 12; $i++)
+                                                        @php
+                                                            $__selectedWarranty = old('warranty_months', $car->warranty_months);
+                                                        @endphp
+                                                        <option value="{{ $i }}" {{ (string) $__selectedWarranty === (string) $i ? 'selected' : '' }}>{{ $i }} {{ $i === 1 ? __('month') : __('months') }}</option>
+                                                    @endfor
+                                                    @for($y = 1; $y <= 10; $y++)
+                                                        @php
+                                                            $__selectedWarranty = old('warranty_months', $car->warranty_months);
+                                                            $__months = $y * 12;
+                                                        @endphp
+                                                        <option value="{{ $__months }}" {{ (string) $__selectedWarranty === (string) $__months ? 'selected' : '' }}>{{ $y }} {{ $y === 1 ? __('year') : __('years') }}</option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                        <div class="description-item two">
+                                            <div class="description-item-inner">
+                                                <label for="condition" class="form-label">{{ __('translate.Condition') }} <span>*</span></label>
+                                                <select class="form-select" name="condition" id="condition" required>
+                                                    @php
+                                                        $__selectedCondition = old('condition', $car->condition);
+                                                    @endphp
+                                                    <option {{ 'Used' == $__selectedCondition ? 'selected' : '' }} value="Used">{{ __('translate.Used') }}</option>
+                                                    <option {{ 'New' == $__selectedCondition ? 'selected' : '' }} value="New">{{ __('translate.New') }}</option>
+                                                </select>
+                                            </div>
                                         </div>
 
                                         <div class="description-item two">
-
                                             <div class="description-item-inner">
                                                 <label for="offer_price" class="form-label">{{ __('translate.Description') }}
                                                     <span>*</span>
                                                 </label>
                                                 <textarea class="summernote"  name="description" id="description">{!! html_decode($car_translate->description) !!}</textarea>
                                             </div>
-
                                         </div>
 
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            <!-- Key Information  -->
-                            <div class="col-lg-12">
-                                <div class="car-images">
-                                    <h3 class="car-images-taitel">{{ __('translate.Key Information') }}</h3>
-
-                                    <input type="hidden" name="condition" value="Used">
-
-                                    <div class="car-images-inner">
-                                        <div class="description-item">
-
-                                            <div class="description-item-inner">
-                                                <label for="exampleFormControlInput1" class="form-label">
-                                                    {{ __('translate.Condition') }}
-                                                    <span>*</span> </label>
-                                                <select class="form-select"  name="condition">
-                                                    <option {{ 'Used' == $car->condition ? 'selected' : '' }} value="Used">{{ __('translate.Used') }}</option>
-                                                    <option {{ 'New' == $car->condition ? 'selected' : '' }} value="New">{{ __('translate.New') }}</option>
-                                                </select>
-                                            </div>
-
-
-                                            <div class="description-item-inner">
-                                                <label for="exampleFormControlInput1" class="form-label">
-                                                    {{ __('translate.Seller Type') }}
-                                                    <span>*</span> </label>
-                                                @php
-                                                    $authUser = Auth::guard('web')->user();
-                                                    $sellerType = ($authUser && $authUser->is_dealer) ? 'Dealer' : 'Personal';
-                                                @endphp
-                                                <input type="hidden" name="seller_type" value="{{ $sellerType }}">
-                                                <input type="text" class="form-control" value="{{ $sellerType }}" readonly>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Features  -->
-                            <div class="col-lg-12">
-                                <div class="car-images">
-                                    <h3 class="car-images-taitel">{{ __('translate.Features') }}</h3>
-                                    <div class="car-images-inner">
-                                        <div class="description-item two">
-                                            <div class="description-item-inner">
-                                                <div class="description-feature-item">
-                                                    @foreach ($features as $index => $feature)
-                                                        <div class="description-feature-inner">
-                                                            <div class="form-check">
-                                                                <input {{ in_array($feature->id, $existing_features) ? 'checked' : '' }}  class="form-check-input" type="checkbox" name="features[]" value="{{ $feature->id }}"
-                                                                    id="flexCheckDefault{{ $index }}">
-                                                                <label class="form-check-label" for="flexCheckDefault{{ $index }}">
-                                                                    {{ $feature->translate->name }}
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -431,7 +385,7 @@
                             <div class="col-lg-12">
                                 <div class="car-images">
                                     <h3 class="car-images-taitel">{{ __('translate.Video Information') }}</h3>
-
+ 
                                     <div class="car-images-inner">
                                         <h6 class="car-images-inner-txt">{{ __('translate.Video Image') }}
                                               <i 
@@ -488,7 +442,7 @@
                             <!-- button  -->
                             <div class="col-lg-12">
                                 <div class="description-form-btn" >
-                                    <button class="thm-btn-two">{{ __('translate.Update Now') }}</button>
+                                    <button type="submit" class="thm-btn-two">{{ __('translate.Update Now') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -505,9 +459,15 @@
 
     @include('profile.logout')
 
-
-
 </main>
+
+<div id="adSubmittingOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999999;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;">
+    <div style="text-align:center;padding:20px 24px;background:rgba(0,0,0,.4);border-radius:12px;backdrop-filter:blur(2px);">
+        <div style="font-size:16px;margin-bottom:8px;">{{ __('Please wait') }}</div>
+        <div style="font-size:22px;">{{ __('Your ad is being updated...') }}</div>
+        <div style="font-size:14px;margin-top:10px;opacity:.8;">{{ __('System is reviewing your ad. Do not close this window.') }}</div>
+    </div>
+</div>
 
 @endsection
 
@@ -590,6 +550,49 @@
             font-size:16px;
             line-height:28px;
         }
+
+        .modern-upload{
+            border: 1px dashed #d0d7de;
+            border-radius: 12px;
+            padding: 14px;
+            background: #fff;
+        }
+        .modern-upload-input{
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        .modern-upload-btn{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: #0d6efd;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+        .modern-upload-btn:hover{
+            background: #0b5ed7;
+            color: #fff;
+        }
+        .modern-upload-sub{
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 6px;
+        }
+        .modern-upload-selected{
+            font-size: 13px;
+            color: #333;
+        }
     </style>
 @endpush
 
@@ -604,6 +607,7 @@
                 const galleryInput = document.getElementById('gallery_images_input');
                 const galleryPreviewGrid = document.getElementById('gallery_preview_grid');
                 const galleryLimitNote = document.getElementById('gallery_images_limit_note');
+                const gallerySelectedText = document.getElementById('gallery_images_selected_text');
                 const existingGalleryGrid = document.getElementById('existing_gallery_grid');
                 let selectedGalleryFiles = [];
 
@@ -635,6 +639,9 @@
                     galleryPreviewGrid.innerHTML = '';
                     const totalImages = getExistingGalleryCount() + selectedGalleryFiles.length;
                     galleryLimitNote.textContent = totalImages ? (totalImages + ' / 8 images selected') : '';
+                    if (gallerySelectedText) {
+                        gallerySelectedText.textContent = selectedGalleryFiles.length ? (selectedGalleryFiles.length + ' file(s) selected') : 'No files selected';
+                    }
 
                     selectedGalleryFiles.forEach(function(file, index) {
                         const card = document.createElement('div');
@@ -727,6 +734,9 @@
                 }
 
                 function trySetBrandFromMake(make) {
+                    if (!$("#brand_id").length) {
+                        return true;
+                    }
                     let mk = normalizeBrandText(make);
                     if (!mk) return false;
 
@@ -743,7 +753,6 @@
 
                     if (matchedVal) {
                         $("#brand_id").val(matchedVal).trigger('change');
-                        $("#wrap_brand").hide();
                         return true;
                     }
 
@@ -757,6 +766,8 @@
                         version: $("#motorcheck_version").val() || '',
                         car_model: $("#motorcheck_model").val() || '',
                         year: (function() {
+                            let yearVal = $("#year").val();
+                            if (yearVal) return yearVal;
                             let rd = $("#motorcheck_reg_date").val();
                             if (rd && String(rd).length >= 4) return String(rd).substring(0, 4);
                             return '';
@@ -797,11 +808,6 @@
 
                     if (vehicleDetails.make) {
                         let mappedBrand = trySetBrandFromMake(vehicleDetails.make);
-                        if (!mappedBrand) {
-                            $("#wrap_brand").show();
-                        }
-                    } else {
-                        $("#wrap_brand").show();
                     }
 
                     return vehicleDetails;
@@ -920,12 +926,12 @@
 
                             if (vehicleDetails.make) {
                                 $("#motorcheck_make").val(vehicleDetails.make);
-                                let mappedBrand = trySetBrandFromMake(vehicleDetails.make);
-                                if (!mappedBrand) {
-                                    $("#wrap_brand").show();
+                                if ($("#brand_id").length) {
+                                    let mappedBrand = trySetBrandFromMake(vehicleDetails.make);
+                                    if (!mappedBrand) {
+                                        // Brand field removed from edit form
+                                    }
                                 }
-                            } else {
-                                $("#wrap_brand").show();
                             }
 
                             function buildAutoTitle() {
@@ -994,6 +1000,15 @@
 
             });
         })(jQuery);
+
+        (function(){
+            var f = document.getElementById('carEditForm');
+            if (!f) return;
+            f.addEventListener('submit', function(){
+                var ov = document.getElementById('adSubmittingOverlay');
+                if (ov){ ov.style.display = 'flex'; }
+            });
+        })();
 
         function previewVideoImage(event) {
             var reader = new FileReader();

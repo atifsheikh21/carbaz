@@ -13,6 +13,8 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CarPartRequestForumController;
+use App\Http\Controllers\AdReportController;
+use App\Http\Controllers\AccountDeletionController;
 use Modules\GeneralSetting\Entities\Setting;
 use App\Http\Controllers\Admin\UserController;
 use Modules\GeneralSetting\Entities\EmailTemplate;
@@ -32,6 +34,7 @@ use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\Auth\EmailVerificationPromptController;
 
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\AdReportController as AdminAdReportController;
 use App\Http\Controllers\Admin\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\NewPasswordController as UserNewPasswordController;
 use App\Http\Controllers\Auth\RegisteredUserController as UserRegisteredUserController;
@@ -64,8 +67,14 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
 
             Route::get('/page/{slug}', 'custom_page')->name('custom-page');
 
+            Route::get('/page/legal', function () {
+                return redirect()->route('custom-page', 'legal');
+            })->name('page/legal');
+
             Route::get('/listings', 'listings')->name('listings');
             Route::get('/listing/{slug}', 'listing')->name('listing');
+
+            Route::get('/search-all', 'search_all')->name('search-all');
 
             Route::get('/car-parts', 'car_parts')->name('car-parts');
             Route::get('/car-part/{slug}', 'car_part')->name('car-part');
@@ -77,6 +86,7 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
             Route::get('/join-as-dealer', 'join_as_dealer')->name('join-as-dealer');
 
             Route::get('/pricing-plan', 'pricing_plan')->name('pricing-plan');
+            Route::get('/free-ad-offer', 'free_ad_offer')->name('free-ad-offer');
 
             Route::get('/language-switcher', 'language_switcher')->name('language-switcher');
             Route::get('/currency-switcher', 'currency_switcher')->name('currency-switcher');
@@ -84,6 +94,19 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
             Route::get('/cities-by-country/{id}', 'cities_by_country')->name('cities-by-country');
 
             Route::get('placeholder-image/{size}', 'placeholderImage')->name('placeholder.image');
+        });
+
+        Route::middleware(['auth:web'])->group(function () {
+            Route::post('/report/car/{car}', [AdReportController::class, 'storeCar'])->name('report.car');
+            Route::post('/report/car-part/{carPart}', [AdReportController::class, 'storeCarPart'])->name('report.car-part');
+        });
+
+        Route::middleware(['auth:web'])->group(function () {
+            Route::post('/user/account/delete-request', [AccountDeletionController::class, 'request'])->name('user.account.delete.request');
+        });
+
+        Route::middleware(['signed'])->group(function () {
+            Route::get('/user/account/delete-confirm/{user}/{hash}', [AccountDeletionController::class, 'confirm'])->name('user.account.delete.confirm');
         });
 
         Route::get('pricing-plan-enroll/{id}', [PaymentController::class, 'payment'])->name('pricing-plan-enroll');
@@ -143,6 +166,8 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
                 Route::get('/wishlists', 'wishlists')->name('wishlists');
                 Route::get('/add-to-wishlist/{id}', 'add_to_wishlist')->name('add-to-wishlist');
                 Route::delete('/remove-wishlist/{id}', 'remove_wishlist')->name('remove-wishlist');
+                Route::get('/add-car-part-to-wishlist/{id}', 'add_to_car_part_wishlist')->name('add-car-part-to-wishlist');
+                Route::delete('/remove-car-part-wishlist/{id}', 'remove_car_part_wishlist')->name('remove-car-part-wishlist');
 
                 Route::get('/reviews', 'reviews')->name('reviews');
                 Route::post('/store-review', 'store_review')->name('store-review');
@@ -150,9 +175,9 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
 
             Route::controller(ChatController::class)->group(function () {
                 Route::get('/messages', 'index')->name('messages.index');
-                Route::get('/messages/start/{sellerId}', 'start')->name('messages.start');
-                Route::get('/messages/{conversationId}', 'show')->name('messages.show');
-                Route::post('/messages/{conversationId}', 'store')->name('messages.store');
+                Route::get('/messages/start/{sellerId}', 'start')->where('sellerId', '[1-9][0-9]*')->name('messages.start');
+                Route::get('/messages/{conversationId}', 'show')->where('conversationId', '[1-9][0-9]*')->name('messages.show');
+                Route::post('/messages/{conversationId}', 'store')->where('conversationId', '[1-9][0-9]*')->name('messages.store');
             });
 
             Route::controller(UserAuthenticatedSessionController::class)->group(function () {
@@ -170,6 +195,13 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
                 Route::get('/forum/car-part-requests/create', 'create')->name('car-part-requests.create');
                 Route::post('/forum/car-part-requests', 'store')->name('car-part-requests.store');
                 Route::post('/forum/car-part-requests/{id}/reply', 'reply')->whereNumber('id')->name('car-part-requests.reply');
+                Route::get('/forum/car-part-requests/{id}/edit', 'editRequest')->whereNumber('id')->name('car-part-requests.edit');
+                Route::put('/forum/car-part-requests/{id}', 'updateRequest')->whereNumber('id')->name('car-part-requests.update');
+                Route::delete('/forum/car-part-requests/{id}', 'deleteRequest')->whereNumber('id')->name('car-part-requests.delete');
+                Route::post('/forum/car-part-requests/{id}/vote', 'voteRequest')->whereNumber('id')->name('car-part-requests.vote');
+                Route::post('/forum/car-part-request-replies/{id}/vote', 'voteReply')->whereNumber('id')->name('car-part-requests.reply.vote');
+                Route::put('/forum/car-part-request-replies/{id}', 'updateReply')->whereNumber('id')->name('car-part-requests.reply.update');
+                Route::delete('/forum/car-part-request-replies/{id}', 'deleteReply')->whereNumber('id')->name('car-part-requests.reply.delete');
             });
         });
 
@@ -219,6 +251,8 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
         Route::group(['middleware' => ['auth:admin']], function () {
             Route::get('/', [DashboardController::class, 'dashboard']);
             Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+            Route::get('ad-reports', [AdminAdReportController::class, 'index'])->name('ad-reports.index');
 
             Route::controller(AdminProfileController::class)->group(function () {
                 Route::get('edit-profile', 'edit_profile')->name('edit-profile');

@@ -126,7 +126,16 @@
                                                 <label class="crancy__item-label">{{ __('translate.Existing Images') }}</label>
                                                 <div style="display:flex;flex-wrap:wrap;gap:12px;">
                                                     @foreach($carPart->galleries as $gallery)
-                                                        <img src="{{ asset($gallery->image) }}" alt="img" style="width:120px;height:120px;object-fit:cover;border-radius:8px;">
+                                                        <div style="position:relative;width:120px;">
+                                                            <img src="{{ asset($gallery->image) }}" alt="img" style="width:120px;height:120px;object-fit:cover;border-radius:8px;">
+                                                            <form action="{{ route('admin.delete-car-part-gallery', $gallery->id) }}" method="POST" style="position:absolute;top:4px;right:4px;" onsubmit="return confirm('{{ __('translate.Are you sure you want to delete this image?') }}');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" style="background:#dc3545;border:none;border-radius:50%;width:28px;height:28px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 4px rgba(0,0,0,0.2);" title="{{ __('translate.Remove') }}">
+                                                                    &times;
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                     @endforeach
                                                 </div>
                                             </div>

@@ -114,6 +114,12 @@ class PaymentController extends Controller
 
             $notification = trans('translate.Your payment has been made successful. Thanks for your purchase');
             $notification = array('messege'=>$notification,'alert-type'=>'success');
+
+            $redirectUrl = trim((string) $request->input('redirect_url'));
+            if ($redirectUrl !== '') {
+                return redirect($redirectUrl)->with($notification);
+            }
+
             return redirect()->route('user.car.create', ['purpose' => 'Sale'])->with($notification);
         }
 

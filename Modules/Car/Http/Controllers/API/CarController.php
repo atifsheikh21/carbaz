@@ -227,7 +227,18 @@ class CarController extends Controller
 
         }
 
-        $car_translate = CarTranslation::findOrFail($request->translate_id);
+        $car_translate = null;
+        if ($request->translate_id) {
+            $car_translate = CarTranslation::where('id', $request->translate_id)
+                ->where('car_id', $car->id)
+                ->first();
+        }
+
+        if (!$car_translate) {
+            $car_translate = CarTranslation::where('car_id', $car->id)
+                ->where('lang_code', (string) $request->lang_code)
+                ->firstOrFail();
+        }
         $car_translate->title = $request->title;
         $car_translate->description = $request->description;
         $car_translate->seo_title = $request->seo_title ? $request->seo_title : $request->title;
@@ -349,7 +360,51 @@ class CarController extends Controller
             return response()->json(['message' => trans('Not found')], 403);
         }
 
-        $car->video_id = $request->video_id;
+        $normalizeYoutubeId = function ($value) {
+            $value = trim((string) $value);
+            if ($value === '') {
+                return null;
+            }
+
+            if (preg_match('~^[a-zA-Z0-9_-]{11}$~', $value)) {
+                return $value;
+            }
+
+            $url = $value;
+            if (!preg_match('~^https?://~i', $url)) {
+                $url = 'https://' . ltrim($url, '/');
+            }
+
+            $parts = @parse_url($url);
+            if (!is_array($parts)) {
+                return $value;
+            }
+
+            $host = strtolower((string) ($parts['host'] ?? ''));
+            $path = (string) ($parts['path'] ?? '');
+            $query = (string) ($parts['query'] ?? '');
+
+            if (str_contains($host, 'youtu.be')) {
+                $id = trim($path, '/');
+                $id = explode('/', $id)[0] ?? '';
+                return $id !== '' ? $id : $value;
+            }
+
+            if (str_contains($host, 'youtube.com') || str_contains($host, 'youtube-nocookie.com')) {
+                parse_str($query, $qs);
+                if (!empty($qs['v'])) {
+                    return (string) $qs['v'];
+                }
+
+                if (preg_match('~/(shorts|embed)/([^/?#]+)~i', $path, $m)) {
+                    return (string) ($m[2] ?? $value);
+                }
+            }
+
+            return $value;
+        };
+
+        $car->video_id = $normalizeYoutubeId($request->video_id);
         $car->save();
 
 
@@ -361,6 +416,7 @@ class CarController extends Controller
             $image_name = 'uploads/custom-images/'.$image_name;
             $manager = new ImageManager(['driver' => 'gd']);
             $image = $manager->make($request->thumb_image);
+            fixImageOrientation($image, $request->thumb_image->getRealPath());
 
             $user = User::findOrFail($car->agent_id);
 
@@ -392,7 +448,9 @@ class CarController extends Controller
             $old_image = $car->video_image;
             $image_name = 'car-video-'.date('-Y-m-d-h-i-s-').rand(999,9999).'.webp';
             $image_name ='uploads/custom-images/'.$image_name;
-            Image::make($request->video_image)
+            $videoImg = Image::make($request->video_image);
+            fixImageOrientation($videoImg, $request->video_image->getRealPath());
+            $videoImg
                 ->encode('webp', 80)
                 ->save(public_path().'/'.$image_name);
             $car->video_image = $image_name;
@@ -412,7 +470,9 @@ class CarController extends Controller
                 $image_name = 'car-gallery'.date('-Y-m-d-h-i-s-').rand(999,9999).'.webp';
                 $image_name = 'uploads/custom-images/'.$image_name;
                 $manager = new ImageManager(['driver' => 'gd']);
+                $imgSource = $image;
                 $image = $manager->make($image);
+                fixImageOrientation($image, $imgSource->getRealPath());
 
                 $user = User::findOrFail($car->agent_id);
 
@@ -544,12 +604,27 @@ class CarController extends Controller
         }
 
         $old_image = $gallery->image;
+        $carId = $gallery->car_id;
 
         if($old_image){
             if(File::exists(public_path().'/'.$old_image))unlink(public_path().'/'.$old_image);
         }
 
         $gallery->delete();
+
+        if ($carId) {
+            $car = Car::find($carId);
+            if ($car) {
+                $thumbExistsInGalleries = !empty($car->thumb_image)
+                    && CarGallery::where('car_id', $carId)->where('image', $car->thumb_image)->exists();
+
+                if ($car->thumb_image === $old_image || !$thumbExistsInGalleries) {
+                    $nextThumb = CarGallery::where('car_id', $carId)->oldest('id')->value('image');
+                    $car->thumb_image = $nextThumb ?: '';
+                    $car->save();
+                }
+            }
+        }
 
         $notification=  trans('translate.Delete Successfully');
        return response()->json(['message' => $notification]);

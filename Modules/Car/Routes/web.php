@@ -12,6 +12,7 @@ Route::group(['middleware' => ['XSS','DEMO']], function () {
 
         Route::resource('car', CarController::class);
         Route::resource('car-part', CarPartController::class);
+        Route::delete('delete-car-part-gallery/{id}', [CarPartController::class, 'deleteGallery'])->name('delete-car-part-gallery');
         Route::get('awaiting-car', [CarController::class, 'awaiting_car'])->name('awaiting-car');
         Route::get('featured-car', [CarController::class, 'featured_car'])->name('featured-car');
         Route::get('select-car-purpose', [CarController::class, 'select_car_purpose'])->name('select-car-purpose');
@@ -38,9 +39,18 @@ Route::group(['middleware' => ['XSS','DEMO']], function () {
 
             Route::resource('car', FrontendCarController::class);
 
+            Route::post('car/{car}/toggle-status', [FrontendCarController::class, 'toggleStatus'])->name('car.toggle-status');
+
             Route::post('car/motorcheck/lookup', [FrontendCarController::class, 'motorcheck_lookup'])->name('car.motorcheck.lookup');
 
+            Route::get('car-bulk-upload', [FrontendCarController::class, 'bulk_upload_form'])->name('car.bulk-upload.form');
+            Route::get('car-bulk-upload/sample', [FrontendCarController::class, 'bulk_upload_sample'])->name('car.bulk-upload.sample');
+            Route::post('car-bulk-upload', [FrontendCarController::class, 'bulk_upload_store'])->name('car.bulk-upload.store');
+
             Route::resource('car-part', FrontendCarPartController::class);
+
+            Route::post('car-part/{carPart}/toggle-status', [FrontendCarPartController::class, 'toggleStatus'])->name('car-part.toggle-status');
+            Route::delete('car-part-gallery/{id}', [FrontendCarPartController::class, 'deleteGallery'])->name('car-part-gallery.delete');
 
             Route::get('car-gallery/{id}', [FrontendCarController::class, 'car_gallery'])->name('car-gallery');
             Route::post('upload-gallery/{id}', [FrontendCarController::class, 'upload_car_gallery'])->name('upload-gallery');

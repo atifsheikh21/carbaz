@@ -34,54 +34,8 @@
                             <h5>{{ __('Messages') }}</h5>
                         </div>
 
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>{{ __('translate.User') }}</th>
-                                        <th>{{ __('Last Message') }}</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($conversations as $c)
-                                        @php
-                                            $other = $c->user_one_id === $user->id ? $c->userTwo : $c->userOne;
-                                            $preview = $c->lastMessage?->body;
-                                        @endphp
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <img src="{{ getImageOrPlaceholder($other?->image, '40x40') }}" alt="img" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
-                                                    <div>
-                                                        <div style="display:flex;align-items:center;gap:8px;">
-                                                            <span>{{ html_decode($other?->name) }}</span>
-                                                            @if(($c->unread_count ?? 0) > 0)
-                                                                <span class="badge" style="background:var(--brand-primary);color:#fff;">{{ $c->unread_count }}</span>
-                                                            @endif
-                                                        </div>
-                                                        @if($preview)
-                                                            <div style="font-size:12px;color:#6b7280;max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                                                {{ $preview }}
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {{ $c->last_message_at ? $c->last_message_at->diffForHumans() : '' }}
-                                            </td>
-                                            <td class="text-end">
-                                                <a class="thm-btn-two" href="{{ route('user.messages.show', $c->id) }}">{{ __('Open') }}</a>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="3">{{ __('No Data Found') }}</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                        <div class="text-center" style="padding:60px 20px;">
+                            <p style="font-size:18px;color:#6b7280;margin:0;">{{ __('This feature will be available soon.') }}</p>
                         </div>
                     </div>
 
@@ -90,4 +44,7 @@
         </div>
     </section>
 </main>
+
+@include('profile.logout')
+
 @endsection

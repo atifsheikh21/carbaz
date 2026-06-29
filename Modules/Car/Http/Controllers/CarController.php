@@ -277,7 +277,18 @@ class CarController extends Controller
 
         }
 
-        $car_translate = CarTranslation::findOrFail($request->translate_id);
+        $car_translate = null;
+        if ($request->translate_id) {
+            $car_translate = CarTranslation::where('id', $request->translate_id)
+                ->where('car_id', $car->id)
+                ->first();
+        }
+
+        if (!$car_translate) {
+            $car_translate = CarTranslation::where('car_id', $car->id)
+                ->where('lang_code', (string) $request->lang_code)
+                ->firstOrFail();
+        }
         $car_translate->title = $request->title;
         $car_translate->description = $request->description;
         $car_translate->video_description = $request->video_description;
@@ -346,6 +357,10 @@ class CarController extends Controller
         $car = Car::findOrFail($id);
 
         foreach ($request->file as $index => $image) {
+            if (!$image) {
+                continue;
+            }
+
             $gallery_image = new CarGallery();
 
             if($image) {
@@ -353,7 +368,9 @@ class CarController extends Controller
                 $image_name = 'car-gallery'.date('-Y-m-d-h-i-s-').rand(999,9999).'.webp';
                 $image_name = 'uploads/custom-images/'.$image_name;
                 $manager = new ImageManager(['driver' => 'gd']);
+                $imgSource = $image;
                 $image = $manager->make($image);
+                fixImageOrientation($image, $imgSource->getRealPath());
 
                 $user = User::findOrFail($car->agent_id);
 
@@ -396,12 +413,27 @@ class CarController extends Controller
     public function delete_car_gallery($id){
         $gallery = CarGallery::findOrFail($id);
         $old_image = $gallery->image;
+        $carId = $gallery->car_id;
 
         if($old_image){
             if(File::exists(public_path().'/'.$old_image))unlink(public_path().'/'.$old_image);
         }
 
         $gallery->delete();
+
+        if ($carId) {
+            $car = Car::find($carId);
+            if ($car) {
+                $thumbExistsInGalleries = !empty($car->thumb_image)
+                    && CarGallery::where('car_id', $carId)->where('image', $car->thumb_image)->exists();
+
+                if ($car->thumb_image === $old_image || !$thumbExistsInGalleries) {
+                    $nextThumb = CarGallery::where('car_id', $carId)->oldest('id')->value('image');
+                    $car->thumb_image = $nextThumb ?: '';
+                    $car->save();
+                }
+            }
+        }
 
         $notification=  trans('translate.Delete Successfully');
         $notification=array('messege'=>$notification,'alert-type'=>'success');

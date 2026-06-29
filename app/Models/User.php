@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Modules\Car\Entities\Car;
+use App\Models\CarPart;
 
 class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
@@ -18,6 +19,14 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 
     public function cars(){
         return $this->hasMany(Car::class, 'agent_id');
+    }
+
+    public function carParts(){
+        return $this->hasMany(CarPart::class, 'agent_id');
+    }
+
+    public function carPartRequestReplies(){
+        return $this->hasMany(CarPartRequestReply::class, 'user_id');
     }
 
     public function getTotalCarAttribute()
@@ -55,8 +64,10 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         'is_part_seller',
         'vehicle_company_name',
         'vehicle_company_address',
+        'vehicle_company_postal_code',
         'part_company_name',
         'part_company_address',
+        'part_company_postal_code',
         'is_banned',
         'is_influencer',
         'password',
@@ -65,6 +76,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         'provider_id',
         'email_verified_at',
         'verification_otp',
+        'is_forum_helper',
     ];
 
     /**
@@ -87,6 +99,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_forum_helper' => 'boolean',
     ];
 
 

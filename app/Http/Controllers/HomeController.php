@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\CarPart;
 use App\Models\CarPartRequest;
+use App\Models\HiddenAd;
 
 use App\Models\Review;
 use App\Rules\Captcha;
@@ -12,6 +13,7 @@ use App\Models\AdsBanner;
 use App\Helpers\MailHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use Modules\Car\Entities\Car;
 use Modules\Page\Entities\Faq;
 use Modules\Blog\Entities\Blog;
@@ -157,6 +159,241 @@ class HomeController extends Controller
         return $brandSlugMap[$selection] ?? [];
     }
 
+    protected function applyVehicleKeywordSearch($cars, string $keyword)
+    {
+        $keywords = preg_split('/\s+/', trim($keyword), -1, PREG_SPLIT_NO_EMPTY);
+        if (empty($keywords)) {
+            return $cars;
+        }
+
+        return $cars->where(function ($query) use ($keywords) {
+            foreach ($keywords as $kw) {
+                $query->orWhere(function ($wordQuery) use ($kw) {
+                    $wordQuery->whereHas('front_translate', function ($translationQuery) use ($kw) {
+                        $translationQuery->where('title', 'like', '%' . $kw . '%')
+                            ->orWhere('description', 'like', '%' . $kw . '%')
+                            ->orWhere('address', 'like', '%' . $kw . '%');
+                    })
+                    ->orWhereHas('brand.front_translate', function ($brandQuery) use ($kw) {
+                        $brandQuery->where('name', 'like', '%' . $kw . '%');
+                    });
+
+                    foreach (['car_model', 'year', 'from_year', 'to_year', 'regular_price', 'offer_price', 'condition', 'engine_size', 'mileage', 'transmission', 'fuel_type', 'motorcheck_make', 'motorcheck_model', 'motorcheck_year', 'motorcheck_variant', 'motorcheck_fuel'] as $column) {
+                        if (Schema::hasColumn('cars', $column)) {
+                            $wordQuery->orWhere($column, 'like', '%' . $kw . '%');
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    protected function applyVehicleYearFilter($cars, ?int $minYear, ?int $maxYear)
+    {
+        if (!$minYear && !$maxYear) {
+            return $cars;
+        }
+
+        if ($minYear && !$maxYear) {
+            $maxYear = $minYear;
+        }
+
+        // Cache schema checks to avoid repeated database queries
+        static $carColumns = null;
+        if ($carColumns === null) {
+            $carColumns = [
+                'year' => Schema::hasColumn('cars', 'year'),
+                'motorcheck_year' => Schema::hasColumn('cars', 'motorcheck_year'),
+                'motorcheck_reg_date' => Schema::hasColumn('cars', 'motorcheck_reg_date'),
+                'motorcheck_last_date_of_sale' => Schema::hasColumn('cars', 'motorcheck_last_date_of_sale'),
+                'motorcheck_raw' => Schema::hasColumn('cars', 'motorcheck_raw'),
+                'from_year' => Schema::hasColumn('cars', 'from_year'),
+                'to_year' => Schema::hasColumn('cars', 'to_year')
+            ];
+        }
+
+        return $cars->where(function ($query) use ($minYear, $maxYear, $carColumns) {
+            foreach (['year', 'motorcheck_year'] as $column) {
+                if ($carColumns[$column]) {
+                    $query->orWhere(function ($yearQuery) use ($column, $minYear, $maxYear) {
+                        $yearQuery->whereNotNull($column);
+                        if ($minYear) {
+                            $yearQuery->whereRaw("CAST({$column} AS UNSIGNED) >= ?", [$minYear]);
+                        }
+                        if ($maxYear) {
+                            $yearQuery->whereRaw("CAST({$column} AS UNSIGNED) <= ?", [$maxYear]);
+                        }
+                    });
+                }
+            }
+
+            // Optimized date column queries
+            foreach (['motorcheck_reg_date', 'motorcheck_last_date_of_sale'] as $dateColumn) {
+                if ($carColumns[$dateColumn]) {
+                    $query->orWhere(function ($dateQuery) use ($dateColumn, $minYear, $maxYear) {
+                        $dateQuery->whereNotNull($dateColumn)
+                            ->where($dateColumn, '!=', '');
+                        if ($minYear) {
+                            $dateQuery->whereRaw("CAST(LEFT({$dateColumn}, 4) AS UNSIGNED) >= ?", [$minYear]);
+                        }
+                        if ($maxYear) {
+                            $dateQuery->whereRaw("CAST(LEFT({$dateColumn}, 4) AS UNSIGNED) <= ?", [$maxYear]);
+                        }
+                    });
+                }
+            }
+
+            // Optimized JSON queries - only if motorcheck_raw exists
+            if ($carColumns['motorcheck_raw']) {
+                $startYear = $minYear ?: 1900;
+                $endYear = $maxYear ?: (int) date('Y') + 1;
+                if ($startYear <= $endYear && ($endYear - $startYear) <= 150) {
+                    $query->orWhere(function ($rawQuery) use ($startYear, $endYear) {
+                        $rawQuery->whereNotNull('motorcheck_raw')
+                            ->where(function ($yearQuery) use ($startYear, $endYear) {
+                                // Use more efficient LIKE queries for JSON search
+                                for ($year = $startYear; $year <= $endYear; $year++) {
+                                    $yearQuery->orWhere('motorcheck_raw', 'like', '%&quot;reg_date&quot;:&quot;' . $year . '%')
+                                        ->orWhere('motorcheck_raw', 'like', '%"reg_date":' . $year . '%')
+                                        ->orWhere('motorcheck_raw', 'like', '%&quot;year&quot;:' . $year . '%')
+                                        ->orWhere('motorcheck_raw', 'like', '%"year":' . $year . '%');
+                                }
+                            });
+                    });
+                }
+            }
+
+            // Optimized range queries
+            if ($carColumns['from_year'] || $carColumns['to_year']) {
+                $query->orWhere(function ($rangeQuery) use ($minYear, $maxYear, $carColumns) {
+                    if ($minYear && $carColumns['to_year']) {
+                        $rangeQuery->where(function ($q) use ($minYear) {
+                            $q->whereNull('to_year')->orWhereRaw('CAST(to_year AS UNSIGNED) >= ?', [$minYear]);
+                        });
+                    }
+                    if ($maxYear && $carColumns['from_year']) {
+                        $rangeQuery->where(function ($q) use ($maxYear) {
+                            $q->whereNull('from_year')->orWhereRaw('CAST(from_year AS UNSIGNED) <= ?', [$maxYear]);
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    protected function applyPartYearFilter($parts, ?int $minYear, ?int $maxYear)
+    {
+        if (!$minYear && !$maxYear) {
+            return $parts;
+        }
+
+        if ($minYear && !$maxYear) {
+            $maxYear = $minYear;
+        }
+
+        // Cache schema checks for car parts
+        static $partColumns = null;
+        if ($partColumns === null) {
+            $partColumns = [
+                'year' => Schema::hasColumn('car_parts', 'year'),
+                'from_year' => Schema::hasColumn('car_parts', 'from_year'),
+                'to_year' => Schema::hasColumn('car_parts', 'to_year')
+            ];
+        }
+
+        return $parts->where(function ($query) use ($minYear, $maxYear, $partColumns) {
+            if ($partColumns['year']) {
+                $query->orWhere(function ($yearQuery) use ($minYear, $maxYear) {
+                    $yearQuery->whereNotNull('year');
+                    if ($minYear) {
+                        $yearQuery->whereRaw('CAST(year AS UNSIGNED) >= ?', [$minYear]);
+                    }
+                    if ($maxYear) {
+                        $yearQuery->whereRaw('CAST(year AS UNSIGNED) <= ?', [$maxYear]);
+                    }
+                });
+            }
+
+            if ($partColumns['from_year'] || $partColumns['to_year']) {
+                $query->orWhere(function ($rangeQuery) use ($minYear, $maxYear, $partColumns) {
+                    if ($minYear && $partColumns['to_year']) {
+                        $rangeQuery->where(function ($q) use ($minYear) {
+                            $q->whereNull('to_year')->orWhereRaw('CAST(to_year AS UNSIGNED) >= ?', [$minYear]);
+                        });
+                    }
+                    if ($maxYear && $partColumns['from_year']) {
+                        $rangeQuery->where(function ($q) use ($maxYear) {
+                            $q->whereNull('from_year')->orWhereRaw('CAST(from_year AS UNSIGNED) <= ?', [$maxYear]);
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    protected function applyPartModelFilter($parts, string $model)
+    {
+        $model = trim($model);
+        if ($model === '') {
+            return $parts;
+        }
+
+        return $parts->where(function ($query) use ($model) {
+            foreach (['car_model', 'compatibility'] as $column) {
+                if (Schema::hasColumn('car_parts', $column)) {
+                    $query->orWhere($column, 'like', '%' . $model . '%');
+                }
+            }
+        });
+    }
+
+    protected function applyPartKeywordSearch($parts, string $keyword)
+    {
+        $keywords = preg_split('/\s+/', trim($keyword), -1, PREG_SPLIT_NO_EMPTY);
+        if (empty($keywords)) {
+            return $parts;
+        }
+
+        return $parts->where(function ($query) use ($keywords) {
+            foreach ($keywords as $kw) {
+                $query->orWhere(function ($wordQuery) use ($kw) {
+                    $wordQuery->whereHas('frontTranslate', function ($translationQuery) use ($kw) {
+                        $translationQuery->where('title', 'like', '%' . $kw . '%')
+                            ->orWhere('description', 'like', '%' . $kw . '%')
+                            ->orWhere('address', 'like', '%' . $kw . '%');
+                    })
+                    ->orWhereHas('brand.front_translate', function ($brandQuery) use ($kw) {
+                        $brandQuery->where('name', 'like', '%' . $kw . '%');
+                    });
+
+                    foreach (['compatibility', 'car_model', 'from_year', 'to_year', 'regular_price', 'offer_price', 'condition', 'part_number'] as $column) {
+                        if (Schema::hasColumn('car_parts', $column)) {
+                            $wordQuery->orWhere($column, 'like', '%' . $kw . '%');
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    protected function applyVehicleModelFilter($cars, string $model)
+    {
+        $model = trim($model);
+        if ($model === '') {
+            return $cars;
+        }
+
+        return $cars->where(function ($query) use ($model) {
+            $query->where('car_model', 'like', '%' . $model . '%');
+
+            foreach (['motorcheck_model', 'motorcheck_variant'] as $column) {
+                if (Schema::hasColumn('cars', $column)) {
+                    $query->orWhere($column, 'like', '%' . $model . '%');
+                }
+            }
+        });
+    }
+
     protected function getCarBrandModelsMap(): array
     {
         $catalog = $this->getIrelandMakerCatalog();
@@ -207,28 +444,6 @@ class HomeController extends Controller
             $map[$slug] = $item['models'];
         }
 
-        $rows = CarPart::query()
-            ->with('brand')
-            ->select('id', 'brand_id', 'compatibility')
-            ->whereNotNull('brand_id')
-            ->whereNotNull('compatibility')
-            ->where('compatibility', '!=', '')
-            ->get();
-
-        foreach ($rows as $row) {
-            $brandName = trim((string) optional($row->brand)->name);
-            $brandSlug = $brandName !== '' ? Str::slug($brandName) : null;
-            $modelName = trim((string) $row->compatibility);
-            if (!$brandSlug || $modelName === '') {
-                continue;
-            }
-
-            $map[$brandSlug] ??= [];
-            if (!in_array($modelName, $map[$brandSlug], true)) {
-                $map[$brandSlug][] = $modelName;
-            }
-        }
-
         foreach ($map as &$models) {
             sort($models, SORT_NATURAL | SORT_FLAG_CASE);
         }
@@ -252,78 +467,98 @@ class HomeController extends Controller
 
 
     public function index(Request $request){
-        $setting = Setting::select('selected_theme')->first();
+        // Cache theme setting to reduce database queries
+        $setting = Cache::remember('theme_setting', 300, function () {
+            return Setting::select('selected_theme')->first();
+        });
+
+        $selected_theme = Session::get('selected_theme', 'theme_one');
+        
         if($setting && $setting->selected_theme == 'all_theme'){
             if($request->has('theme')){
                 $theme = $request->theme;
-                if($theme == 'one'){
-                    Session::put('selected_theme', 'theme_one');
-                }elseif($theme == 'two'){
-                    Session::put('selected_theme', 'theme_two');
-                }elseif($theme == 'three'){
-                    Session::put('selected_theme', 'theme_three');
-                }else{
-                    if(!Session::has('selected_theme')){
-                        Session::put('selected_theme', 'theme_one');
-                    }
-                }
+                $themeMap = [
+                    'one' => 'theme_one',
+                    'two' => 'theme_two', 
+                    'three' => 'theme_three'
+                ];
+                $selected_theme = $themeMap[$theme] ?? 'theme_one';
+                Session::put('selected_theme', $selected_theme);
             }else{
                 Session::put('selected_theme', 'theme_one');
+                $selected_theme = 'theme_one';
             }
         }else{
-            if($setting && $setting->selected_theme == 'theme_one'){
-                Session::put('selected_theme', 'theme_one');
-            }elseif($setting && $setting->selected_theme == 'theme_two'){
-                Session::put('selected_theme', 'theme_two');
-            }elseif($setting && $setting->selected_theme == 'theme_three'){
-                Session::put('selected_theme', 'theme_three');
-            }else{
-                Session::put('selected_theme', 'theme_one');
-            }
+            $selected_theme = $setting->selected_theme ?? 'theme_one';
+            Session::put('selected_theme', $selected_theme);
         }
 
-        $selected_theme = Session::get('selected_theme');
         $cache_lang = function_exists('front_lang') ? front_lang() : app()->getLocale();
         $cache_key_prefix = 'home.index.' . $selected_theme . '.' . $cache_lang;
 
-        $seo_setting = Cache::remember($cache_key_prefix . '.seo_setting', 60, function () {
+        $seo_setting = Cache::remember($cache_key_prefix . '.seo_setting', 1800, function () {
             return SeoSetting::where('id', 1)->first();
         });
 
-        $homepage = Cache::remember($cache_key_prefix . '.homepage', 60, function () {
+        $homepage = Cache::remember($cache_key_prefix . '.homepage', 1800, function () {
             return HomePage::with('front_translate')->first();
         });
 
-        $brands = Cache::remember($cache_key_prefix . '.brands', 300, function () {
-            return Brand::where('status', 'enable')->get();
+        $brands = Cache::remember($cache_key_prefix . '.brands', 3600, function () {
+            return Brand::where('status', 'enable')->select('id', 'name', 'logo', 'status')->get();
         });
 
-        $used_cars = Cache::remember($cache_key_prefix . '.used_cars', 60, function () {
-            return Car::with('dealer', 'brand')->where(function ($query) {
-                $query->where('expired_date', null)
-                    ->orWhere('expired_date', '>=', date('Y-m-d'));
-            })->where(['condition' => 'Used', 'status' => 'enable', 'approved_by_admin' => 'approved'])->take(8)->get();
+        // Optimize car queries with better indexing and reduced data
+        $used_cars = Cache::remember($cache_key_prefix . '.used_cars', 300, function () {
+            return Car::with(['dealer:id,name,username,image', 'brand:id,name,logo'])
+                ->where(function ($query) {
+                    $query->whereNull('expired_date')
+                        ->orWhere('expired_date', '>=', now()->format('Y-m-d'));
+                })
+                ->where(['condition' => 'Used', 'status' => 'enable', 'approved_by_admin' => 'approved'])
+                ->select('id', 'title', 'slug', 'price', 'thumbnail_image', 'brand_id', 'dealer_id', 'condition', 'mileage', 'year', 'created_at')
+                ->take(8)
+                ->latest()
+                ->get();
         });
 
-        $new_cars = Cache::remember($cache_key_prefix . '.new_cars', 60, function () {
-            return Car::with('dealer', 'brand')->where(function ($query) {
-                $query->where('expired_date', null)
-                    ->orWhere('expired_date', '>=', date('Y-m-d'));
-            })->where(['condition' => 'New', 'status' => 'enable', 'approved_by_admin' => 'approved'])->take(8)->get();
+        $new_cars = Cache::remember($cache_key_prefix . '.new_cars', 300, function () {
+            return Car::with(['dealer:id,name,username,image', 'brand:id,name,logo'])
+                ->where(function ($query) {
+                    $query->whereNull('expired_date')
+                        ->orWhere('expired_date', '>=', now()->format('Y-m-d'));
+                })
+                ->where(['condition' => 'New', 'status' => 'enable', 'approved_by_admin' => 'approved'])
+                ->select('id', 'title', 'slug', 'price', 'thumbnail_image', 'brand_id', 'dealer_id', 'condition', 'mileage', 'year', 'created_at')
+                ->take(8)
+                ->latest()
+                ->get();
         });
 
-        $featured_cars = Cache::remember($cache_key_prefix . '.featured_cars', 60, function () {
-            return Car::with('dealer', 'brand')->where(function ($query) {
-                $query->where('expired_date', null)
-                    ->orWhere('expired_date', '>=', date('Y-m-d'));
-            })->where(['is_featured' => 'enable', 'status' => 'enable', 'approved_by_admin' => 'approved'])->take(6)->get();
+        $featured_cars = Cache::remember($cache_key_prefix . '.featured_cars', 300, function () {
+            return Car::with(['dealer:id,name,username,image', 'brand:id,name,logo'])
+                ->where(function ($query) {
+                    $query->whereNull('expired_date')
+                        ->orWhere('expired_date', '>=', now()->format('Y-m-d'));
+                })
+                ->where(['is_featured' => 'enable', 'status' => 'enable', 'approved_by_admin' => 'approved'])
+                ->select('id', 'title', 'slug', 'price', 'thumbnail_image', 'brand_id', 'dealer_id', 'condition', 'mileage', 'year', 'created_at')
+                ->take(6)
+                ->latest()
+                ->get();
         });
 
-        $car_parts = Cache::remember($cache_key_prefix . '.car_parts', 60, function () {
-            return CarPart::with('brand', 'translations')->where(function ($query) {
-                $query->where('expired_date', null)
-                    ->orWhere('expired_date', '>=', date('Y-m-d'));
-            })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->orderBy('id', 'desc')->take(8)->get();
+        $car_parts = Cache::remember($cache_key_prefix . '.car_parts', 300, function () {
+            return CarPart::with(['brand:id,name,logo', 'translations'])
+                ->where(function ($query) {
+                    $query->whereNull('expired_date')
+                        ->orWhere('expired_date', '>=', now()->format('Y-m-d'));
+                })
+                ->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+                ->select('id', 'title', 'slug', 'price', 'thumbnail_image', 'brand_id', 'year', 'created_at')
+                ->take(8)
+                ->latest()
+                ->get();
         });
 
         $testimonials = Cache::remember($cache_key_prefix . '.testimonials', 300, function () {
@@ -656,12 +891,27 @@ class HomeController extends Controller
             ->orderBy('engine_size')
             ->pluck('engine_size');
 
-        $cars = Car::with('dealer', 'brand', 'front_translate')
+        $cars = Car::with('dealer', 'brand', 'front_translate', 'city')
             ->withCount('galleries')
             ->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved']);
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+        ->whereHas('dealer', function($query) {
+            $query->where('status', 'enable');
+        });
+
+        $authUser = Auth::guard('web')->user();
+        if ($authUser) {
+            $hiddenCarIds = HiddenAd::query()
+                ->where('user_id', $authUser->id)
+                ->where('hideable_type', Car::class)
+                ->pluck('hideable_id')
+                ->all();
+            if (!empty($hiddenCarIds)) {
+                $cars = $cars->whereNotIn('id', $hiddenCarIds);
+            }
+        }
 
         if($request->location){
             $cars = $cars->where('city_id', $request->location);
@@ -681,16 +931,31 @@ class HomeController extends Controller
         }
 
         if($request->brand_id){
-            $brandIds = $this->resolveBrandIdsForSelection($request->brand_id);
-            if (count($brandIds) > 0) {
-                $cars = $cars->whereIn('brand_id', $brandIds);
-            } else {
-                $cars = $cars->whereRaw('1 = 0');
-            }
+            $selection = trim((string) $request->brand_id);
+            $brandIds = $this->resolveBrandIdsForSelection($selection);
+            $label = $brands[$selection] ?? null;
+            $needle = $label ? trim((string) $label) : $selection;
+            $needleLower = strtolower($needle);
+
+            $cars = $cars->where(function ($q) use ($brandIds, $needleLower) {
+                if (!empty($brandIds)) {
+                    $q->whereIn('brand_id', $brandIds);
+                }
+
+                $q->orWhereHas('brand.front_translate', function ($bt) use ($needleLower) {
+                    $bt->whereRaw('LOWER(TRIM(name)) = ?', [$needleLower])
+                       ->orWhereRaw('LOWER(name) LIKE ?', ['%'.$needleLower.'%']);
+                });
+
+                if (Schema::hasColumn('cars', 'motorcheck_make')) {
+                    $q->orWhereRaw('LOWER(TRIM(motorcheck_make)) = ?', [$needleLower])
+                        ->orWhereRaw('LOWER(motorcheck_make) LIKE ?', ['%'.$needleLower.'%']);
+                }
+            });
         }
 
         if($request->model){
-            $cars = $cars->where('car_model', 'like', '%' . $request->model . '%');
+            $cars = $this->applyVehicleModelFilter($cars, (string) $request->model);
         }
 
         if($request->seller_type){
@@ -754,18 +1019,15 @@ class HomeController extends Controller
         }
 
         if($request->search){
-            $cars = $cars->whereHas('front_translate', function ($query) use ($request) {
-                            $query->where('title', 'like', '%' . $request->search . '%')
-                                ->orWhere('description', 'like', '%' . $request->search . '%');
-                        });
+            $cars = $this->applyVehicleKeywordSearch($cars, (string) $request->search);
         }
 
-        if($request->min_year){
-            $cars = $cars->whereNotNull('year')->whereRaw('CAST(year AS UNSIGNED) >= ?', [(int)$request->min_year]);
-        }
-
-        if($request->max_year){
-            $cars = $cars->whereNotNull('year')->whereRaw('CAST(year AS UNSIGNED) <= ?', [(int)$request->max_year]);
+        if($request->min_year || $request->max_year){
+            $cars = $this->applyVehicleYearFilter(
+                $cars,
+                $request->min_year ? (int) $request->min_year : null,
+                $request->max_year ? (int) $request->max_year : null
+            );
         }
 
         if($request->engine_size){
@@ -822,6 +1084,10 @@ class HomeController extends Controller
 
         }
 
+        if (!$request->sort_by && !$request->price_filter) {
+            $cars = $cars->orderBy('id', 'desc');
+        }
+
         $cars = $cars->paginate(12);
 
         $listing_ads = AdsBanner::where('position_key', 'listing_page_sidebar')->first();
@@ -841,32 +1107,159 @@ class HomeController extends Controller
         ]);
     }
 
+    public function search_all(Request $request)
+    {
+        $brands = $this->getMakerOptions();
+        $carBrandModels = $this->getCarBrandModelsMap();
+        $partBrandModels = $this->getPartBrandModelsMap();
+
+        $cars = Car::with('dealer', 'brand', 'front_translate', 'city')
+            ->withCount('galleries')
+            ->where(function ($query) {
+                $query->where('expired_date', null)
+                    ->orWhere('expired_date', '>=', date('Y-m-d'));
+            })
+            ->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+            ->whereHas('dealer', function($query) {
+                $query->where('status', 'enable');
+            });
+
+        $car_parts = CarPart::with('brand', 'translations', 'agent', 'city')
+            ->withCount('galleries')
+            ->where(function ($query) {
+                $query->where('expired_date', null)
+                    ->orWhere('expired_date', '>=', date('Y-m-d'));
+            })
+            ->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+            ->whereHas('agent', function($query) {
+                $query->where('status', 'enable');
+            });
+
+        $authUser = Auth::guard('web')->user();
+        if ($authUser) {
+            $hiddenCarIds = HiddenAd::query()
+                ->where('user_id', $authUser->id)
+                ->where('hideable_type', Car::class)
+                ->pluck('hideable_id')
+                ->all();
+            if (!empty($hiddenCarIds)) {
+                $cars = $cars->whereNotIn('id', $hiddenCarIds);
+            }
+
+            $hiddenPartIds = HiddenAd::query()
+                ->where('user_id', $authUser->id)
+                ->where('hideable_type', CarPart::class)
+                ->pluck('hideable_id')
+                ->all();
+            if (!empty($hiddenPartIds)) {
+                $car_parts = $car_parts->whereNotIn('id', $hiddenPartIds);
+            }
+        }
+
+        if ($request->brand_id) {
+            $brandIds = $this->resolveBrandIdsForSelection($request->brand_id);
+            if (count($brandIds) > 0) {
+                $cars = $cars->whereIn('brand_id', $brandIds);
+                $car_parts = $car_parts->whereIn('brand_id', $brandIds);
+            } else {
+                $cars = $cars->whereRaw('1 = 0');
+                $car_parts = $car_parts->whereRaw('1 = 0');
+            }
+        }
+
+        if ($request->model) {
+            $cars = $this->applyVehicleModelFilter($cars, (string) $request->model);
+            $car_parts = $this->applyPartModelFilter($car_parts, (string) $request->model);
+        }
+
+        if ($request->search) {
+            $keywords = preg_split('/\s+/', trim((string) $request->search), -1, PREG_SPLIT_NO_EMPTY);
+            $cars = $this->applyVehicleKeywordSearch($cars, (string) $request->search);
+
+            $car_parts = $this->applyPartKeywordSearch($car_parts, (string) $request->search);
+        }
+
+        if ($request->min_price) {
+            $cars = $cars->where('regular_price', '>=', $request->min_price);
+            $car_parts = $car_parts->where('regular_price', '>=', $request->min_price);
+        }
+
+        if ($request->max_price) {
+            $cars = $cars->where('regular_price', '<=', $request->max_price);
+            $car_parts = $car_parts->where('regular_price', '<=', $request->max_price);
+        }
+
+        if ($request->min_year || $request->max_year) {
+            $minYear = $request->min_year ? (int) $request->min_year : null;
+            $maxYear = $request->max_year ? (int) $request->max_year : null;
+            $cars = $this->applyVehicleYearFilter($cars, $minYear, $maxYear);
+            $car_parts = $this->applyPartYearFilter($car_parts, $minYear, $maxYear);
+        }
+
+        $cars = $cars->orderBy('id', 'desc')
+            ->paginate(12, ['*'], 'cars_page')
+            ->appends($request->all());
+
+        $car_parts = $car_parts->orderBy('id', 'desc')
+            ->paginate(12, ['*'], 'parts_page')
+            ->appends($request->all());
+
+        return view('search_all', [
+            'brands' => $brands,
+            'carBrandModels' => $carBrandModels,
+            'partBrandModels' => $partBrandModels,
+            'selectedCarModels' => $request->brand_id ? ($carBrandModels[(string) $request->brand_id] ?? []) : [],
+            'selectedPartModels' => $request->brand_id ? ($partBrandModels[(string) $request->brand_id] ?? []) : [],
+            'cars' => $cars,
+            'car_parts' => $car_parts,
+        ]);
+    }
+
 
     public function listing($slug){
 
-        $car = Car::with('dealer', 'brand')->where(function ($query) {
+        $car = Car::with('dealer', 'brand', 'front_translate', 'translate')->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('slug', $slug)->firstOrFail();
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+        ->whereHas('dealer', function($query) {
+            $query->where('status', 'enable');
+        })->where('slug', $slug)->firstOrFail();
+
+        $authUser = Auth::guard('web')->user();
+        if ($authUser) {
+            $isHidden = HiddenAd::query()
+                ->where('user_id', $authUser->id)
+                ->where('hideable_type', Car::class)
+                ->where('hideable_id', $car->id)
+                ->exists();
+            if ($isHidden) {
+                $notification = 'This ad is hidden for you.';
+                $notification = ['messege' => $notification, 'alert-type' => 'info'];
+                return redirect()->route('listings')->with($notification);
+            }
+        }
 
         $car->total_view +=1;
         $car->save();
 
-        $galleries = CarGallery::where('car_id', $car->id)->get();
-
-        $feature_json_array = array();
-        if($car->features != 'null'){
-            $feature_json_array = json_decode($car->features);
+        $galleries = CarGallery::where('car_id', $car->id)
+            ->whereNotNull('image')
+            ->where('image', '!=', '')
+            ->get();
+        if ($galleries->isEmpty() && !empty($car->thumb_image)) {
+            $galleries = collect([(object) ['image' => $car->thumb_image]]);
         }
 
-        $car_features = Feature::whereIn('id', $feature_json_array)->get();
-
-        $related_listings = Car::with('dealer', 'brand')->where(function ($query) {
+        $related_listings = Car::with('dealer', 'brand', 'front_translate', 'translate')->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('brand_id', $car->brand_id)->where('id', '!=', $car->id)->get()->take(6);
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+        ->whereHas('dealer', function($query) {
+            $query->where('status', 'enable');
+        })->where('brand_id', $car->brand_id)->where('id', '!=', $car->id)->get()->take(6);
 
-        $dealer = User::where(['status' => 'enable' , 'is_banned' => 'no'])->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer', 'is_vehicle_seller', 'vehicle_company_name', 'address', 'email', 'phone', 'created_at')->where('id', $car->agent_id)->first();
+        $dealer = User::where(['status' => 'enable' , 'is_banned' => 'no'])->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer', 'is_vehicle_seller', 'vehicle_company_name', 'vehicle_company_address', 'address', 'email', 'phone', 'created_at')->where('id', $car->agent_id)->first();
 
         $reviews = Review::with('user')->where('car_id', $car->id)->where('status', 'enable')->latest()->get();
 
@@ -878,7 +1271,6 @@ class HomeController extends Controller
         return view('listing_detail', [
             'car' => $car,
             'galleries' => $galleries,
-            'car_features' => $car_features,
             'related_listings' => $related_listings,
             'dealer' => $dealer,
             'reviews' => $reviews,
@@ -892,7 +1284,7 @@ class HomeController extends Controller
 
         $seo_setting = SeoSetting::where('id', 11)->first();
 
-        $dealers = User::where(['status' => 'enable' , 'is_banned' => 'no', 'is_dealer' => 1])->where('email_verified_at', '!=', null)->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer', 'address', 'email', 'phone');
+        $dealers = User::where(['status' => 'enable' , 'is_banned' => 'no', 'is_dealer' => 1])->where('email_verified_at', '!=', null)->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer','is_vehicle_seller','is_part_seller', 'address', 'email', 'phone')->withCount(['cars', 'carParts']);
 
         if($request->search){
             $dealers = $dealers->where('name', 'like', '%' . $request->search . '%');
@@ -920,26 +1312,38 @@ class HomeController extends Controller
 
     public function dealer(Request $request, $username){
 
-        $dealer = User::where(['status' => 'enable' , 'is_banned' => 'no'])->where('email_verified_at', '!=', null)->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer', 'is_vehicle_seller', 'vehicle_company_name', 'vehicle_company_address', 'is_part_seller', 'part_company_name', 'part_company_address', 'address', 'email', 'phone','facebook','linkedin','twitter','instagram', 'about_me','created_at','sunday','monday','tuesday','wednesday','thursday','friday','saturday','google_map')->where('username', $username)->first();
+        $dealer = User::where(['status' => 'enable' , 'is_banned' => 'no'])->where('email_verified_at', '!=', null)->orderBy('id','desc')->select('id','name','username','designation','image','status','is_banned','is_dealer', 'is_vehicle_seller', 'vehicle_company_name', 'vehicle_company_address', 'is_part_seller', 'part_company_name', 'part_company_address', 'address', 'email', 'phone', 'city_id','facebook','linkedin','twitter','instagram', 'about_me','created_at','sunday','monday','tuesday','wednesday','thursday','friday','saturday','google_map')->where('username', $username)->first();
 
         if(!$dealer) abort(404);
+
+        $dealer_city = null;
+        if (!empty($dealer->city_id)) {
+            $dealer_city = City::select('id')->where('id', $dealer->city_id)->first();
+        }
 
         $total_dealer_rating = Review::where('agent_id', $dealer->id)->where('status', 'enable')->count();
 
         $cars = Car::with('dealer', 'brand')->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('agent_id', $dealer->id)->paginate(9, ['*'], 'car_page');
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+        ->whereHas('dealer', function($query) {
+            $query->where('status', 'enable');
+        })->where('agent_id', $dealer->id)->paginate(9, ['*'], 'car_page');
 
         $car_parts = CarPart::with(['agent', 'brand', 'translations'])->withCount('galleries')->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('agent_id', $dealer->id)->paginate(9, ['*'], 'part_page');
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+        ->whereHas('agent', function($query) {
+            $query->where('status', 'enable');
+        })->where('agent_id', $dealer->id)->paginate(9, ['*'], 'part_page');
 
         $dealer_ads = AdsBanner::where('position_key', 'dealer_detail_page_banner')->first();
 
         return view('dealer_detail', [
             'dealer' => $dealer,
+            'dealer_city' => $dealer_city,
             'cars' => $cars,
             'car_parts' => $car_parts,
             'total_dealer_rating' => $total_dealer_rating,
@@ -973,16 +1377,15 @@ class HomeController extends Controller
     public function pricing_plan(){
 
         $user = Auth::guard('web')->user();
-        if($user && !$user->is_dealer){
-            $notification = trans('translate.You are not allowed to access this page');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
-            return redirect()->route('user.dashboard')->with($notification);
-        }
-
         $subscription_plans = SubscriptionPlan::orderBy('serial', 'asc')->where('status', 'active')->get();
         $setting = Setting::first();
 
         return view('pricing_plan', ['subscription_plans' => $subscription_plans, 'setting' => $setting]);
+    }
+
+    public function free_ad_offer(){
+
+        return view('free_ad_offer');
     }
 
      public function join_as_dealer(){
@@ -997,7 +1400,10 @@ class HomeController extends Controller
         $cars = Car::with('brand')->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->whereIn('id', $compare_array)->get();
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+        ->whereHas('dealer', function($query) {
+            $query->where('status', 'enable');
+        })->whereIn('id', $compare_array)->get();
 
         $compare_qty = $cars->count();
 
@@ -1102,12 +1508,27 @@ class HomeController extends Controller
         $brands = $this->getMakerOptions();
         $partBrandModels = $this->getPartBrandModelsMap();
 
-        $car_parts = CarPart::with('brand', 'translations', 'agent')
+        $car_parts = CarPart::with(['brand.front_translate', 'brand.translate', 'translations', 'agent', 'city'])
             ->withCount('galleries')
             ->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->orderBy('id', 'desc');
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+        ->whereHas('agent', function($query) {
+            $query->where('status', 'enable');
+        })->orderBy('id', 'desc');
+
+        $authUser = Auth::guard('web')->user();
+        if ($authUser) {
+            $hiddenPartIds = HiddenAd::query()
+                ->where('user_id', $authUser->id)
+                ->where('hideable_type', CarPart::class)
+                ->pluck('hideable_id')
+                ->all();
+            if (!empty($hiddenPartIds)) {
+                $car_parts = $car_parts->whereNotIn('id', $hiddenPartIds);
+            }
+        }
 
         if($request->brand_id){
             $brandIds = $this->resolveBrandIdsForSelection($request->brand_id);
@@ -1119,7 +1540,7 @@ class HomeController extends Controller
         }
 
         if($request->model){
-            $car_parts = $car_parts->where('compatibility', 'like', '%' . $request->model . '%');
+            $car_parts = $this->applyPartModelFilter($car_parts, (string) $request->model);
         }
 
         if($request->min_price){
@@ -1130,11 +1551,16 @@ class HomeController extends Controller
             $car_parts = $car_parts->where('regular_price', '<=', $request->max_price);
         }
 
+        if($request->min_year || $request->max_year){
+            $car_parts = $this->applyPartYearFilter(
+                $car_parts,
+                $request->min_year ? (int) $request->min_year : null,
+                $request->max_year ? (int) $request->max_year : null
+            );
+        }
+
         if($request->search){
-            $car_parts = $car_parts->whereHas('frontTranslate', function ($query) use ($request) {
-                $query->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhere('description', 'like', '%' . $request->search . '%');
-            });
+            $car_parts = $this->applyPartKeywordSearch($car_parts, (string) $request->search);
         }
 
         $car_parts = $car_parts->paginate(12);
@@ -1150,10 +1576,27 @@ class HomeController extends Controller
 
     public function car_part($slug)
     {
-        $car_part = CarPart::with('brand', 'translations', 'galleries', 'agent')->where(function ($query) {
+        $car_part = CarPart::with(['brand.front_translate', 'brand.translate', 'translations', 'galleries', 'agent'])->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->where('slug', $slug)->firstOrFail();
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+        ->whereHas('agent', function($query) {
+            $query->where('status', 'enable');
+        })->where('slug', $slug)->firstOrFail();
+
+        $authUser = Auth::guard('web')->user();
+        if ($authUser) {
+            $isHidden = HiddenAd::query()
+                ->where('user_id', $authUser->id)
+                ->where('hideable_type', CarPart::class)
+                ->where('hideable_id', $car_part->id)
+                ->exists();
+            if ($isHidden) {
+                $notification = 'This ad is hidden for you.';
+                $notification = ['messege' => $notification, 'alert-type' => 'info'];
+                return redirect()->route('car-parts')->with($notification);
+            }
+        }
 
         return view('car_part_detail', [
             'car_part' => $car_part,

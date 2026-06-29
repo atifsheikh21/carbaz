@@ -122,6 +122,56 @@
             }
         }
 
+        /* Minimal footer: match landing page footer links */
+        .minimal-footer .footer-links{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:9px;
+            flex-wrap:wrap;
+            font-size:15px;
+        }
+        .minimal-footer .footer-links a{
+            color:#666;
+            text-transform:lowercase;
+        }
+        .minimal-footer .footer-links a:hover{
+            color:#333;
+            text-decoration: underline;
+        }
+        .minimal-footer .footer-links .separators{
+            display:inline-block;
+            width:3px;
+            height:24px;
+            background:#b60304;
+            vertical-align:middle;
+            margin:0 6px;
+        }
+        @media (max-width: 767.98px){
+            .minimal-footer .footer-links{
+                font-size:12px;
+                padding: 0 10px;
+                text-align:center;
+            }
+        }
+
+        .mobile-copyright {
+            display: none;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            padding: 10px 0;
+        }
+
+        @media (max-width: 767.98px){
+            .mobile-copyright {
+                display: block;
+            }
+            .copyright {
+                display: none;
+            }
+        }
+
     </style>
 
 
@@ -156,6 +206,8 @@
 </head>
 
 <body>
+
+    <div id="divScriptsUsed" style="display:none"></div>
 
     <!-- header part start  -->
     @if (Route::is('home'))
@@ -200,7 +252,26 @@
                                         <li><a href="{{ route('dealers') }}">{{ __('translate.Dealers') }}</a></li>
                                         @auth('web')
                                             <li><a href="{{ route('user.dashboard') }}">My Ads</a></li>
-                                            <li><a href="{{ route('user.edit-profile') }}">{{ auth('web')->user()->name }}</a></li>
+                                            <li class="nav-user-dropdown-wrap">
+                                                <a href="{{ route('user.edit-profile') }}" class="nav-user-name">{{ auth('web')->user()->name }} <i class="fa-solid fa-angle-down" style="font-size:10px;"></i></a>
+                                                <ul class="nav-user-dropdown sub-menu">
+                                                    <li><a href="{{ route('user.dashboard') }}">Dashboard</a></li>
+                                                    <li><a href="{{ route('user.edit-profile') }}">Edit Profile</a></li>
+                                                    <li><a href="{{ route('user.messages.index') }}">Messages</a></li>
+                                                    <li><a href="{{ route('user.select-car-purpose') }}">Place Ad</a></li>
+                                                    <li><a href="{{ route('user.car.index') }}">Manage Vehicle Ad</a></li>
+                                                    <li><a href="{{ route('user.car-part.index') }}">Manage Vehicle Part Ad</a></li>
+                                                    <li><a href="{{ route('user.orders') }}">Purchase History</a></li>
+                                                    <li><a href="{{ route('user.wishlists') }}">Wishlist</a></li>
+                                                    <li><a href="{{ route('user.change-password') }}">Change Password</a></li>
+                                                    <li><a href="#" onclick="event.preventDefault(); return confirmAccountDelete('nav-delete-account-form');">Delete Account</a>
+                                                        <form id="nav-delete-account-form" action="{{ route('user.account.delete.request') }}" method="POST" class="d-none">@csrf</form>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal4" onclick="event.preventDefault();">Logout</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
                                         @else
                                             <li><a href="{{ route('contact-us') }}">{{ __('translate.Contact') }}</a></li>
                                             <li><a href="{{ route('login') }}" class="menu-signin">SIGN IN</a></li>
@@ -342,7 +413,7 @@
                     <div class="lp-mobile__nav-left">
                         @auth('web')
                             <a class="lp-mobile__link lp-mobile__link--primary" href="{{ route('user.select-car-purpose') }}">Place Ad</a>
-                            <button class="lp-mobile__link" type="button" data-bs-toggle="offcanvas" data-bs-target="#lpMobileMyAds" aria-controls="lpMobileMyAds">My Ads</button>
+                            <button class="lp-mobile__link" style="margin-left: 25px;" type="button" data-bs-toggle="offcanvas" data-bs-target="#lpMobileMyAds" aria-controls="lpMobileMyAds">My Ads</button>
                         @else
                             <a class="lp-mobile__link lp-mobile__link--primary" href="{{ route('login') }}">Place Ad</a>
                         @endauth
@@ -350,7 +421,7 @@
 
                     <div class="lp-mobile__nav-right">
                         @auth('web')
-                            <a class="lp-mobile__user" href="{{ route('user.edit-profile') }}">{{ auth('web')->user()->name }}</a>
+                            <button class="lp-mobile__user" type="button" data-bs-toggle="offcanvas" data-bs-target="#lpMobileUserMenu" aria-controls="lpMobileUserMenu">{{ auth('web')->user()->name }}</button>
                         @else
                             <a class="lp-mobile__user" href="{{ route('login') }}">Sign In</a>
                         @endauth
@@ -364,6 +435,21 @@
                         </button>
                     </div>
                 </div>
+
+                @auth('web')
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="lpMobileUserMenu" aria-labelledby="lpMobileUserMenuLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="lpMobileUserMenuLabel">Account</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-light text-start" href="{{ route('user.edit-profile') }}">Edit Profile</a>
+                                <a class="btn btn-light text-start" href="{{ route('user.edit-profile') }}?section=avatar">Edit Profile Image</a>
+                            </div>
+                        </div>
+                    </div>
+                @endauth
 
                 <div class="offcanvas offcanvas-end" tabindex="-1" id="lpMobileMenu" aria-labelledby="lpMobileMenuLabel">
                     <div class="offcanvas-header">
@@ -380,7 +466,11 @@
                             <a class="btn btn-light text-start" href="{{ route('contact-us') }}">contact</a>
                             @auth('web')
                                 <a class="btn btn-light text-start" href="{{ route('user.change-password') }}">change password</a>
+                                <a class="btn btn-outline-danger text-start" href="#" onclick="event.preventDefault(); return confirmAccountDelete('lpMobileDeleteAccountForm');">delete account</a>
                                 <a class="btn btn-danger text-start" href="{{ route('user.logout') }}">log out</a>
+                                <form id="lpMobileDeleteAccountForm" action="{{ route('user.account.delete.request') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
                             @endauth
                         </div>
                     </div>
@@ -744,7 +834,7 @@
                 <div class="row ">
                     <div class="col-lg-6 col-sm-6 col-md-6">
                         <div class="copyright-text">
-                            <p>{{ $setting ? $setting->copyright : '© ' . date('Y') . ' Carbaz. All rights reserved.' }}</p>
+                            <p>{{ $setting ? $setting->copyright : '© ' . date('Y') . ' All rights reserved.' }}</p>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6  col-md-6">
@@ -761,15 +851,28 @@
 
     <footer class="minimal-footer">
         <div class="container">
-            <div class="footer-links">
-                <a href="{{ route('contact-us') }}">contact</a>
+        <div class="footer-links">
+            <a href="{{ route('contact-us') }}">contact</a>
+            <span class="separators"></span>
+            <a href="https://staging.carnpart.ie/page/terms-of-use">website terms of use</a>
+            <span class="separators"></span>
+                <a href="{{ route('terms-conditions') }}">terms and condition</a>
                 <span class="separators"></span>
                 <a href="{{ route('privacy-policy') }}">privacy policy</a>
                 <span class="separators"></span>
-                <a href="{{ route('terms-conditions') }}">terms and condition</a>
+            <a href="https://staging.carnpart.ie/page/cookie-policy">cookie policy</a>
+
                 <span class="separators"></span>
-                <a href="https://staging.carnpart.ie/page/legal">Legal</a>
+                <a href="https://staging.carnpart.ie/page/legal">legal</a>
+
+
+            <span class="separators"></span>
+            <a href="https://staging.carnpart.ie/free-ad-offer">pricing</a>
             </div>
+        </div>
+
+        <div class="mobile-copyright">
+            Copyright 2026. All right reserved
         </div>
 
         <div class="copyright">
@@ -777,7 +880,7 @@
                 <div class="row ">
                     <div class="col-lg-12">
                         <div class="copyright-text">
-                            <p>{{ $setting ? $setting->copyright : '© ' . date('Y') . ' Carbaz. All rights reserved.' }}</p>
+                            <p>Copyright 2026. All right reserved</p>
                         </div>
                     </div>
                 </div>
@@ -790,18 +893,59 @@
 
     @if ($cookie_consent && $cookie_consent->status == 1)
         <!-- common-modal start  -->
-        <div class="common-modal cookie_consent_modal d-none" >
+        <div class="cookie_consent_backdrop d-none"></div>
+        <div class="common-modal cookie_consent_modal d-none" role="dialog" aria-modal="true" aria-label="Cookie preferences">
             <button type="button" class="btn-close cookie_consent_close_btn" aria-label="Close"></button>
 
             <h5>{{ __('translate.Cookies') }}</h5>
             <p>{{ $cookie_consent ? $cookie_consent->message : 'We use cookies to improve your experience.' }}</p>
 
-            <div class="common-modal-btn">
-                <a href="javascript:;" class="thm-btn-two cookie_consent_accept_all_btn">{{ __('translate.Accept') }}</a>
-                <a href="javascript:;" class="thm-btn-two cookie_consent_essential_btn">{{ __('Accept Essential Only') }}</a>
-                <a href="javascript:;" class="thm-btn-two cookie_consent_reject_btn">{{ __('Reject') }}</a>
+            <div class="cookie_consent_sections">
+                <div class="cookie_consent_section">
+                    <div class="cookie_consent_section_header">
+                        <div class="cookie_consent_section_title">{{ __('Essential') }}</div>
+                        <div class="cookie_consent_section_actions">
+                            <button type="button" class="cookie_consent_choice_btn is-active" data-cookie-choice="essential" data-cookie-value="agree" disabled>{{ __('Agree') }}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cookie_consent_section" data-cookie-key="preferences">
+                    <div class="cookie_consent_section_header">
+                        <div class="cookie_consent_section_title">{{ __('Preferences') }}</div>
+                        <div class="cookie_consent_section_actions">
+                            <button type="button" class="cookie_consent_choice_btn" data-cookie-choice="preferences" data-cookie-value="disagree">{{ __('Disagree') }}</button>
+                            <button type="button" class="cookie_consent_choice_btn" data-cookie-choice="preferences" data-cookie-value="agree">{{ __('Agree') }}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cookie_consent_section" data-cookie-key="statistics">
+                    <div class="cookie_consent_section_header">
+                        <div class="cookie_consent_section_title">{{ __('Statistics') }}</div>
+                        <div class="cookie_consent_section_actions">
+                            <button type="button" class="cookie_consent_choice_btn" data-cookie-choice="statistics" data-cookie-value="disagree">{{ __('Disagree') }}</button>
+                            <button type="button" class="cookie_consent_choice_btn" data-cookie-choice="statistics" data-cookie-value="agree">{{ __('Agree') }}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cookie_consent_section" data-cookie-key="marketing">
+                    <div class="cookie_consent_section_header">
+                        <div class="cookie_consent_section_title">{{ __('Advertising') }}</div>
+                        <div class="cookie_consent_section_actions">
+                            <button type="button" class="cookie_consent_choice_btn" data-cookie-choice="marketing" data-cookie-value="disagree">{{ __('Disagree') }}</button>
+                            <button type="button" class="cookie_consent_choice_btn" data-cookie-choice="marketing" data-cookie-value="agree">{{ __('Agree') }}</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <div class="cookie_consent_bottom_actions">
+                <button type="button" class="cookie_consent_btn cookie_consent_reject_all_btn">{{ __('Disagree to all') }}</button>
+                <button type="button" class="cookie_consent_btn cookie_consent_accept_all_btn">{{ __('Agree to all') }}</button>
+                <button type="button" class="cookie_consent_btn cookie_consent_save_btn" disabled>{{ __('Save') }}</button>
+            </div>
         </div>
         <!-- common-modal end  -->
     @endif
@@ -902,6 +1046,8 @@
         <script src="{{ asset('frontend/js/rtl.js') }}"></script>
     @endif
 
+    <script src="{{ asset('global/sweetalert/sweetalert2@11.js') }}"></script>
+
     <script src="{{ asset('global/toastr/toastr.min.js') }}"></script>
 
     <script>
@@ -936,26 +1082,140 @@
     @stack('js_section')
 
     <script>
+        "use strict";
+        window.confirmAccountDelete = function (formId) {
+            if (!window.Swal) {
+                return false;
+            }
+
+            Swal.fire({
+                title: "{{ __('Are you realy want to delete this item ?') }}",
+                text: "{{ __('Are you sure you want to delete your account? We will send a verification link to your email.') }}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "{{ __('Yes, Delete It') }}",
+                cancelButtonText: "{{ __('Cancel') }}",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var form = document.getElementById(formId);
+                    if (form) {
+                        form.submit();
+                    }
+                }
+            });
+
+            return false;
+        };
+    </script>
+
+    <script>
         (function($) {
             "use strict"
             $(document).ready(function () {
                 $('.cookie_consent_close_btn').on('click', function(){
                     $('.cookie_consent_modal').addClass('d-none');
+                    $('.cookie_consent_backdrop').addClass('d-none');
+                });
+
+                function getCookiePrefs() {
+                    var raw = localStorage.getItem('car-listo-cookie');
+                    if (!raw) {
+                        return null;
+                    }
+                    if (raw === '1' || raw === 'all' || raw === 'essential' || raw === 'reject') {
+                        return raw;
+                    }
+                    try {
+                        return JSON.parse(raw);
+                    } catch (e) {
+                        return null;
+                    }
+                }
+
+                function setActiveChoice(key, value) {
+                    var $buttons = $('.cookie_consent_choice_btn[data-cookie-choice="' + key + '"]');
+                    $buttons.removeClass('is-active');
+                    $buttons.filter('[data-cookie-value="' + value + '"]').addClass('is-active');
+                }
+
+                function setPrefs(prefs) {
+                    localStorage.setItem('car-listo-cookie', JSON.stringify(prefs));
+                }
+
+                function applyPrefsToUI(prefs) {
+                    if (!prefs || typeof prefs !== 'object') {
+                        return;
+                    }
+                    setActiveChoice('preferences', prefs.preferences ? 'agree' : 'disagree');
+                    setActiveChoice('statistics', prefs.statistics ? 'agree' : 'disagree');
+                    setActiveChoice('marketing', prefs.marketing ? 'agree' : 'disagree');
+                }
+
+                function enableSave(enabled) {
+                    $('.cookie_consent_save_btn').prop('disabled', !enabled);
+                }
+
+                var currentPrefs = {
+                    essential: true,
+                    preferences: false,
+                    statistics: false,
+                    marketing: false
+                };
+
+                var stored = getCookiePrefs();
+                if (stored && typeof stored === 'object') {
+                    currentPrefs = $.extend({}, currentPrefs, stored);
+                } else if (stored === 'all') {
+                    currentPrefs.preferences = true;
+                    currentPrefs.statistics = true;
+                    currentPrefs.marketing = true;
+                }
+
+                applyPrefsToUI(currentPrefs);
+                enableSave(false);
+
+                $('.cookie_consent_choice_btn').on('click', function(){
+                    var key = $(this).data('cookie-choice');
+                    var value = $(this).data('cookie-value');
+                    if (!key || !value) {
+                        return;
+                    }
+
+                    if (key === 'essential') {
+                        return;
+                    }
+
+                    currentPrefs[key] = (value === 'agree');
+                    setActiveChoice(key, value);
+                    enableSave(true);
                 });
 
                 $('.cookie_consent_accept_all_btn').on('click',function() {
-                    localStorage.setItem('car-listo-cookie','all');
+                    currentPrefs.preferences = true;
+                    currentPrefs.statistics = true;
+                    currentPrefs.marketing = true;
+                    applyPrefsToUI(currentPrefs);
+                    setPrefs(currentPrefs);
                     $('.cookie_consent_modal').addClass('d-none');
+                    $('.cookie_consent_backdrop').addClass('d-none');
                 });
 
-                $('.cookie_consent_essential_btn').on('click',function() {
-                    localStorage.setItem('car-listo-cookie','essential');
+                $('.cookie_consent_reject_all_btn').on('click',function() {
+                    currentPrefs.preferences = false;
+                    currentPrefs.statistics = false;
+                    currentPrefs.marketing = false;
+                    applyPrefsToUI(currentPrefs);
+                    setPrefs(currentPrefs);
                     $('.cookie_consent_modal').addClass('d-none');
+                    $('.cookie_consent_backdrop').addClass('d-none');
                 });
 
-                $('.cookie_consent_reject_btn').on('click',function() {
-                    localStorage.setItem('car-listo-cookie','reject');
+                $('.cookie_consent_save_btn').on('click',function() {
+                    setPrefs(currentPrefs);
                     $('.cookie_consent_modal').addClass('d-none');
+                    $('.cookie_consent_backdrop').addClass('d-none');
                 });
 
                 $('.before_auth_wishlist').on("click", function(){
@@ -973,6 +1233,7 @@
 
         if (!cookieChoice) {
             $('.cookie_consent_modal').removeClass('d-none');
+            $('.cookie_consent_backdrop').removeClass('d-none');
         }
 
     </script>

@@ -47,7 +47,15 @@
             <div class="row mt-56px justify-content-center">
                 <div class=" col-xl-12 col-lg-12">
                     <div class="row pricing-mt  ">
-                        @if(($setting?->fee_free_mode == 'enable') && Auth::guard('web')->check() && Auth::guard('web')->user()?->is_dealer)
+                        @php
+                            $__isDealerUser = Auth::guard('web')->check() && Auth::guard('web')->user()?->is_dealer;
+                            $__feeFreeMode = ($setting?->fee_free_mode ?? 'disable') === 'enable';
+                            $__singleAdEnabled = ($setting?->single_ad_pricing_enabled ?? 'enable') === 'enable';
+                            $__singleAdPrice = (float) ($setting?->single_ad_price ?? 0);
+                            $__singleAdDays = (int) ($setting?->single_ad_duration_days ?? 30);
+                        @endphp
+
+                        @if($__isDealerUser && $__feeFreeMode)
                             <div class="col-lg-4">
                                 <div class="pricing-item pricing-item-two">
 
@@ -144,7 +152,60 @@
 
                                 </div>
                             </div>
-                        @else
+                        @endif
+
+                        @if(!$__isDealerUser && $__singleAdEnabled)
+                            <div class="col-lg-4">
+                                <div class="pricing-item pricing-item-two">
+
+                                    <h4 class="pricing-text">{{ __('Single Ad') }}</h4>
+                                    <h2 class="pricing-text-box">
+
+                                        @if (Session::get('currency_position') == 'before_price')
+                                        <sup>{{ Session::get('currency_icon') }}</sup>{{ number_format($__singleAdPrice, 2, '.', '') }}
+                                        @elseif (Session::get('currency_position') == 'before_price_with_space')
+                                        <sup>{{ Session::get('currency_icon') }}</sup> {{ number_format($__singleAdPrice, 2, '.', '') }}
+                                        @elseif (Session::get('currency_position') == 'after_price')
+                                        {{ number_format($__singleAdPrice, 2, '.', '') }}<sup>{{ Session::get('currency_icon') }}</sup>
+                                        @elseif (Session::get('currency_position') == 'after_price_with_space')
+                                        {{ number_format($__singleAdPrice, 2, '.', '') }}<sup> {{ Session::get('currency_icon') }}</sup>
+                                        @endif
+
+                                        <span>/{{ $__singleAdDays }} {{ __('Days') }}</span>
+                                    </h2>
+
+                                    <div class="pricing-item-box">
+                                        <ul>
+                                            <li>
+                                                <span>
+                                                    <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M5.36086 9.80735C5.22722 9.93101 5.0449 10 4.8555 10C4.6661 10 4.48377 9.93101 4.35013 9.80735L0.314136 6.09406C-0.104712 5.70876 -0.104712 5.08398 0.314136 4.69941L0.819503 4.2344C1.23848 3.84911 1.91688 3.84911 2.33573 4.2344L4.8555 6.55244L11.6643 0.288972C12.0832 -0.096324 12.7623 -0.096324 13.1805 0.288972L13.6859 0.753976C14.1047 1.13927 14.1047 1.76393 13.6859 2.14863L5.36086 9.80735Z" />
+                                                    </svg>
+                                                </span>
+                                                {{ __('translate.Duration') }} : {{ $__singleAdDays }} {{ __('Days') }}
+                                            </li>
+                                            <li>
+                                                <span>
+                                                    <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M5.36086 9.80735C5.22722 9.93101 5.0449 10 4.8555 10C4.6661 10 4.48377 9.93101 4.35013 9.80735L0.314136 6.09406C-0.104712 5.70876 -0.104712 5.08398 0.314136 4.69941L0.819503 4.2344C1.23848 3.84911 1.91688 3.84911 2.33573 4.2344L4.8555 6.55244L11.6643 0.288972C12.0832 -0.096324 12.7623 -0.096324 13.1805 0.288972L13.6859 0.753976C14.1047 1.13927 14.1047 1.76393 13.6859 2.14863L5.36086 9.80735Z" />
+                                                    </svg>
+                                                </span>
+                                                {{ __('translate.Maximum Listings') }} : 1
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    @auth('web')
+                                        <a href="{{ route('user.select-car-purpose') }}" class="thm-btn-two">{{ __('Post Ad') }}</a>
+                                    @else
+                                        <a href="{{ route('login') }}" class="thm-btn-two">{{ __('Login to Continue') }}</a>
+                                    @endauth
+
+                                </div>
+                            </div>
+                        @endif
+
+                        @if($__isDealerUser)
                             @foreach ($subscription_plans as $index => $subscription_plan)
                                 <div class="col-lg-4">
                                     <div class="pricing-item  {{ $index == 1 ? 'pricing-item-two' : '' }}">

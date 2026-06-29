@@ -34,28 +34,45 @@
                 <div class="col-lg-9">
                     <!-- Reviews  -->
 
+                    @php
+                        $totalWishlistCount = $cars->count() + $carParts->count();
+                    @endphp
+
                     <div class="d-block d-md-none">
                         <div class="sw-mobile">
                             <div class="sw-mobile__bar">
-                                saved ads {{ $cars->count() }}
+                                saved ads {{ $totalWishlistCount }}
                             </div>
 
                             <div class="mc-mobile__list" style="margin-top:0;">
-                                @forelse ($cars as $index => $car)
+                                {{-- Car Wishlists --}}
+                                @foreach ($cars as $car)
                                     @php
                                         $rawPrice = $car->offer_price ?: $car->regular_price;
                                         $numericPrice = is_numeric($rawPrice) ? (float) $rawPrice : null;
+                                        $mobileNctDate = '';
+                                        if (!empty($car->motorcheck_nct_expiry_date)) {
+                                            try {
+                                                $mobileNctDate = \Carbon\Carbon::parse($car->motorcheck_nct_expiry_date)->format('d-m-Y');
+                                            } catch (\Throwable $e) {
+                                                $mobileNctDate = '';
+                                            }
+                                        }
                                     @endphp
-                                    <div class="mc-mobile__row">
+                                    <a href="{{ route('listing', $car->slug) }}" class="mc-mobile__row" style="text-decoration:none; color:inherit;">
                                         <div class="mc-mobile__img">
                                             <img src="{{ getImageOrPlaceholder($car->thumb_image, '120x90') }}" alt="thumb">
                                         </div>
 
                                         <div class="mc-mobile__body">
                                             <div class="mc-mobile__title">{{ html_decode($car->title) }}</div>
-                                            <div class="mc-mobile__actions">
-                                                <button type="button" class="mc-mobile__action" onclick="deleteCar('{{ $car->id }}')">remove</button>
-                                                <a class="mc-mobile__action" href="{{ route('listing', $car->slug) }}">save ad</a>
+                                            <div class="mc-mobile__meta" style="font-size:12px; color:#666; margin-top:4px;">
+                                                @if($mobileNctDate)
+                                                    <span>NCT: {{ $mobileNctDate }}</span>
+                                                @endif
+                                            </div>
+                                            <div class="mc-mobile__actions" style="margin-top:8px;">
+                                                <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); event.stopPropagation(); deleteCar('{{ $car->id }}')">remove</button>
                                             </div>
 
                                             <form action="{{ route('user.remove-wishlist', $car->id) }}" class="d-none" method="post" id="remove_car_{{ $car->id }}">
@@ -69,16 +86,56 @@
                                                 €{{ number_format($numericPrice, 0, '.', ',') }}
                                             @endif
                                         </div>
-                                    </div>
-                                @empty
+                                    </a>
+                                @endforeach
+
+                                {{-- Car Part Wishlists --}}
+                                @foreach ($carParts as $part)
+                                    @php
+                                        $rawPrice = $part->regular_price;
+                                        $numericPrice = is_numeric($rawPrice) ? (float) $rawPrice : null;
+                                        $partTitle = $part->title ?? $part->translations?->first()?->title ?? 'Car Part';
+                                    @endphp
+                                    <a href="{{ route('car-part', $part->slug) }}" class="mc-mobile__row" style="text-decoration:none; color:inherit;">
+                                        <div class="mc-mobile__img">
+                                            <img src="{{ getImageOrPlaceholder($part->thumb_image, '120x90') }}" alt="thumb">
+                                        </div>
+
+                                        <div class="mc-mobile__body">
+                                            <div class="mc-mobile__title">{{ html_decode($partTitle) }}</div>
+                                            <div class="mc-mobile__meta" style="font-size:12px; color:#666; margin-top:4px;">
+                                                @if(!empty($part->brand?->name))
+                                                    <span>{{ html_decode($part->brand->name) }}</span>
+                                                @endif
+                                            </div>
+                                            <div class="mc-mobile__actions" style="margin-top:8px;">
+                                                <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); event.stopPropagation(); deleteCarPart('{{ $part->id }}')">remove</button>
+                                            </div>
+
+                                            <form action="{{ route('user.remove-car-part-wishlist', $part->id) }}" class="d-none" method="post" id="remove_car_part_{{ $part->id }}">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </div>
+
+                                        <div class="mc-mobile__price">
+                                            @if (!is_null($numericPrice))
+                                                €{{ number_format($numericPrice, 0, '.', ',') }}
+                                            @endif
+                                        </div>
+                                    </a>
+                                @endforeach
+
+                                @if($totalWishlistCount == 0)
                                     <div class="py-3" style="color:#8b8b8b;">{{ __('translate.No Data Found') }}</div>
-                                @endforelse
+                                @endif
                             </div>
                         </div>
                     </div>
 
                     <div class="row g-4 brand-car-two d-none d-md-flex">
-                        @forelse ($cars as $index => $car)
+                        {{-- Car Wishlists --}}
+                        @foreach ($cars as $car)
                             <div class="col-12">
                                 @php
                                     $dealerFlagRaw = $car?->dealer?->is_dealer ?? null;
@@ -148,16 +205,16 @@
 
                                                 <div class="listing-list-meta">
                                                     @php
-                                                        $saleYear = null;
-                                                        if (!empty($car->motorcheck_last_date_of_sale)) {
+                                                        $saleYear = !empty($car->year) ? (string) html_decode($car->year) : '';
+                                                        if ($saleYear === '' && !empty($car->motorcheck_last_date_of_sale)) {
                                                             try {
                                                                 $saleYear = \Carbon\Carbon::parse($car->motorcheck_last_date_of_sale)->format('Y');
                                                             } catch (\Throwable $e) {
-                                                                $saleYear = is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 4) : null;
+                                                                $saleYear = is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 4) : '';
                                                             }
                                                         }
                                                     @endphp
-                                                    @if ($saleYear)
+                                                    @if ($saleYear !== '')
                                                         <span>{{ $saleYear }}</span>
                                                     @endif
 
@@ -169,6 +226,20 @@
 
                                                     @if (!empty($car->mileage))
                                                         <span>{{ html_decode($car->mileage) }}</span>
+                                                    @endif
+
+                                                    @php
+                                                        $nctDate = null;
+                                                        if (!empty($car->motorcheck_nct_expiry_date)) {
+                                                            try {
+                                                                $nctDate = \Carbon\Carbon::parse($car->motorcheck_nct_expiry_date)->format('d-m-Y');
+                                                            } catch (\Throwable $e) {
+                                                                $nctDate = null;
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    @if ($nctDate)
+                                                        <span>NCT: {{ $nctDate }}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -193,7 +264,130 @@
 
                                 </div>
                             </div>
-                        @empty
+                        @endforeach
+
+                        {{-- Car Part Wishlists --}}
+                        @foreach ($carParts as $part)
+                            <div class="col-12">
+                                @php
+                                    $rawPrice = $part->regular_price;
+                                    $numericPrice = is_numeric($rawPrice) ? (float) $rawPrice : null;
+                                    $partTitle = $part->title ?? $part->translations?->first()?->title ?? 'Car Part';
+                                    $isDealerSeller = (bool) ($part?->agent?->is_dealer ?? false);
+                                    $isPartSeller = (bool) ($part?->agent?->is_part_seller ?? false);
+                                    $sellerName = html_decode($part?->agent?->name);
+
+                                    $sellerLocation = null;
+                                    if (!empty($part?->city_id)) {
+                                        $sellerLocation = optional(Modules\City\Entities\City::find($part->city_id))->name;
+                                    }
+
+                                    $sellerTypeLabel = 'PRIVATE';
+                                    if ($isDealerSeller) {
+                                        $sellerTypeLabel = 'VEHICLE PART SELLER';
+                                    }
+
+                                    $partAgentPhone = preg_replace('/\s+/', '', (string) ($part?->agent?->phone ?? ''));
+                                @endphp
+
+                                <div class="listing-list-card {{ $isDealerSeller ? 'has-seller-bar' : '' }}">
+
+                                    @if ($isDealerSeller)
+                                        <div class="listing-list-seller" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                                            <span>{{ $sellerName }}</span>
+                                            @if($sellerLocation)
+                                                <span>{{ strtoupper($sellerLocation) }}</span>
+                                            @endif
+                                        </div>
+                                    @endif
+
+                                    <div class="listing-list-media">
+                                        <a href="{{ route('car-part', $part->slug) }}">
+                                            <img src="{{ getImageOrPlaceholder($part->thumb_image, '330x215') }}" alt="thumb">
+                                        </a>
+
+                                        <a href="javascript:;" class="listing-list-fav active" aria-label="wishlist" onclick="deleteCarPart('{{ $part->id }}')">
+                                            <svg width="18" height="16" viewBox="0 0 18 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z" stroke-width="1.3" stroke-linejoin="round"/>
+                                            </svg>
+                                        </a>
+
+                                        <form action="{{ route('user.remove-car-part-wishlist', $part->id) }}" class="d-none" method="post" id="remove_car_part_{{ $part->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                    </div>
+
+                                    <div class="listing-list-content {{ $isDealerSeller ? 'is-dealer' : 'is-private' }}" data-href="{{ route('car-part', $part->slug) }}">
+                                        <div class="listing-list-top-actions">
+                                            @if ($partAgentPhone)
+                                                <a class="listing-call-btn" href="tel:{{ $partAgentPhone }}" data-phone="{{ $partAgentPhone }}">{{ __('CALL') }}</a>
+                                            @endif
+                                        </div>
+
+                                        <div class="listing-list-inner">
+                                            <div class="listing-list-info">
+                                                <a href="{{ route('car-part', $part->slug) }}" class="listing-list-title">
+                                                    {{ html_decode($partTitle) }}
+                                                </a>
+
+                                                <div class="listing-list-meta">
+                                                    <span><span class="meta-label">Brand:</span> <span class="meta-value">{{ !empty($part?->brand?->name) ? html_decode($part?->brand?->name) : '—' }}{{ !empty($part?->car_model) ? ' ' . html_decode($part?->car_model) : '' }}</span></span>
+                                                    <span><span class="meta-label">Condition:</span> <span class="meta-value">{{ !empty($part->condition) ? html_decode($part->condition) : '—' }}</span></span>
+                                                    <span><span class="meta-label">Part Number:</span> <span class="meta-value">{{ !empty($part->part_number) ? html_decode($part->part_number) : '—' }}</span></span>
+                                                    @php
+                                                        $__fromY = $part->from_year;
+                                                        $__toY = $part->to_year;
+                                                        $__compatYears = '';
+                                                        if (!empty($__fromY) && !empty($__toY)) {
+                                                            $__compatYears = $__fromY . '-' . $__toY;
+                                                        } elseif (!empty($__fromY)) {
+                                                            $__compatYears = (string) $__fromY;
+                                                        } elseif (!empty($__toY)) {
+                                                            $__compatYears = (string) $__toY;
+                                                        }
+                                                    @endphp
+                                                    <span><span class="meta-label">Compatible:</span> <span class="meta-value">{{ $__compatYears !== '' ? $__compatYears : '—' }}</span></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="listing-list-pricecol {{ ($isDealerSeller && !empty($part->warranty_months)) ? 'has-warranty' : 'no-warranty' }}">
+                                                <div class="listing-price">
+                                                    @if (!is_null($numericPrice))
+                                                        €{{ number_format($numericPrice, 0, '.', ',') }}
+                                                    @endif
+                                                </div>
+
+                                                @if ($isDealerSeller && !empty($part->warranty_months))
+                                                    @php
+                                                        $__wm = (int) $part->warranty_months;
+                                                        $__wLabel = '';
+                                                        if ($__wm > 0 && $__wm % 12 === 0) {
+                                                            $__years = (int) ($__wm / 12);
+                                                            $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty';
+                                                        } else {
+                                                            $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty';
+                                                        }
+                                                    @endphp
+                                                    <div style="margin-top: 0px; border: 0px solid #c9c9c9; padding: 6px 10px; font-size: 12px; line-height: 1; color: #666; display: block; width: 100%; text-align: right; box-sizing: border-box;">{{ $__wLabel }}</div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="listing-list-bottom-label">
+                                            @if ($isDealerSeller)
+                                                <span class="listing-dealer-name">{{ $sellerTypeLabel }}</span>
+                                            @else
+                                                <span class="listing-private-name">{{ $sellerTypeLabel }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        @endforeach
+
+                        @if($totalWishlistCount == 0)
                             <div class="col-12">
                                 <div class="not-found-box">
                                     <div class="not-found-thumb-main">
@@ -306,7 +500,7 @@
 
                                 </div>
                             </div>
-                        @endforelse
+                        @endif
                     </div>
                 </div>
 
@@ -344,7 +538,22 @@
                 if (result.isConfirmed) {
                     $("#remove_car_"+id).submit();
                 }
+            })
+        }
 
+        function deleteCarPart(id){
+            Swal.fire({
+                title: "{{__('Are you realy want to delete this item ?')}}",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: "{{__('Yes, Delete It')}}",
+                cancelButtonText: "{{__('Cancel')}}",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $("#remove_car_part_"+id).submit();
+                }
             })
         }
     </script>

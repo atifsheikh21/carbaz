@@ -159,6 +159,33 @@
                                                                                     </div>
 
                                                                                     <div class="col-12">
+                                                                                        <div class="crancy__item-form--group mg-top-form-20">
+                                                                                            <label class="crancy__item-label">{{ __('Single Ad Pricing') }} </label>
+                                                                                            <div class="crancy-ptabs__notify-switch  crancy-ptabs__notify-switch--two">
+                                                                                                <label class="crancy__item-switch">
+                                                                                                <input name="single_ad_pricing_enabled" {{ ($general_setting->single_ad_pricing_enabled ?? 'enable') == 'enable' ? 'checked' : '' }} type="checkbox" >
+                                                                                                <span class="crancy__item-switch--slide crancy__item-switch--round"></span>
+                                                                                                </label>
+                                                                                            </div>
+                                                                                            <small>{{ __('Enable this to show single ad pricing for private users (non-dealers).') }}</small>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-12">
+                                                                                        <div class="crancy__item-form--group mg-top-form-20">
+                                                                                            <label class="crancy__item-label">{{ __('Single Ad Price') }} </label>
+                                                                                            <input class="crancy__item-input" type="number" step="0.01" name="single_ad_price" value="{{ old('single_ad_price', $general_setting->single_ad_price ?? 0) }}">
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-12">
+                                                                                        <div class="crancy__item-form--group mg-top-form-20">
+                                                                                            <label class="crancy__item-label">{{ __('Single Ad Duration (Days)') }} </label>
+                                                                                            <input class="crancy__item-input" type="number" step="1" min="1" name="single_ad_duration_days" value="{{ old('single_ad_duration_days', $general_setting->single_ad_duration_days ?? 30) }}">
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="col-12">
                                                                                         <div class="crancy__item-form--group  mg-top-form-20">
                                                                                             <label class="crancy__item-label">{{__('Timezone')}}</label>
                                                                                             <select class="form-select crancy__item-input" name="timezone">

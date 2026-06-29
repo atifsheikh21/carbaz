@@ -57,8 +57,9 @@ body{
      display:flex;
      align-items:center;
      justify-content:flex-start;
-     gap:12px;
+     gap:9px;
      flex-wrap:wrap;
+     font-size: 14px;
  }
 
  .minimal-footer .footer-links a{
@@ -99,7 +100,7 @@ body{
  .minimal-footer .copyright-text p{
      margin:0;
      text-align:center;
-     font-size: 18px !important;
+     font-size: 12px !important;
  }
 
  .inner-banner,
@@ -288,7 +289,7 @@ body{
  }
 
  .header-two .menu-bg .header-two-nav-right .nav-btn a{
-     padding: 6px 15px;
+     padding: 6px 15px 3px 15px;
      font-size: 15px;
      border-radius: 15px;
  }
@@ -1078,7 +1079,20 @@ a:hover{
     }
 }
 
-@media (max-width: 767.98px){
+@media (max-width: 767.98px), screen and (orientation: landscape) and (max-width: 900px){
+    .d-block.d-md-none{
+        display:block !important;
+    }
+
+    .d-none.d-md-block{
+        display:none !important;
+    }
+
+    .header.inner-header,
+    .mobile-header{
+        display:none !important;
+    }
+
     .lp-mobile{
         padding: 18px 16px 22px;
         max-width: 460px;
@@ -1101,7 +1115,7 @@ a:hover{
     }
 
     .lp-mobile__nav{
-        margin-top: 16px;
+        margin-top: 35px;
         display:flex;
         align-items:center;
         justify-content:space-between;
@@ -1112,13 +1126,16 @@ a:hover{
         display:flex;
         align-items:center;
         gap:12px;
+        margin-left: 15px;
     }
 
     .lp-mobile__link{
         text-decoration:none;
         font-size: 12px;
         font-weight: 500;
-        color:#8b8b8b;
+        color:#b91415;
+        border:0px;
+        background-color: #ffffff00;
     }
 
     .lp-mobile__link--primary{
@@ -1140,6 +1157,8 @@ a:hover{
         overflow:hidden;
         text-overflow:ellipsis;
         white-space:nowrap;
+        border: 0px;
+        background-color: #fffefe00;
     }
 
     .lp-mobile__menu{
@@ -1151,11 +1170,12 @@ a:hover{
         align-items:center;
         justify-content:center;
         padding:0;
+        margin-right: 12px;
     }
 
     .lp-mobile__menu svg{
         width: 22px;
-        height: 22px;
+        height: 26px;
         stroke:#6f6f6f;
     }
 
@@ -1368,8 +1388,8 @@ a:hover{
         position:absolute;
         top: 10px;
         right: 10px;
-        width: 28px;
-        height: 28px;
+        width: 18px;
+        height: 18px;
         border-radius: 50%;
         background: rgba(255,255,255,.65);
         display:flex;
@@ -1404,55 +1424,77 @@ a:hover{
     .lp-mobile-card__body{
         padding: 12px;
         position:relative;
+        margin-top: 10px;
     }
 
     .lp-mobile-card__title{
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 700;
         text-transform: uppercase;
-        color:#222;
+        color: #222;
         padding-right: 70px;
         min-height: 18px;
+        margin-left: 10px;
     }
 
     .lp-mobile-card__call{
         position:absolute;
         top: 12px;
-        right: 12px;
+        right: 22px;
     }
 
     .lp-mobile-card__call a{
         text-decoration:none;
         color:#b60304;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 700;
     }
 
     .lp-mobile-card__meta{
         margin-top: 10px;
-        color:#6f6f6f;
-        font-size: 11px;
-        line-height: 1.45;
+        color: #6f6f6f;
+        font-size: 12px;
+        line-height: 1.6;
+        margin-left: 10px;
     }
 
     .lp-mobile-card__bottom{
-        display:flex;
-        align-items:flex-end;
-        justify-content:space-between;
+        display:block;
+        position: relative;
         margin-top: 8px;
+        min-height: 56px;
     }
 
     .lp-mobile-card__label{
         font-size: 11px;
         font-weight: 800;
-        color:#b60304;
+        color: #b60304;
         text-transform: uppercase;
+        position: absolute;
+        left: 10px;
+        bottom: 6px;
     }
 
     .lp-mobile-card__price{
-        font-size: 26px;
+        font-size: 28px;
         font-weight: 800;
-        color:#111;
+        color: #111;
+        margin: 0;
+    }
+
+    .lp-mobile-card__pricecol{
+        position: absolute;
+        right: 10px;
+        bottom: 6px;
+        text-align: right;
+    }
+
+    .lp-mobile-card__warranty{
+        margin-top: 0px;
+        font-size: 11px;
+        line-height: 1;
+        color: #666;
+        text-align: right;
     }
 
     .lp-mobile__empty{
@@ -1549,11 +1591,10 @@ a:hover{
     .lp-detail__heart a{
         width: 18px;
         height: 16px;
-        display:block;
-        background: currentColor;
-        -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 18 16"><path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z"/></svg>') center / contain no-repeat;
-        mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 18 16"><path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z"/></svg>') center / contain no-repeat;
-        color:#8bc4d9;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#555;
     }
 
     .lp-detail__heart a.active{
@@ -1603,29 +1644,33 @@ a:hover{
     }
 
     .lp-detail__body{
+        margin-top: 15px;
         padding: 0 12px 14px;
     }
 
     .lp-detail__title{
-        font-size: 12px;
+        font-size: 15px;
         font-weight: 800;
         text-transform: uppercase;
         color:#222;
         margin-top: 2px;
+        margin-left:10px;
     }
 
     .lp-detail__subtitle{
         font-size: 10px;
-        color:#8b8b8b;
+        color: #8b8b8b;
         margin-top: 3px;
+        margin-left: 10px;
     }
 
     .lp-detail__specs{
-        margin-top: 10px;
-        font-size: 10px;
-        color:#6f6f6f;
-        line-height: 1.55;
-        text-transform: lowercase;
+       margin-top: 10px;
+        color: #6f6f6f;
+        font-size: 12px;
+        line-height: 1.6;
+        margin-left: 10px;
+        text-transform: capitalize;
     }
 
     .lp-detail__specs > div{
@@ -1640,49 +1685,57 @@ a:hover{
 
     .lp-detail__price-row{
         display:flex;
-        justify-content:space-between;
+        justify-content:space-around;
         align-items:flex-end;
-        margin-top: 14px;
+        margin-top: 32px;
     }
 
     .lp-detail__label{
         font-size: 11px;
         font-weight: 800;
-        color:#b60304;
+        color: #b60304;
         text-transform: uppercase;
+        margin-left: 10px;
+        margin-top: 80px;
     }
 
     .lp-detail__price{
-        font-size: 28px;
+        font-size: 30px;
         font-weight: 800;
-        color:#111;
-        text-align:right;
+        color: #111;
+        text-align: right;
         line-height: 1;
+        margin-right: 0px;
+        margin-left: 35px;
+        margin-bottom:70px;
     }
 
     .lp-detail__warranty{
-        font-size: 9px;
+        font-size: 11px;
         color:#8b8b8b;
         font-weight: 500;
         margin-top: 4px;
+        margin-right: 2px;
     }
 
     .lp-detail__section{
-        margin-top: 18px;
+        margin-top: 60px;
     }
 
     .lp-detail__section-title{
-        font-size: 10px;
+                font-size: 10px;
         font-weight: 800;
-        text-transform: uppercase;
-        color:#333;
+        text-transform: capitalize;
+        color: #333;
         margin-bottom: 8px;
+        margin-left: 10px;
     }
 
     .lp-detail__section-body{
         font-size: 11px;
-        color:#6f6f6f;
+        color: #6f6f6f;
         line-height: 1.55;
+        margin-left: 10px;
     }
 
     .lp-detail__section-body p{
@@ -1699,7 +1752,7 @@ a:hover{
         bottom:0;
         background: transparent;
         padding: 10px 16px 14px;
-        z-index: 1060;
+        z-index: 1030;
         display:flex;
         justify-content:center;
     }
@@ -1707,7 +1760,7 @@ a:hover{
     .lp-detail__contactbtn{
         width: min(460px, calc(100% - 0px));
         height: 44px;
-        border-radius: 12px;
+        border-radius: 14px;
         background:#b60304;
         color:#fff;
         border:0;
@@ -1733,7 +1786,7 @@ a:hover{
         color:#111;
         text-decoration:none;
         font-weight: 700;
-        text-transform: lowercase;
+        text-transform: uppercase;
     }
 }
 
@@ -1747,7 +1800,7 @@ a:hover{
 .inventory-main-box input.form-control{
     background:#cacaca !important;
     border-color:rgba(0,0,0,.25) !important;
-    color:#111 !important;
+    color:#6b6767  !important;
 }
 
 @media (max-width: 991.98px){
@@ -1785,7 +1838,7 @@ a:hover{
     gap:14px;
     background:#cacaca !important;
     border:4px solid black;
-    border-radius:18px;
+    border-radius:22px;
     overflow:hidden;
     min-height:190px;
     position:relative;
@@ -1862,11 +1915,13 @@ a:hover{
     border-right: 3px solid black;
     aspect-ratio: 330 / 215;
     overflow:hidden;
+    min-height:0;
 }
 
-.listing-list-media > a{
+.listing-list-media > a:first-child{
     display:block;
-    
+    position:absolute;
+    inset:0;
 }
 
 .listing-list-media img{
@@ -1909,22 +1964,58 @@ a:hover{
         display:block;
         object-fit:cover;
     }
+
+    .lp-detail__heart{
+        position:absolute;
+        top: 10px;
+        right: 10px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.65);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:2;
+    }
+
+    .lp-detail__heart a{
+        width: 18px;
+        height: 16px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#555;
+    }
+
+    .lp-detail__heart a.active{
+        color:#b60304;
+    }
 }
 
 .listing-list-fav{
     position:absolute;
     top:10px;
-    left:10px;
-    width:34px;
-    height:34px;
+    right:10px;
+    width:24px;
+    height:24px;
     border-radius:50%;
-    background:rgba(255,255,255,0.92);
+    background:rgb(202 202 202);
     display:flex;
     align-items:center;
     justify-content:center;
     color:var(--brand-primary);
 }
 
+@media (min-width: 992px){
+    .listing-list-fav{
+        top:auto;
+        left:auto;
+        right:10px;
+        bottom:10px;
+        z-index:3;
+    }
+}
 .listing-list-fav svg{
     stroke:currentColor;
 }
@@ -1956,7 +2047,8 @@ a:hover{
 
 .listing-list-content{
     flex:1;
-    padding:18px 18px 18px 18px;
+    /* extra right/bottom padding to avoid overlap with absolutely positioned price column */
+    padding:18px 220px 48px 18px;
     min-width:0;
     display:flex;
     flex-direction:column;
@@ -2012,13 +2104,19 @@ a:hover{
 }
 
 .listing-list-pricecol{
-    flex:0 0 155px;
+    position:absolute;
+    right:18px;
+    bottom:14px;
+    width:200px;
     display:flex;
-    align-items:end;
-    justify-content:left;
-    text-align:center;
-    height:92%;
+    flex-direction:column !important;
+    align-items:flex-end !important;
+    justify-content:flex-end !important;
+    text-align:right;
 }
+
+/* Reserve space below price when there is no warranty label so price position is consistent */
+.listing-list-pricecol.no-warranty{ padding-bottom: 16px; }
 
 .listing-list-seller{
     position:absolute;
@@ -2030,16 +2128,18 @@ a:hover{
     display:flex;
     align-items:center;
     justify-content:flex-start;
-    padding:0 14px;
+    padding:5px 24px 0 24px;
     background:#545454;
+    
     color:#fff;
     font-weight:400;
-    font-size:16px;
+    font-size:15px;
     letter-spacing:1px;
     border-bottom:1px solid rgba(0,0,0,.35);
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    text-transform: uppercase;
 }
 
 .seller-pill{
@@ -2062,7 +2162,7 @@ a:hover{
 .listing-list-bottom-label{
     position:absolute;
     left:18px;
-    bottom:14px;
+    bottom:10px;
     z-index:2;
     margin:0;
     padding:0;
@@ -2072,11 +2172,11 @@ a:hover{
     color:#B60304;
     font-weight:600;
     font-size:16px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 .listing-private-name{
-    color:#00c853;
+    color:#23a549;
     font-weight:800;
     font-size:16px;
     letter-spacing:0.5px;
@@ -2093,16 +2193,44 @@ a:hover{
 
 .listing-list-meta{
     display:flex;
-    flex-direction: column;
-    flex-wrap:wrap;
-    /*gap:8px 14px;*/
-    font-size:16px;
+    flex-direction:column;
+    flex-wrap:nowrap;
+    gap:0px;
+    font-size:15px;
     color:#6b7280;
     margin-bottom:0;
 }
 
 .listing-list-meta span{
     white-space:nowrap;
+}
+
+.listing-list-meta .meta-label,
+.lp-mobile-card__meta .meta-label{
+    font-weight:400;
+    text-transform:none;
+}
+.listing-detail-hero__keyinfo .meta-value{
+    font-weight:700 !important;
+    text-transform:uppercase !important;
+}
+.listing-detail-hero__keyinfo .meta-value{
+    font-weight:700 !important;
+    text-transform:uppercase !important;
+}
+
+.listing-list-meta .meta-value,
+.lp-mobile-card__meta .meta-value{
+    font-weight:700 !important;
+    text-transform:uppercase !important;
+}
+.lp-detail__specs .meta-value{
+    font-weight:700 !important;
+    text-transform:uppercase !important;
+}
+.lp-detail__specs .meta-label {
+    font-weight: 400;
+    text-transform: none;
 }
 
 .listing-list-footer{
@@ -2122,10 +2250,11 @@ a:hover{
 }
 
 .listing-price{
-    font-size:48px;
-    font-weight:900;
-    line-height:1;
+    font-size:40px;
+    font-weight:700;
+    line-height:0.8;
     color:#111827;
+    margin-right: 20px;
 }
 
 .listing-action{
@@ -2141,7 +2270,7 @@ a:hover{
     .listing-list-content{padding:14px;}
     .listing-list-top-actions{top:14px;right:14px;}
     .listing-list-inner{flex-direction:column;align-items:flex-start;}
-    .listing-list-pricecol{flex:0 0 auto;width:100%;justify-content:flex-start;text-align:left;}
+    .listing-list-pricecol{position:static;width:100%;justify-content:flex-start;align-items:flex-start;text-align:left;}
     .listing-list-seller{position:static;transform:none;top:auto;left:auto;padding:0;}
     .listing-list-bottom-label{position:static;left:auto;bottom:auto;margin-top:10px;}
 }
@@ -2152,6 +2281,11 @@ a:hover{
     .listing-list-title{font-size:18px;}
     .listing-price{font-size:42px;}
 }
+
+/* Desktop filter: add space under section titles so labels don't touch fields */
+.inventory-main-box .inventory-taitel h5{ margin: 0 0 8px; }
+.inventory-main-box .inventory-taitel{ margin-top: 14px; }
+.inventory-main-box .inventory-taitel.mt-20px{ margin-top: 40px; }
 
 .dealer-list{
     display:flex;
@@ -2253,3 +2387,74 @@ a:hover{
         grid-template-columns:1fr;
     }
 }
+
+/* ── Nav user dropdown ── */
+.nav-user-dropdown-wrap {
+    position: relative;
+}
+.nav-user-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.nav-user-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: auto;
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 9999;
+    padding: 6px 0;
+    list-style: none;
+    margin: 0;
+}
+.nav-user-dropdown-wrap:hover .nav-user-dropdown,
+.nav-user-dropdown-wrap:focus-within .nav-user-dropdown {
+    display: block;
+}
+.nav-user-dropdown li {
+    margin: 0;
+    padding: 0;
+}
+.nav-user-dropdown li a {
+    display: block;
+    padding: 9px 18px;
+    color: #222 !important;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+}
+.nav-user-dropdown li a:hover {
+    background: #b60304;
+    color: #fff !important;
+}
+.nav-user-dropdown li:first-child a { border-radius: 8px 8px 0 0; }
+.nav-user-dropdown li:last-child a  { border-radius: 0 0 8px 8px; }
+
+.car-part-upload-btn{
+    display: inline-block;
+    cursor: pointer;
+    padding: 8px 20px;
+    background: #405FF2;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+    margin-bottom: 6px;
+}
+.car-part-upload-btn:hover{
+    background: #2e4ccc;
+    color: #fff;
+}
+

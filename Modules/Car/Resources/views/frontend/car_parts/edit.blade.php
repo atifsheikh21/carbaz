@@ -4,8 +4,27 @@
 @endsection
 
 @section('body-content')
+@php
+    $authUser = Auth::guard('web')->user();
+    $sellerTypeLabel = ($authUser && $authUser->is_dealer) ? 'Dealer/Company' : 'Private';
+@endphp
 <main>
     <style>
+        .place-ad-back-btn{
+            display:inline-block;
+            border:1px solid #cfcfcf;
+            background:#fff;
+            padding:10px 18px;
+            border-radius:4px;
+            font-weight:600;
+            color:#111;
+            text-decoration:none;
+            line-height:1;
+            position:absolute;
+            left:0;
+            top:0;
+        }
+        .place-ad-banner-col{position:relative;}
         .car-part-upload-preview{
             display:grid;
             grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
@@ -48,8 +67,11 @@
         <div class="inner-banner-img" style=" background-image: url({{ getImageOrPlaceholder($breadcrumb,'1905x300') }}) "></div>
         <div class="container">
             <div class="col-lg-12">
+                <div class="place-ad-banner-col">
+                    <a href="#" class="place-ad-back-btn d-none d-md-inline-block" onclick="event.preventDefault(); history.back();">{{ __('Back') }}</a>
+                </div>
                 <div class="inner-banner-df">
-                    <h1 class="inner-banner-taitel">{{ __('translate.Edit Car Part') }}</h1>
+                    <h1 class="inner-banner-taitel">{{ $sellerTypeLabel }} - {{ __('Edit Ad') }}</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
@@ -72,6 +94,16 @@
                         @csrf
                         @method('PUT')
 
+                        @if($errors->any())
+                            <div class="alert alert-danger" style="margin-bottom: 20px;">
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="car-images">
                             <h3 class="car-images-taitel">{{ __('translate.Basic Information') }}</h3>
                             <div class="car-images-inner">
@@ -85,13 +117,58 @@
                                 <div class="description-item two">
                                     <div class="description-item-inner">
                                         <label class="form-label">{{ __('translate.Brand') }}</label>
-                                        <select class="form-select select2" name="brand_id">
+                                        <select class="form-select select2" name="brand_id" id="car_part_brand_id">
                                             <option value="">{{ __('translate.Select Brand') }}</option>
-                                            @foreach($brands as $b)
-                                                <option value="{{ $b->id }}" {{ (int) old('brand_id', $carPart->brand_id) === (int) $b->id ? 'selected' : '' }}>{{ $b->translate?->name }}</option>
+                                            @foreach($makerOptions as $brandSlug => $brandLabel)
+                                                <option value="{{ $brandSlug }}" {{ old('brand_id', $selectedBrandOption) === $brandSlug ? 'selected' : '' }}>{{ $brandLabel }}</option>
                                             @endforeach
                                         </select>
                                     </div>
+                                    <div class="description-item-inner">
+                                        <label class="form-label">{{ __('Model') }}</label>
+                                        <select class="form-select select2" name="car_model" id="car_part_model">
+                                            <option value="">{{ __('Select Model') }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="description-item two">
+                                    <div class="description-item-inner">
+                                        <label class="form-label">{{ __('From Year') }}</label>
+                                        <select class="form-select" name="from_year">
+                                            <option value="">{{ __('Select') }}</option>
+                                            @for ($year = 1980; $year <= 2026; $year++)
+                                                <option value="{{ $year }}" {{ (string) old('from_year', $carPart->from_year) === (string) $year ? 'selected' : '' }}>{{ $year }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                    <div class="description-item-inner">
+                                        <label class="form-label">{{ __('To Year') }}</label>
+                                        <select class="form-select" name="to_year">
+                                            <option value="">{{ __('Select') }}</option>
+                                            @for ($year = 1980; $year <= 2026; $year++)
+                                                <option value="{{ $year }}" {{ (string) old('to_year', $carPart->to_year) === (string) $year ? 'selected' : '' }}>{{ $year }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="description-item">
+                                    @if(Auth::guard('web')->check() && Auth::guard('web')->user()?->is_dealer)
+                                        <div class="description-item-inner">
+                                            <label class="form-label">{{ __('Warranty') }}</label>
+                                            <select class="form-select" name="warranty_months" id="warranty_months">
+                                                <option value="">{{ __('Select') }}</option>
+                                                @for($i = 1; $i <= 12; $i++)
+                                                    <option value="{{ $i }}" {{ (string) old('warranty_months', $carPart->warranty_months) === (string) $i ? 'selected' : '' }}>{{ $i }} {{ $i === 1 ? __('month') : __('months') }}</option>
+                                                @endfor
+                                                @for($y = 2; $y <= 10; $y++)
+                                                    @php($m = $y * 12)
+                                                    <option value="{{ $m }}" {{ (string) old('warranty_months', $carPart->warranty_months) === (string) $m ? 'selected' : '' }}>{{ $y }} {{ $y === 1 ? __('year') : __('years') }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    @endif
                                     <div class="description-item-inner">
                                         <label class="form-label">{{ __('translate.Country') }} <span>*</span></label>
                                         <input type="hidden" name="country_id" value="{{ $ireland?->id }}">
@@ -129,14 +206,12 @@
                                     </div>
                                 </div>
 
-                                <div class="description-item two">
+                                <div class="description-item">
                                     <div class="description-item-inner">
-                                        <label class="form-label">{{ __('translate.Compatibility') }}</label>
-                                        <input type="text" class="form-control" name="compatibility" value="{{ old('compatibility', $carPart->compatibility) }}">
-                                    </div>
-                                    <div class="description-item-inner">
-                                        <label class="form-label">{{ __('Images') }}</label>
-                                        <input type="file" class="form-control" name="images[]" id="carPartImages" accept="image/*" multiple>
+                                        <label class="form-label" style="display:block;">{{ __('Images') }}</label>
+                                        <label for="carPartImages" class="car-part-upload-btn" style="display:inline-block;cursor:pointer;padding:8px 20px;background:#405FF2;color:#fff;border-radius:6px;font-size:14px;font-weight:600;margin-bottom:6px;">{{ __('Upload Images') }}</label>
+                                        <input type="file" class="form-control" name="images[]" id="carPartImages" accept="image/jpeg,image/png" multiple style="display:none;">
+                                        <small class="text-muted">{{ __('Maximum 8 images allowed') }}</small>
                                         <div id="carPartImagesPreview" class="car-part-upload-preview"></div>
                                     </div>
                                 </div>
@@ -147,8 +222,9 @@
                                             <label class="form-label">{{ __('translate.Current Images') }}</label>
                                             <div class="car-part-upload-preview">
                                                 @foreach($carPart->galleries as $gallery)
-                                                    <div class="car-part-upload-preview__item">
+                                                    <div class="car-part-upload-preview__item" id="gallery-item-{{ $gallery->id }}">
                                                         <img src="{{ getImageOrPlaceholder($gallery->image, '200x150') }}" alt="img">
+                                                        <button type="button" class="car-part-upload-preview__remove" title="{{ __('translate.Remove') }}" onclick="document.getElementById('delete-gallery-form-{{ $gallery->id }}').submit();">&times;</button>
                                                         <div class="car-part-upload-preview__name">{{ basename($gallery->image) }}</div>
                                                     </div>
                                                 @endforeach
@@ -176,14 +252,74 @@
         </div>
     </section>
 </main>
+
+@foreach($carPart->galleries as $gallery)
+    <form id="delete-gallery-form-{{ $gallery->id }}" action="{{ route('user.car-part-gallery.delete', $gallery->id) }}" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
+@endforeach
+
+<div id="adSubmittingOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999999;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;">
+    <div style="text-align:center;padding:20px 24px;background:rgba(0,0,0,.4);border-radius:12px;backdrop-filter:blur(2px);">
+        <div style="font-size:16px;margin-bottom:8px;">{{ __('Please wait') }}</div>
+        <div style="font-size:22px;">{{ __('Your ad is being updated...') }}</div>
+        <div style="font-size:14px;margin-top:10px;opacity:.8;">{{ __('System is reviewing your ad. Do not close this window.') }}</div>
+    </div>
+</div>
+
 <script>
     (function () {
+        const brandModelsMap = @json($brandModelsMap ?? []);
+        const brandSelect = document.getElementById('car_part_brand_id');
+        const modelSelect = document.getElementById('car_part_model');
+
+        function fillModelOptions(brandKey) {
+            if (!modelSelect) {
+                return;
+            }
+
+            modelSelect.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = 'Select Model';
+            modelSelect.appendChild(placeholder);
+
+            const models = (brandKey && brandModelsMap && brandModelsMap[brandKey]) ? brandModelsMap[brandKey] : [];
+            models.forEach((m) => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m;
+                modelSelect.appendChild(opt);
+            });
+
+            const oldModel = "{{ old('car_model', $carPart->car_model) }}";
+            if (oldModel) {
+                modelSelect.value = oldModel;
+            }
+
+            if (window.jQuery && jQuery.fn && jQuery.fn.select2) {
+                try {
+                    jQuery(modelSelect).trigger('change.select2');
+                } catch (e) {}
+            }
+        }
+
+        if (brandSelect && modelSelect) {
+            brandSelect.addEventListener('change', function () {
+                fillModelOptions(this.value);
+            });
+            fillModelOptions(brandSelect.value || "{{ old('brand_id', $selectedBrandOption) }}");
+        }
+
         const input = document.getElementById('carPartImages');
         const preview = document.getElementById('carPartImagesPreview');
         if (!input || !preview) {
             return;
         }
 
+        const maxImages = 8;
+        const existingImages = {{ (int) ($carPart->galleries?->count() ?? 0) }};
         let currentFiles = [];
 
         function syncFiles() {
@@ -225,9 +361,22 @@
 
         input.addEventListener('change', function (event) {
             currentFiles = Array.from(event.target.files || []);
+            const remainingSlots = Math.max(maxImages - existingImages, 0);
+            if (currentFiles.length > remainingSlots) {
+                alert('Maximum 8 images allowed');
+                currentFiles = currentFiles.slice(0, remainingSlots);
+            }
             syncFiles();
             renderPreview();
         });
+
+        var f = document.querySelector('form[action="{{ route('user.car-part.update', $carPart->id) }}"]');
+        if (f) {
+            f.addEventListener('submit', function(){
+                var ov = document.getElementById('adSubmittingOverlay');
+                if (ov){ ov.style.display = 'flex'; }
+            });
+        }
     })();
 </script>
 @endsection

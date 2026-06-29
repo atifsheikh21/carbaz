@@ -4,6 +4,13 @@
 @endsection
 
 @section('body-content')
+<style>
+     .login-form-item {
+        flex-direction: column;
+        margin-top: 20px!important;
+    
+}
+</style>
 
 <main>
     <!-- banner-part-start  -->
@@ -39,11 +46,11 @@
                     <div class="login-head">
                         <h3>{{ __('Sign Up') }}</h3>
 
-                        <span>{{ __('Welcome to CARBAZ') }}</span>
+                        <span>{{ __('Welcome to CarnPart') }}</span>
                     </div>
 
 
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" action="{{ route('register') }}" class="register-form">
                         @csrf
 
                         <div class="login-form-item three">
@@ -51,8 +58,8 @@
                                 <label for="user_type" class="form-label">{{ __('User Type') }}
                                     <span>*</span> </label>
                                 <select class="form-control @error('user_type') is-invalid @enderror" id="user_type" name="user_type">
-                                    <option value="individual" {{ old('user_type', 'individual') == 'individual' ? 'selected' : '' }}>{{ __('PRIVATE') }} - {{ __('vehicle / car part or accessories seller') }}</option>
-                                    <option value="dealer" {{ old('user_type', 'individual') == 'dealer' ? 'selected' : '' }}>{{ __('DEALER') }} - {{ __('vehicle / car part or accessories seller') }}</option>
+                                    <option value="individual" {{ old('user_type', 'individual') == 'individual' ? 'selected' : '' }}>{{ __("PRIVATE") }} - {{ __("vehicle / vehicle part or accessories seller") }}</option>
+                                    <option value="dealer" {{ old('user_type', 'individual') == 'dealer' ? 'selected' : '' }}>{{ __("Dealer / Trader") }}- {{ __("vehicle / vehicle part or accessories seller") }} </option>
                                 </select>
                                 @error('user_type')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -96,6 +103,31 @@
                             </div>
                         </div>
 
+                        <div class="login-form-item">
+                            <div class="login-form-inner">
+                                <label for="phone" class="form-label">{{ __('Phone number') }}
+                                    <span>*</span> </label>
+                                <div class="d-flex" style="gap:10px;">
+                                    <select class="form-control @error('phone_country_code') is-invalid @enderror" id="phone_country_code" name="phone_country_code" style="max-width: 140px;">
+                                        <option value="+353" {{ old('phone_country_code', '+353') === '+353' ? 'selected' : '' }}>Ireland (+353)</option>
+                                        <option value="+44" {{ old('phone_country_code') === '+44' ? 'selected' : '' }}>UK (+44)</option>
+                                    </select>
+                                    <input type="text" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number"
+                                        placeholder="{{ __('Phone number') }}" name="phone_number" value="{{ old('phone_number') }}">
+                                </div>
+                                <input type="hidden" id="phone" name="phone" value="{{ old('phone') }}">
+                                @error('phone_country_code')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                @error('phone_number')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                @error('phone')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div id="dealer_fields" style="display:none;">
                             <input type="hidden" name="is_vehicle_seller" value="0">
                             <input type="hidden" name="is_part_seller" value="0">
@@ -108,12 +140,12 @@
                                     <div class="d-flex flex-wrap gap-3">
                                         <label class="d-flex align-items-center gap-2">
                                             <input class="form-check-input" type="checkbox" id="is_vehicle_seller" name="is_vehicle_seller" value="1" {{ old('is_vehicle_seller') == '1' ? 'checked' : '' }}>
-                                            <span>{{ __('Vehicles') }}</span>
+                                            <span>{{ __('I am a vehicle dealer') }}</span>
                                         </label>
 
                                         <label class="d-flex align-items-center gap-2">
                                             <input class="form-check-input" type="checkbox" id="is_part_seller" name="is_part_seller" value="1" {{ old('is_part_seller') == '1' ? 'checked' : '' }}>
-                                            <span>{{ __('Car Parts') }}</span>
+                                            <span>{{ __('I am a vehicle part trader') }}</span>
                                         </label>
                                     </div>
 
@@ -132,7 +164,7 @@
                             <div id="vehicle_company_fields" style="display:none;">
                                 <div class="login-form-item">
                                     <div class="login-form-inner">
-                                        <label for="vehicle_company_name" class="form-label">{{ __('Vehicle company name') }}
+                                        <label for="vehicle_company_name" class="form-label">{{ __('Vehicle Dealer name') }}
                                             <span>*</span> </label>
                                         <input type="text" class="form-control @error('vehicle_company_name') is-invalid @enderror" id="vehicle_company_name" name="vehicle_company_name" value="{{ old('vehicle_company_name') }}">
                                         <small class="d-block mt-1">{{ __('This will be shown in your vehicle ads') }}</small>
@@ -144,10 +176,21 @@
 
                                 <div class="login-form-item">
                                     <div class="login-form-inner">
-                                        <label for="vehicle_company_address" class="form-label">{{ __('Vehicle company address') }}
+                                        <label for="vehicle_company_address" class="form-label">{{ __('Vehicle Dealer address') }}
                                             <span>*</span> </label>
                                         <input type="text" class="form-control @error('vehicle_company_address') is-invalid @enderror" id="vehicle_company_address" name="vehicle_company_address" value="{{ old('vehicle_company_address') }}">
                                         @error('vehicle_company_address')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="login-form-item">
+                                    <div class="login-form-inner">
+                                        <label for="vehicle_company_postal_code" class="form-label">{{ __('Post Code') }}
+                                        </label>
+                                        <input type="text" class="form-control @error('vehicle_company_postal_code') is-invalid @enderror" id="vehicle_company_postal_code" name="vehicle_company_postal_code" value="{{ old('vehicle_company_postal_code') }}">
+                                        @error('vehicle_company_postal_code')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -157,7 +200,7 @@
                             <div id="part_company_fields" style="display:none;">
                                 <div class="login-form-item">
                                     <div class="login-form-inner">
-                                        <label for="part_company_name" class="form-label">{{ __('Car part company name') }}
+                                        <label for="part_company_name" class="form-label">{{ __('Trading / business name for vehicle part seller') }}
                                             <span>*</span> </label>
                                         <input type="text" class="form-control @error('part_company_name') is-invalid @enderror" id="part_company_name" name="part_company_name" value="{{ old('part_company_name') }}">
                                         <small class="d-block mt-1">{{ __('This will be shown in your car part ads') }}</small>
@@ -169,10 +212,21 @@
 
                                 <div class="login-form-item">
                                     <div class="login-form-inner">
-                                        <label for="part_company_address" class="form-label">{{ __('Car part company address') }}
+                                        <label for="part_company_address" class="form-label">{{ __('Trading / business address for vehicle part seller') }}
                                             <span>*</span> </label>
                                         <input type="text" class="form-control @error('part_company_address') is-invalid @enderror" id="part_company_address" name="part_company_address" value="{{ old('part_company_address') }}">
                                         @error('part_company_address')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="login-form-item">
+                                    <div class="login-form-inner">
+                                        <label for="part_company_postal_code" class="form-label">{{ __('Post Code') }}
+                                        </label>
+                                        <input type="text" class="form-control @error('part_company_postal_code') is-invalid @enderror" id="part_company_postal_code" name="part_company_postal_code" value="{{ old('part_company_postal_code') }}">
+                                        @error('part_company_postal_code')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -223,6 +277,28 @@
                             </div>
                         </div>
 
+                        <div class="login-form-item three">
+                            <div class="login-form-inner forum-helper-optin">
+                                <label class="form-label d-flex align-items-center gap-2">
+                                    <span>Would you like to join our Part Help Forum as a volunteer helper or you can earn money by selling part ? Helpers receive email alerts for new part requests and can respond directly to community members.</span>
+                                    <span class="forum-helper-tooltip" title="You can change this preference anytime in your account settings.">ℹ</span>
+                                </label>
+                                <div class="forum-helper-toggle-group">
+                                    <label class="forum-helper-toggle">
+                                        <input type="radio" name="is_forum_helper" value="1" {{ old('is_forum_helper') === '1' ? 'checked' : '' }}>
+                                        <span>Yes, I want to help</span>
+                                    </label>
+                                    <label class="forum-helper-toggle">
+                                        <input type="radio" name="is_forum_helper" value="0" {{ old('is_forum_helper') === '0' ? 'checked' : '' }}>
+                                        <span>No, thanks</span>
+                                    </label>
+                                </div>
+                                @error('is_forum_helper')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
                         @if($google_recaptcha->status==1)
                             <div class="login-form-item three">
                                 <div class="login-form-inner">
@@ -231,10 +307,16 @@
                             </div>
                         @endif
 
-
+                        <div class="login-form-item three">
+                            <div class="login-form-inner">
+    <p class="text-muted small register-terms-text">{!! __('By clicking Continue, you accept the <a href="https://staging.carnpart.ie/terms-conditions">Terms and Conditions</a>, <a href="https://staging.carnpart.ie/page/terms-of-use">Website Terms of Use</a>, and <a href="https://staging.carnpart.ie/privacy-policy">Privacy Policy</a>.') !!}</p>
+    
+    <p class="text-muted small register-dealer-text" style="display:none;">By registering as a Dealer / trader, you confirm that you are provide your correct name and address.<br>For vehicles dealer must have physical business premises, such as a showroom, garage, or commercial yard.<br>Any account found to contain false, misleading information will be terminated.<br>By clicking Continue, you accept the <a href="https://staging.carnpart.ie/terms-conditions">Terms and Conditions</a>, <a href="https://staging.carnpart.ie/page/terms-of-use">Website Terms of Use</a>, and <a href="https://staging.carnpart.ie/privacy-policy">Privacy Policy</a>.</p>
+</div>
+                        </div>
 
                         <div class="login-form-item two">
-                            <button type="submit" class="thm-btn-two">{{ __('Sign Up') }}</button>
+                            <button type="submit" class="thm-btn-two">{{ __('Continue') }}</button>
                         </div>
 
 
@@ -323,6 +405,70 @@
 
 @endsection
 
+@push('css_section')
+<style>
+    .register-form .login-form-item {
+        margin-top: 20px;
+    }
+    .register-form .login-form-item:first-child {
+        margin-top: 0;
+    }
+    .register-form #dealer_fields .login-form-item {
+        margin-top: 20px;
+    }
+
+    .forum-helper-optin {
+        background: #F8FAFC;
+        border: 1px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 18px;
+    }
+    .forum-helper-tooltip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        flex: 0 0 22px;
+        border-radius: 50%;
+        background: #DBEAFE;
+        color: #2563EB;
+        font-size: 13px;
+        cursor: help;
+    }
+    .forum-helper-toggle-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 14px;
+    }
+    .forum-helper-toggle input {
+        position: absolute;
+        opacity: 0;
+    }
+    .forum-helper-toggle span {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #E5E7EB;
+        border-radius: 999px;
+        padding: 10px 18px;
+        color: #374151;
+        background: #fff;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+    .forum-helper-toggle input:checked + span {
+        border-color: #2563EB;
+        background: #EFF6FF;
+        color: #2563EB;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+   
+   
+</style>
+@endpush
+
 
 @push('js_section')
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -337,116 +483,189 @@
                 return document.querySelector('form[action="{{ route('register') }}"] button[type="submit"]');
             }
 
-            function syncDealerFields() {
-                var userType = document.getElementById('user_type');
-                var dealerFields = document.getElementById('dealer_fields');
-                var vehicleCompanyFields = document.getElementById('vehicle_company_fields');
-                var partCompanyFields = document.getElementById('part_company_fields');
-                if (!userType || !dealerFields) return;
-
-                if (userType.value === 'dealer') {
-                    dealerFields.style.setProperty('display', 'block', 'important');
+            function handleDealerFields() {
+                const userType = userTypeSelect.value;
+                if (userType === 'dealer') {
+                    dealerFields.style.display = 'block';
                 } else {
-                    dealerFields.style.setProperty('display', 'none', 'important');
-                    if (vehicleCompanyFields) vehicleCompanyFields.style.setProperty('display', 'none', 'important');
-                    if (partCompanyFields) partCompanyFields.style.setProperty('display', 'none', 'important');
+                    dealerFields.style.display = 'none';
                 }
+
+                const isDealer = userType === 'dealer';
+                const termsText = document.querySelector('.register-terms-text');
+                const dealerText = document.querySelector('.register-dealer-text');
+                if (termsText) termsText.style.display = isDealer ? 'none' : '';
+                if (dealerText) dealerText.style.display = isDealer ? '' : 'none';
+
+                toggleCompanyFields();
             }
 
-            function syncSellerCompanyFields() {
-                var userType = document.getElementById('user_type');
-                var vehicleSeller = document.getElementById('is_vehicle_seller');
-                var partSeller = document.getElementById('is_part_seller');
-                var vehicleCompanyFields = document.getElementById('vehicle_company_fields');
-                var partCompanyFields = document.getElementById('part_company_fields');
+            function syncPhoneToHidden() {
+                const code = (phoneCountryCode?.value || '').trim();
+                const num = (phoneNumber?.value || '').trim();
+                phoneHidden.value = (code + ' ' + num).trim();
+            }
 
-                if (!userType || userType.value !== 'dealer') {
+            function parseOldPhone() {
+                const old = (phoneHidden?.value || '').trim();
+                if (!old) {
+                    syncPhoneToHidden();
+                    return;
+                }
+
+                const m = old.match(/^(\+\d{1,4})\s*(.*)$/);
+                if (m) {
+                    const code = m[1];
+                    const num = (m[2] || '').trim();
+                    if (code === '+353' || code === '+44') {
+                        phoneCountryCode.value = code;
+                        phoneNumber.value = num;
+                    } else {
+                        phoneNumber.value = old;
+                    }
+                } else {
+                    phoneNumber.value = old;
+                }
+
+                syncPhoneToHidden();
+            }
+
+            const userTypeSelect = document.getElementById('user_type');
+            const dealerFields = document.getElementById('dealer_fields');
+            const vehicleCompanyFields = document.getElementById('vehicle_company_fields');
+            const partCompanyFields = document.getElementById('part_company_fields');
+            const phoneCountryCode = document.getElementById('phone_country_code');
+            const phoneNumber = document.getElementById('phone_number');
+            const phoneHidden = document.getElementById('phone');
+            const isVehicleSellerCheckbox = document.getElementById('is_vehicle_seller');
+            const isPartSellerCheckbox = document.getElementById('is_part_seller');
+
+            if (userTypeSelect) {
+                userTypeSelect.addEventListener('change', handleDealerFields);
+            }
+
+            if (isVehicleSellerCheckbox) {
+                isVehicleSellerCheckbox.addEventListener('change', toggleCompanyFields);
+            }
+            if (isPartSellerCheckbox) {
+                isPartSellerCheckbox.addEventListener('change', toggleCompanyFields);
+            }
+
+            if (phoneCountryCode) {
+                phoneCountryCode.addEventListener('change', syncPhoneToHidden);
+            }
+            if (phoneNumber) {
+                phoneNumber.addEventListener('input', syncPhoneToHidden);
+            }
+
+            if (userTypeSelect) {
+                handleDealerFields();
+            }
+            if (phoneCountryCode && phoneNumber && phoneHidden) {
+                parseOldPhone();
+            }
+
+            const registerForm = document.querySelector('form[action="{{ route('register') }}"]');
+            if (registerForm) {
+                registerForm.addEventListener('submit', function () {
+                    syncPhoneToHidden();
+                });
+            }
+
+            function toggleCompanyFields() {
+                const userType = userTypeSelect.value;
+                if (!userType || userType !== 'dealer') {
                     if (vehicleCompanyFields) vehicleCompanyFields.style.setProperty('display', 'none', 'important');
                     if (partCompanyFields) partCompanyFields.style.setProperty('display', 'none', 'important');
                     return;
                 }
 
                 if (vehicleCompanyFields) {
-                    vehicleCompanyFields.style.setProperty('display', (vehicleSeller && vehicleSeller.checked) ? 'block' : 'none', 'important');
+                    vehicleCompanyFields.style.setProperty('display', (isVehicleSellerCheckbox && isVehicleSellerCheckbox.checked) ? 'block' : 'none', 'important');
                 }
                 if (partCompanyFields) {
-                    partCompanyFields.style.setProperty('display', (partSeller && partSeller.checked) ? 'block' : 'none', 'important');
+                    partCompanyFields.style.setProperty('display', (isPartSellerCheckbox && isPartSellerCheckbox.checked) ? 'block' : 'none', 'important');
                 }
             }
 
-            function isDealerFormValid() {
-                var userType = document.getElementById('user_type');
-                if (!userType || userType.value !== 'dealer') {
-                    return true;
-                }
+            function isFormValid() {
+                const nameEl = document.getElementById('name');
+                const cityEl = document.getElementById('city_id');
+                const phoneNumberEl = document.getElementById('phone_number');
+                const emailEl = document.getElementById('email');
+                const passwordEl = document.getElementById('input_password');
+                const passwordConfirmEl = document.getElementById('input_password_confirm');
 
-                var vehicleSeller = document.getElementById('is_vehicle_seller');
-                var partSeller = document.getElementById('is_part_seller');
-                var sellsVehicle = !!(vehicleSeller && vehicleSeller.checked);
-                var sellsPart = !!(partSeller && partSeller.checked);
+                if (!nameEl || !nameEl.value.trim()) return false;
+                if (!cityEl || !cityEl.value) return false;
+                if (!phoneNumberEl || !phoneNumberEl.value.trim()) return false;
+                if (!emailEl || !emailEl.value.trim()) return false;
+                if (!passwordEl || !passwordEl.value) return false;
+                if (!passwordConfirmEl || !passwordConfirmEl.value) return false;
 
-                if (!sellsVehicle && !sellsPart) {
-                    return false;
-                }
+                const userType = userTypeSelect ? userTypeSelect.value : '';
+                if (userType === 'dealer') {
+                    const sellsVehicle = !!(isVehicleSellerCheckbox && isVehicleSellerCheckbox.checked);
+                    const sellsPart = !!(isPartSellerCheckbox && isPartSellerCheckbox.checked);
 
-                if (sellsVehicle) {
-                    var vehicleCompanyName = document.getElementById('vehicle_company_name');
-                    var vehicleCompanyAddress = document.getElementById('vehicle_company_address');
-                    if (!vehicleCompanyName || !vehicleCompanyAddress) return false;
-                    if (!vehicleCompanyName.value.trim() || !vehicleCompanyAddress.value.trim()) return false;
-                }
+                    if (!sellsVehicle && !sellsPart) return false;
 
-                if (sellsPart) {
-                    var partCompanyName = document.getElementById('part_company_name');
-                    var partCompanyAddress = document.getElementById('part_company_address');
-                    if (!partCompanyName || !partCompanyAddress) return false;
-                    if (!partCompanyName.value.trim() || !partCompanyAddress.value.trim()) return false;
+                    if (sellsVehicle) {
+                        const vehicleCompanyName = document.getElementById('vehicle_company_name');
+                        const vehicleCompanyAddress = document.getElementById('vehicle_company_address');
+                        if (!vehicleCompanyName || !vehicleCompanyAddress) return false;
+                        if (!vehicleCompanyName.value.trim() || !vehicleCompanyAddress.value.trim()) return false;
+                    }
+
+                    if (sellsPart) {
+                        const partCompanyName = document.getElementById('part_company_name');
+                        const partCompanyAddress = document.getElementById('part_company_address');
+                        if (!partCompanyName || !partCompanyAddress) return false;
+                        if (!partCompanyName.value.trim() || !partCompanyAddress.value.trim()) return false;
+                    }
                 }
 
                 return true;
             }
 
             function syncSubmitState() {
-                var btn = getSubmitButton();
+                const btn = getSubmitButton();
                 if (!btn) return;
-                btn.disabled = !isDealerFormValid();
+                const valid = isFormValid();
+                btn.disabled = !valid;
+                btn.style.opacity = valid ? '' : '0.5';
+                btn.style.cursor = valid ? '' : 'not-allowed';
             }
 
-            var userType = document.getElementById('user_type');
-            var vehicleSeller = document.getElementById('is_vehicle_seller');
-            var partSeller = document.getElementById('is_part_seller');
-
-            if (userType) {
-                userType.addEventListener('change', function () {
-                    syncDealerFields();
-                    syncSellerCompanyFields();
+            if (userTypeSelect) {
+                userTypeSelect.addEventListener('change', function () {
+                    handleDealerFields();
+                    toggleCompanyFields();
                     syncSubmitState();
                 });
             }
 
-            if (vehicleSeller) {
-                vehicleSeller.addEventListener('change', function () {
-                    syncSellerCompanyFields();
+            if (isVehicleSellerCheckbox) {
+                isVehicleSellerCheckbox.addEventListener('change', function () {
+                    toggleCompanyFields();
                     syncSubmitState();
                 });
             }
 
-            if (partSeller) {
-                partSeller.addEventListener('change', function () {
-                    syncSellerCompanyFields();
+            if (isPartSellerCheckbox) {
+                isPartSellerCheckbox.addEventListener('change', function () {
+                    toggleCompanyFields();
                     syncSubmitState();
                 });
             }
 
             document.addEventListener('input', function (e) {
-                var ids = ['vehicle_company_name', 'vehicle_company_address', 'part_company_name', 'part_company_address'];
-                if (e && e.target && ids.indexOf(e.target.id) !== -1) {
-                    syncSubmitState();
-                }
+                syncSubmitState();
+            });
+            document.addEventListener('change', function (e) {
+                syncSubmitState();
             });
 
-            syncDealerFields();
-            syncSellerCompanyFields();
             syncSubmitState();
 
             $("#password-field").on("click",function(e){

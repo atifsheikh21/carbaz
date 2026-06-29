@@ -19,43 +19,128 @@
         }
         .listing-detail-hero__grid{
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            grid-template-columns: 560px 1fr;
+            gap: 120px;
             align-items: start;
         }
+        .separatorss {
+    display: inline-block;
+    width: 4px;
+    height: 23px;
+    background: #b60304;
+    vertical-align: sub;
+    margin: 0 8px;
+}
+.separatorsss {
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background: #b60304;
+    vertical-align: sub;
+    margin: 0 8px;
+}
         .listing-detail-hero__media{
-            max-width: 100%;
+            max-width: 560px;
             display: flex;
             flex-direction: column;
-            margin-top: 0 !important;
+            margin-top: 50px !important;
+            min-width: 0;
         }
         .listing-detail-hero .inventory-details-slick-for{
             margin: 0;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            position: relative;
+        }
+        .listing-detail-hero .inventory-details-slick-for .slick-list,
+        .listing-detail-hero .inventory-details-slick-nav .slick-list{
+            overflow: hidden;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .listing-detail-hero .inventory-details-slick-for .slick-list,
+        .listing-detail-hero .inventory-details-slick-for .slick-track,
+        .listing-detail-hero .inventory-details-slick-for .slick-slide{
+            height: 360px !important;
+        }
+        .listing-detail-hero .inventory-details-slick-for .slick-slide > div{
+            height: 100%;
+        }
+        .listing-detail-hero .inventory-details-slick-for .slick-track,
+        .listing-detail-hero .inventory-details-slick-nav .slick-track{
+            max-width: 100% !important;
+        }
+        .listing-detail-hero .inventory-details-slick-for .slick-slide,
+        .listing-detail-hero .inventory-details-slick-nav .slick-slide{
+            margin: 0 !important;
         }
         .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img{
-            height: 430px;
+            height: 360px;
             display: flex !important;
             align-items: center;
             justify-content: center;
             border-radius: 16px;
-            border: 8px solid #2f2f2f;
+            border: 6px solid #2f2f2f;
             background: #f4f4f4;
             overflow: hidden;
+            margin: 0 !important;
+            box-sizing: border-box;
+            width: 100%;
         }
         .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img img{
             width: 100%;
             height: 100%;
             max-height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             border-radius: 0;
             border: 0;
             background: transparent;
+        }
+        .listing-detail-hero .inventory-details-slick-arrow{
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border: 0;
+            border-radius: 10px;
+            background: rgba(0,0,0,.45);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+        .listing-detail-hero .inventory-details-slick-prev{ left: 18px; }
+        .listing-detail-hero .inventory-details-slick-next{ right: 18px; }
+        .listing-detail-hero .inventory-details-slick-arrow span{
+            font-size: 30px;
+            line-height: 1;
+            margin-top: -2px;
         }
         .listing-detail-hero .inventory-details-slick-nav{
             margin-top: 18px;
         }
         .listing-detail-hero__mobile-image{
             display: none;
+        }
+
+        .js-cp-open-lightbox{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+        .lp-detail__media{
+            width: 100%;
+            height: 260px;
+            overflow: hidden;
+            border-radius: 16px;
+            background: #f4f4f4;
+            position: relative;
+        }
+        .lp-detail__media img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
         .listing-detail-hero .inventory-details-slick-nav .inventory-details-slick-img img{
             border-radius: 10px;
@@ -67,37 +152,42 @@
             object-fit: cover;
         }
         .listing-detail-hero__right{
-            min-height: 520px;
+            min-height: 640px;
             display: flex;
             flex-direction: column;
         }
         .listing-detail-hero__left-info{
-            margin-top: auto;
+            margin-top: 50px;
         }
         .listing-detail-hero__left-title{
-            font-size: 34px;
+            font-size: 30px;
             line-height: 1.08;
-            font-weight: 900;
+            font-weight: 700;
             color: #111;
             letter-spacing: -0.02em;
             margin-top: 20px;
             margin-bottom: 8px;
+            text-transform: uppercase;
         }
         .listing-detail-hero__left-subtitle{
             color: rgba(17,17,17,.65);
             font-size: 13px;
             margin-bottom: 14px;
         }
+        .listing-detail-hero__left-subtitle a{ color:#867b85 !important; text-decoration:none; }
         .listing-detail-hero__meta{
             display: flex;
             align-items: center;
             gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 24px;
+            margin-bottom: 0px;
+            margin-top: 100px;
         }
         .listing-detail-hero__meta-type{
-            font-size: 12px;
+            font-size: 22px;
             font-weight: 800;
+            text-transform: uppercase;
+                margin-right: 3px;
         }
         .listing-detail-hero__meta-type--dealer{
             color: #b60304;
@@ -110,61 +200,114 @@
         }
         .listing-detail-hero__meta-name{
             color: #23a549;
-            font-weight: 800;
+            font-size: 22px;
+            font-weight: 400;
+            margin-left: 6px;
+            text-transform: uppercase;
+            margin-left: 4px;
         }
         .listing-detail-hero__actions{
-            display: flex;
-            flex-wrap: nowrap;
-            border: 2px solid #2b2b2b;
-            border-radius: 999px;
-            overflow: hidden;
-            background: #e3e5ea;
-            gap: 0;
-            justify-content: center;
+           display: flex;
+    border: 2px solid #2b2b2b;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #e3e5ea;
+    width: 90%;
+    gap: 0;
         }
         .listing-detail-hero__actions a{
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 13px 16px;
+            padding: 0px 0px;
             font-weight: 800;
             letter-spacing: 0.08em;
-            background: #7cb4ff;
-            color: white;
+            background: transparent;
+            color: #111;
             line-height: 1;
             flex: 1 1 0;
             min-width: 0;
             box-sizing: border-box;
-            border-radius: 15px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             text-decoration: none;
             text-transform: uppercase;
+            margin-left: -15px;
+    border-radius: 8px;
         }
-        .listing-detail-hero__actions-city{
+        .listing-detail-hero__actions a.action-report{
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+        .lp-detail__report-wrap{
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
+        .lp-detail__report-link{
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            padding: 11px 20px;
-            border-right: 1px solid #2b2b2b;
-            color: #fff;
-            background: #7cb4ff;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            flex: 0 0 auto;
-            white-space: nowrap;
+            justify-content: flex-start;
+            padding: 0;
+            background: transparent;
+            color: #6c6c6c;
+            border-radius: 0;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            line-height: 1;
+            gap: 8px;
+        }
+        .lp-detail__report-link:hover{
+            color: #111;
+            background: transparent;
+        }
+
+        .lp-detail__divider{
+            width: 100%;
+            border-top: 1px solid #e2e2e2;
+            margin: 14px 0;
+            border-bottom: 1px solid black;
+        }
+        .listing-detail-hero__actions-city{
+            padding: 10px 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    background: #00AEEF;
+    color: white;
+    line-height: 1;
+    flex: 1 1 0;
+    min-width: 0;
+    box-sizing: border-box;
+    border-radius: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
         }
         .listing-detail-hero__keyinfo{
-            margin-top: 22px;
-            display: grid;
-            gap: 15px 28px;
-            color: #474749;
-            font-weight: 600;
-            text-transform: uppercase;
-            justify-content: flex-start;
+           margin-top: 157px;
+    display: grid;
+    gap: 15px 28px;
+    color: #474749;
+    font-weight: 600;
+    justify-content: flex-start;
+    max-width: 340px;
+    margin-left: 60px;
+        }
+        .listing-detail-hero__keyinfo strong{
+            font-weight: 900;
+            color: #2b2b2b;
+        }
+        .listing-detail-hero__keyinfo div{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: none;
         }
         .listing-detail-hero__keyinfo .kicon{
             width: 28px;
@@ -179,14 +322,20 @@
         }
         .listing-detail-hero__price{
             margin-top: 40px;
-            font-size: 55px;
-            font-weight: 700;
-            color: #2b2b2b;
-            letter-spacing: -0.02em;
-            text-align: left;
+    font-size: 50px;
+    font-weight: 700;
+    color: #2b2b2b;
+    letter-spacing: -0.02em;
+    text-align: end;
+    /* display: flex; */
+    align-items: center;
+    gap: 18px;
+    margin-right: 110px;
+    /* flex-wrap: wrap; */
+
         }
         .listing-detail-description{
-            padding: 60px 0;
+            padding: 105px 0;
             background: #e9e6e3;
         }
         .listing-detail-description .container{
@@ -205,6 +354,13 @@
             line-height: 1.65;
             font-size: 16px;
         }
+        .listing-detail-hero__right{
+            display: flex;
+            flex-direction: column;
+        }
+        .listing-detail-hero__spacer{
+            flex: 1 1 auto;
+        }
         @media (max-width: 1199.98px){
             .listing-detail-hero__grid{grid-template-columns: 520px 1fr;gap: 60px;}
         }
@@ -212,11 +368,59 @@
             .listing-detail-hero__grid{grid-template-columns: 1fr;gap: 30px;}
             .listing-detail-hero__media{max-width: 100%;margin-top:0 !important;}
             .listing-detail-hero__right{min-height: 0;}
+            .listing-detail-hero__spacer{display:none;}
             .listing-detail-hero__keyinfo{margin-top: 35px;}
             .listing-detail-hero__price{margin-top: 35px;}
             .listing-detail-hero__mobile-image{display:block;margin-bottom:14px;}
             .inventory-details-slick-for{display:none;}
             .inventory-details-slick-nav{display:none;}
+            .listing-detail-hero__actions{width: 100%;}
+        }
+
+        .listing-detail-hero__keyinfo{
+         margin-top: 122px;
+    display: grid;
+    gap: 15px 28px;
+    color: #474749;
+    font-weight: 600;
+    justify-content: center;
+    max-width: 340px;
+        }
+
+        .listing-detail-hero__keyinfo strong{
+            font-weight: 400;
+            color: #2b2b2b;
+        }
+
+        .listing-detail-hero__keyinfo div{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: none;
+        }
+
+        .listing-detail-hero__price{
+           margin-top: 40px;
+    font-size: 55px;
+    font-weight: 700;
+    color: #2b2b2b;
+    letter-spacing: -0.02em;
+    text-align: end;
+    /* display: flex; */
+    align-items: center;
+    gap: 18px;
+    margin-right: 110px;
+    /* flex-wrap: wrap; */
+
+        }
+
+        .listing-detail-hero__warranty{
+            border: 0px solid #c9c9c9;
+            padding: 0px 0px;
+            font-size: 13px;
+            line-height: 1;
+            color: #666;
+            margin-top: -18px;
         }
 
         .cd-lightbox{
@@ -228,21 +432,24 @@
             width: 100vw !important;
             height: 100vh !important;
             z-index: 9999999 !important;
-            display: none;
             overflow: hidden;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .2s ease;
         }
-        .cd-lightbox.is-open{ display: block; }
+        .cd-lightbox.is-open{ visibility: visible; opacity: 1; pointer-events: auto; }
         .cd-lightbox__backdrop{
             position: absolute;
             inset: 0;
             background: rgba(0,0,0,.86);
             backdrop-filter: blur(6px);
+            z-index: 0;
         }
         .cd-lightbox__dialog{
-            position: relative;
+            position: absolute;
+            inset: 0;
             z-index: 1;
-            width: 100%;
-            height: 100%;
             display: flex;
             flex-direction: column;
         }
@@ -269,32 +476,45 @@
             color: #fff;
             font-size: 24px;
             line-height: 1;
+            cursor: pointer;
         }
         .cd-lightbox__main{
-            flex: 1 1 auto;
+            flex: 1;
             min-height: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
             padding: 0 16px;
         }
         .cd-lightbox__swiper{
-            width: min(1100px, 100%);
+            width: 100%;
+            max-width: 1100px;
             height: 100%;
+            margin: 0 auto;
         }
-        .cd-lightbox__swiper .swiper-slide,
-        .cd-lightbox__swiper .swiper-zoom-container{
+        .cd-lightbox__swiper .swiper-wrapper{height:100%;}
+        .cd-lightbox__swiper .swiper-slide{
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
+            overflow: hidden;
             height: 100%;
         }
-        .cd-lightbox__swiper img{
+        .cd-lightbox__swiper .swiper-slide img{
+            display: block;
             width: 100%;
             height: 100%;
             object-fit: contain;
-            display: block;
+            -webkit-transform: none;
+            transform: none;
+            will-change: auto;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* iOS WebKit: disable backdrop blur */
+        @supports (-webkit-touch-callout: none){
+            .cd-lightbox__backdrop{backdrop-filter:none;}
         }
         .cd-lightbox__thumbs{
             flex: 0 0 auto;
@@ -330,6 +550,46 @@
         @media (max-width: 767.98px){
             .cd-lightbox__main{ padding: 0 10px; }
             .cd-lightbox__thumbs img{ height: 56px; }
+            #lpContactPartSeller{
+                height: auto;
+                max-height: 70vh;
+            }
+            #lpContactPartSeller .offcanvas-body{
+                overflow-y: auto;
+                padding-top: 8px;
+                padding-bottom: 96px;
+            }
+            #lpContactPartSeller .lp-detail__actions{
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            #lpContactPartSeller .lp-detail__action{
+                min-height: 48px;
+                width: 100%;
+                white-space: normal;
+                text-align: center;
+            }
+        }
+        .cd-lightbox__bottombar{
+            flex: 0 0 auto;
+            padding: 12px 16px;
+            background: #fff;
+            border-top: 1px solid #ddd;
+        }
+        .cd-lightbox__bottombar .lp-detail__price-row{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cd-lightbox__bottombar .lp-detail__label{
+            font-size: 14px;
+            color: #666;
+        }
+        .cd-lightbox__bottombar .lp-detail__price{
+            font-size: 18px;
+            font-weight: 700;
+            color: #2b2b2b;
         }
     </style>
 @endpush
@@ -341,25 +601,26 @@
             ?? $car_part?->translations?->firstWhere('lang_code', 'en');
         $partTitle = html_decode($partTranslation?->title);
         $seller = $car_part?->agent;
-        $isDealerSeller = (bool) ($seller?->is_dealer ?? false);
+        $__chatUserId = (int) ($seller?->id ?? ($car_part->agent_id ?? 0));
+        $dealerFlagRaw = $seller?->is_dealer ?? null;
+        $dealerFlagNorm = strtolower(trim((string) $dealerFlagRaw));
+        $isDealerSeller = in_array($dealerFlagNorm, ['1', 'true', 'yes'], true);
         $isPartSeller = (bool) ($seller?->is_part_seller ?? false);
         $sellerDisplayName = $isDealerSeller && $isPartSeller && !empty($seller?->part_company_name)
             ? html_decode($seller?->part_company_name)
             : html_decode($seller?->name);
         $sellerTypeLabel = $isDealerSeller
-            ? ($isPartSeller ? 'Vehicle Part Seller/Accessories' : 'Dealer')
+            ? ($isPartSeller ? 'Part Seller' : 'Dealer')
             : 'Private';
         $partAddress = $isDealerSeller && $isPartSeller
             ? html_decode($seller?->part_company_address)
             : html_decode($partTranslation?->address);
         $partCity = null;
-        if (!empty($partAddress)) {
-            $addressParts = array_values(array_filter(array_map('trim', explode(',', $partAddress))));
-            if (count($addressParts) >= 2) {
-                $partCity = $addressParts[1];
-            } elseif (count($addressParts) === 1) {
-                $partCity = $addressParts[0];
-            }
+        if (!empty($car_part?->city?->name)) {
+            $partCity = (string) $car_part->city->name;
+        }
+        if (!$partCity && !empty($seller?->city?->name)) {
+            $partCity = (string) $seller->city->name;
         }
         $partDescription = $partTranslation?->description;
         $rawPrice = $car_part->offer_price ?: $car_part->regular_price;
@@ -381,7 +642,11 @@
 
         $__sellerPhoneRaw = (string) ($seller?->phone ?? '');
         $__sellerPhone = preg_replace('/\D+/', '', $__sellerPhoneRaw);
+        // Normalize for wa.me: if starts with 0, replace with 353 (Ireland default)
         $__whatsAppPhone = $__sellerPhone;
+        if ($__whatsAppPhone !== '' && str_starts_with($__whatsAppPhone, '0')) {
+            $__whatsAppPhone = '353' . substr($__whatsAppPhone, 1);
+        }
         $__picsCount = is_countable($partImages) ? count($partImages) : 0;
     @endphp
 
@@ -392,7 +657,6 @@
                 <input class="lp-mobile__filter-input" type="text" name="search" value="{{ request()->get('search') }}" placeholder="search car & part by key word">
             </form>
         </div>
-
         <div class="offcanvas offcanvas-start" tabindex="-1" id="lpMobileFilterPartDetail" aria-labelledby="lpMobileFilterPartDetailLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="lpMobileFilterPartDetailLabel">Filter</h5>
@@ -414,20 +678,56 @@
 
         <div class="lp-mobile-card lp-detail-card">
             <div class="lp-mobile-card__top">
-                <div class="lp-mobile-card__top-left">{{ strtoupper(trim((string) $sellerDisplayName)) ?: ' ' }}</div>
-                <div class="lp-mobile-card__top-right">{{ !empty($car_part?->brand?->name) ? strtoupper(trim((string) html_decode($car_part->brand->name))) : ' ' }}</div>
+                <div class="lp-mobile-card__top-left">
+                    @if(!empty($seller?->username))
+                        <a href="{{ route('dealer', $seller->username) }}" class="lp-detail__seller">
+                            <span class="lp-detail__seller-name" style="color: white;">{{ strtoupper(trim((string) $sellerDisplayName)) ?: ' ' }}</span>
+                        </a>
+                    @else
+                        <span class="lp-detail__seller">
+                            <span class="lp-detail__seller-name">{{ strtoupper(trim((string) $sellerDisplayName)) ?: ' ' }}</span>
+                        </span>
+                    @endif
+                </div>
+                <div class="lp-mobile-card__top-right">{{ !empty($partCity) ? strtoupper(trim((string) $partCity)) : ' ' }}</div>
             </div>
 
             <div class="lp-detail__media js-cp-open-lightbox" data-cp-index="0" role="button" tabindex="0">
                 @if($firstImage)
                     <img class="lp-detail__main-img" src="{{ getImageOrPlaceholder($firstImage, '920x636') }}" alt="img">
-                @else
+                @elseif(!empty($car_part->thumb_image))
                     <img class="lp-detail__main-img" src="{{ getImageOrPlaceholder($car_part->thumb_image, '920x636') }}" alt="img">
+                @else
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#e8e8e8;color:#999;font-size:14px;font-weight:600;letter-spacing:0.5px;">Image Coming Soon</div>
                 @endif
 
-                @if($__picsCount > 0)
-                    <div class="lp-detail__pics">+{{ $__picsCount }} PIC</div>
-                @endif
+                <div class="lp-detail__heart">
+                    @guest('web')
+                        <a href="javascript:;" class="before_auth_wishlist" aria-label="wishlist">
+                            <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z" stroke-width="1.3" stroke-linejoin="round"></path>
+                            </svg>
+                        </a>
+                    @else
+                        @php
+                            $isInWishlist = App\Models\Wishlist::where('car_part_id', $car_part->id)
+                                ->where('user_id', Auth::user()->id)
+                                ->first();
+                        @endphp
+                        <a href="{{ route('user.add-car-part-to-wishlist', $car_part->id) }}" class="{{ $isInWishlist ? 'active' : '' }}" aria-label="wishlist">
+                            <svg width="18" height="16" viewBox="0 0 18 16" fill="{{ $isInWishlist ? 'currentColor' : 'none' }}" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    @endguest
+                </div>
+
+                <button type="button" class="ad-share-btn js-ad-share-btn" data-share-url="{{ url()->current() }}" data-share-title="{{ $partTitle ?: config('app.name') }}" aria-label="Share ad">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .24.04.47.09.7L8.04 9.81a3 3 0 1 0 0 4.38l7.12 4.18c-.05.2-.08.41-.08.63a2.92 2.92 0 1 0 2.92-2.92Z"/>
+                    </svg>
+                    <span>Share</span>
+                </button>
             </div>
 
             <div class="lp-detail__thumbs">
@@ -449,22 +749,49 @@
 
             <div class="lp-detail__body">
                 <div class="lp-detail__title">{{ strtoupper(trim((string) $partTitle)) }}</div>
+                
 
                 <div class="lp-detail__specs">
-                    @if(!empty($car_part?->brand?->name))<div><span>brand</span>{{ html_decode($car_part->brand->name) }}</div>@endif
-                    @if(!empty($car_part->condition))<div><span>condition</span>{{ html_decode($car_part->condition) }}</div>@endif
-                    @if(!empty($car_part->part_number))<div><span>part #</span>{{ html_decode($car_part->part_number) }}</div>@endif
-                    @if(!empty($car_part->compatibility))<div><span>compatibility</span>{{ html_decode($car_part->compatibility) }}</div>@endif
+                    @php
+                        $__fromY = $car_part->from_year ?? null;
+                        $__toY = $car_part->to_year ?? null;
+                        $__compatYears = '';
+                        if (!empty($__fromY) && !empty($__toY)) {
+                            $__compatYears = $__fromY . '-' . $__toY;
+                        } elseif (!empty($__fromY)) {
+                            $__compatYears = (string) $__fromY;
+                        } elseif (!empty($__toY)) {
+                            $__compatYears = (string) $__toY;
+                        }
+                    @endphp
+                    @if(!empty($car_part?->brand?->name))<div>
+                        <span class="meta-label" style="font-weight: 400 !important;">Brand:</span><span class="meta-value">{{ html_decode($car_part->brand->name) }}{{ !empty($car_part?->car_model) ? ' ' . html_decode($car_part?->car_model) : '' }}</span></div>
+                    @endif
+                    @if(!empty($car_part->condition))<div>
+                       <span class="meta-label" style="font-weight: 400 !important;">Condition:</span><span class="meta-value">{{ html_decode($car_part->condition) }}</span></div>
+                    @endif
+                    @if(!empty($car_part->part_number))<div>
+                        <span class="meta-label" style="font-weight: 400 !important;">Part Number:</span><span class="meta-value">{{ html_decode($car_part->part_number) }}</span></div>
+                    @endif
+                    @if(!empty($__compatYears))<div>
+                        <span class="meta-label" style="font-weight: 400 !important;">Compatible:</span><span class="meta-value">{{ html_decode($__compatYears) }}</span></div>
+                    @endif
                 </div>
 
                 <div class="lp-detail__price-row">
                     <div class="lp-detail__label">
                         @if(!empty($seller?->username))
-                            <a href="{{ route('dealer', $seller->username) }}" style="text-decoration:none;color:inherit;">
-                                {{ $sellerTypeLabel }} | {{ $sellerDisplayName }}
+                            <a href="{{ route('dealer', $seller->username) }}" class="lp-detail__seller">
+                                <span class="lp-detail__seller-type">{!! $isDealerSeller && $isPartSeller ? 'PART SELLER' : strtoupper($sellerTypeLabel) !!}</span>
+                                <span class="separatorsss"></span>
+                                <span class="lp-detail__seller-name" style="color:green;">{{ strtoupper(trim((string) $sellerDisplayName)) ?: ' ' }}</span>
                             </a>
                         @else
-                            {{ $sellerTypeLabel }} | {{ $sellerDisplayName }}
+                            <span class="lp-detail__seller">
+                                <span class="lp-detail__seller-type">{!! $isDealerSeller && $isPartSeller ? 'PART SELLER' : strtoupper($sellerTypeLabel) !!}</span>
+                                <span class="lp-detail__seller-sep">|</span>
+                                <span class="lp-detail__seller-name">{{ strtoupper(trim((string) $sellerDisplayName)) ?: ' ' }}</span>
+                            </span>
                         @endif
                     </div>
                     <div class="lp-detail__price">
@@ -472,6 +799,20 @@
                             €{{ number_format($numericPrice, 0, '.', ',') }}
                         @else
                             {{ currency($rawPrice) }}
+                        @endif
+
+                        @if($isDealerSeller && !empty($car_part->warranty_months))
+                            @php
+                                $__wm = (int) $car_part->warranty_months;
+                                $__wLabel = '';
+                                if ($__wm > 0 && $__wm % 12 === 0) {
+                                    $__years = (int) ($__wm / 12);
+                                    $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty';
+                                } else {
+                                    $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty';
+                                }
+                            @endphp
+                            <div class="lp-detail__warranty">{{ $__wLabel }}</div>
                         @endif
                     </div>
                 </div>
@@ -481,11 +822,27 @@
                     <div class="lp-detail__section-body">
                         {!! clean($partDescription) !!}
                     </div>
+
+                    <div class="lp-detail__divider"></div>
+
+                    <div class="lp-detail__report-wrap d-block d-md-none">
+                        @auth('web')
+                            <a class="lp-detail__report-link" href="#" data-bs-toggle="modal" data-bs-target="#reportCarPartAdModal">
+                                <span aria-hidden="true">⚑</span>
+                                <span>Report Ad</span>
+                            </a>
+                        @else
+                            <a class="lp-detail__report-link" href="{{ route('login') }}">
+                                <span aria-hidden="true">⚑</span>
+                                <span>Report Ad</span>
+                            </a>
+                        @endauth
+                    </div>
                 </div>
 
                 @if($partAddress)
                     <div class="lp-detail__section">
-                        <div class="lp-detail__section-title">{{ $sellerTypeLabel }} address</div>
+                        <div class="lp-detail__section-title">Vehicle parts/acceceries trader address</div>
                         <div class="lp-detail__section-body">{{ $partAddress }}</div>
                     </div>
                 @endif
@@ -506,21 +863,50 @@
                     @php
                         $__waText = rawurlencode('Hi, I am interested in your car part ad: ' . (string) $partTitle);
                     @endphp
+                    <a class="lp-detail__action" href="{{ $__whatsAppPhone ? 'https://wa.me/'.$__whatsAppPhone.'?text='.$__waText : '#' }}" target="_blank">whatsapp chat</a>
                     @auth('web')
-                        <a class="lp-detail__action" href="{{ $__whatsAppPhone ? 'https://wa.me/'.$__whatsAppPhone.'?text='.$__waText : '#' }}" target="_blank">whatsapp chat</a>
-                        <a class="lp-detail__action" href="{{ $__sellerPhoneRaw ? 'tel:'.html_decode($__sellerPhoneRaw) : '#' }}">call</a>
-                        <a class="lp-detail__action" href="{{ !empty($seller?->email) ? 'mailto:'.html_decode($seller?->email) : '#' }}">email</a>
+                        @if($__chatUserId > 0)
+                            <a class="lp-detail__action js-chat-coming-soon" href="javascript:;">chat</a>
+                        @endif
                     @else
-                        <a class="lp-detail__action" href="{{ route('login') }}">whatsapp chat</a>
-                        <a class="lp-detail__action" href="{{ route('login') }}">call</a>
-                        <a class="lp-detail__action" href="{{ route('login') }}">email</a>
+                        <a class="lp-detail__action" href="{{ route('login') }}">chat</a>
                     @endauth
+                    <a class="lp-detail__action" href="{{ $__sellerPhoneRaw ? 'tel:'.html_decode($__sellerPhoneRaw) : '#' }}">call</a>
+                    <a class="lp-detail__action" href="{{ !empty($seller?->email) ? 'mailto:'.html_decode($seller?->email) : '#' }}">email</a>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="d-none d-md-block">
+        <style>
+            .cd-lightbox__infobar{
+                flex: 0 0 auto;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 10px 16px;
+                color: #fff;
+                background: rgba(0,0,0,.35);
+                border-top: 1px solid rgba(255,255,255,.10);
+            }
+            .cd-lightbox__meta{
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px 14px;
+                align-items: center;
+                font-size: 12px;
+                opacity: .95;
+            }
+            .cd-lightbox__meta span{ white-space: nowrap; }
+            .cd-lightbox__price{
+                margin-left: auto;
+                font-weight: 800;
+                font-size: 16px;
+                letter-spacing: .02em;
+                white-space: nowrap;
+            }
+        </style>
         <section class="inner-banner">
             <div class="inner-banner-img" style=" background-image: url({{ getImageOrPlaceholder($breadcrumb,'1905x300') }}) "></div>
             <div class="container">
@@ -547,63 +933,49 @@
                             <div class="listing-detail-hero__mobile-image">
                                 <img src="{{ getImageOrPlaceholder($firstImage, '920x636') }}" alt="img">
                             </div>
+                        @elseif(!empty($car_part->thumb_image))
+                            <div class="listing-detail-hero__mobile-image">
+                                <img src="{{ getImageOrPlaceholder($car_part->thumb_image, '920x636') }}" alt="img">
+                            </div>
+                        @else
+                            <div class="listing-detail-hero__mobile-image" style="background:#e8e8e8;display:flex;align-items:center;justify-content:center;color:#999;font-size:14px;font-weight:600;">Image Coming Soon</div>
                         @endif
 
-                        <div class="inventory-details-slick-for">
-                            @foreach ($partImages as $img)
-                                <div class="inventory-details-slick-img js-cp-open-lightbox" data-cp-index="{{ $loop->index }}" role="button" tabindex="0">
-                                    <img src="{{ getImageOrPlaceholder($img, '920x636') }}" alt="img">
-                                </div>
-                            @endforeach
-                        </div>
+                        @php
+                            $__imgUrl = function ($path) {
+                                $path = trim((string) $path);
+                                if ($path === '') return '';
+                                if (preg_match('~^https?://~i', $path)) return $path;
+                                if (env('FILESYSTEM_DISK') === 's3') {
+                                    try {
+                                        return \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
+                                    } catch (\Throwable $e) {
+                                    }
+                                }
+                                return asset($path);
+                            };
+                        @endphp
 
-                        <div class="inventory-details-slick-nav">
-                            @foreach ($partImages as $img)
-                                <div class="inventory-details-slick-img js-cp-open-lightbox" data-cp-index="{{ $loop->index }}" role="button" tabindex="0">
-                                    <img src="{{ getImageOrPlaceholder($img, '216x148') }}" alt="img">
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="cd-lightbox" id="cpLightbox" aria-hidden="true">
-                            <div class="cd-lightbox__backdrop" data-cp-close></div>
-                            <div class="cd-lightbox__dialog" role="dialog" aria-modal="true" aria-label="Gallery">
-                                <div class="cd-lightbox__topbar">
-                                    <div class="cd-lightbox__counter" id="cpLightboxCounter">1 / 1</div>
-                                    <button class="cd-lightbox__close" type="button" aria-label="Close" data-cp-close>×</button>
-                                </div>
-                                <div class="cd-lightbox__main">
-                                    <div class="swiper cd-lightbox__swiper" id="cpLightboxMain">
-                                        <div class="swiper-wrapper">
-                                            @foreach ($partImages as $img)
-                                                <div class="swiper-slide" data-cp-type="image">
-                                                    <div class="swiper-zoom-container">
-                                                        <img loading="lazy" src="{{ getImageOrPlaceholder($img, '1905x1080') }}" alt="img">
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                        <div class="swiper-button-prev"></div>
-                                        <div class="swiper-button-next"></div>
-                                    </div>
-                                </div>
-                                <div class="cd-lightbox__thumbs">
-                                    <div class="swiper" id="cpLightboxThumbs">
-                                        <div class="swiper-wrapper">
-                                            @foreach ($partImages as $img)
-                                                <div class="swiper-slide">
-                                                    <img loading="lazy" src="{{ getImageOrPlaceholder($img, '216x148') }}" alt="thumb">
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @php
+                            $isCarPartInWishlist = false;
+                            if (Auth::guard('web')->check()) {
+                                $isCarPartInWishlist = App\Models\Wishlist::where('car_part_id', $car_part->id)
+                                    ->where('user_id', Auth::user()->id)
+                                    ->first();
+                            }
+                        @endphp
+                        @include('partials.detail_gallery', [
+                            'images' => $partImages,
+                            'idPrefix' => 'carpart',
+                            '__imgUrl' => $__imgUrl,
+                            'wishlistType' => 'car_part',
+                            'wishlistItemId' => $car_part->id,
+                            'isInWishlist' => $isCarPartInWishlist,
+                        ])
 
                         <div class="listing-detail-hero__left-info">
                             <h2 class="listing-detail-hero__left-title">{{ $partTitle }}</h2>
-                            <div class="listing-detail-hero__left-subtitle">{{ __('Go to motorcheck for history check') }}</div>
+                            
 
                             <div class="listing-detail-hero__meta">
                                 @if(!empty($seller?->username))
@@ -611,7 +983,7 @@
                                         <span class="listing-detail-hero__meta-type {{ $isDealerSeller ? 'listing-detail-hero__meta-type--dealer' : 'listing-detail-hero__meta-type--private' }}">
                                             {{ $sellerTypeLabel }}
                                         </span>
-                                        <span class="listing-detail-hero__meta-sep">|</span>
+                                        <span class="separatorss"></span>
                                         <span class="listing-detail-hero__meta-name">{{ $sellerDisplayName }}</span>
                                     </a>
                                 @else
@@ -631,42 +1003,71 @@
                                 <span class="listing-detail-hero__actions-city">{{ strtoupper($partCity) }}</span>
                             @endif
                             @auth('web')
-                                @if(!empty($seller?->email))
-                                    <a class="action-email" href="mailto:{{ html_decode($seller->email) }}">{{ __('Email') }}</a>
+                                @if($__chatUserId > 0)
+                                    <a class="action-chat js-chat-coming-soon" style="background: #b9bcc3;" href="javascript:;">Chat</a>
                                 @endif
-                                @if(!empty($seller?->phone))
-                                    <a class="action-call" href="tel:{{ html_decode($seller->phone) }}">{{ __('Call') }}</a>
-                                @endif
-                                @if(!empty($seller?->id))
-                                    <a class="action-chat" href="{{ route('user.messages.start', $seller->id) }}">Chat</a>
-                                @endif
+
                             @else
-                                <a class="action-email" href="{{ route('login') }}">{{ __('Email') }}</a>
-                                <a class="action-call" href="{{ route('login') }}">{{ __('Call') }}</a>
-                                <a class="action-chat" href="{{ route('login') }}">Chat</a>
+                                <a class="action-chat" style="background: #b9bcc3;" href="{{ route('login') }}">Chat</a>
+
                             @endauth
+                            @if(!empty($seller?->email))
+                                <a class="action-email" style="background: #c8c8c8;" href="mailto:{{ html_decode($seller->email) }}">{{ __('Email') }}</a>
+                            @endif
+                            @if(!empty($seller?->phone))
+                                <a class="action-call" style="background: ##d2cdcd;" href="tel:{{ html_decode($seller->phone) }}">{{ __('Call') }}</a>
+                            @endif
+
                         </div>
 
                         <div class="listing-detail-hero__keyinfo">
-                            @if(!empty($car_part?->brand?->name))
-                                <div><span class="kicon"><i class="fa-solid fa-tag"></i></span>{{ html_decode($car_part->brand->name) }}</div>
-                            @endif
-                            @if(!empty($car_part->condition))
-                                <div><span class="kicon"><i class="fa-regular fa-circle-check"></i></span>{{ html_decode($car_part->condition) }}</div>
-                            @endif
-                            @if(!empty($car_part->part_number))
-                                <div><span class="kicon"><i class="fa-solid fa-hashtag"></i></span>{{ html_decode($car_part->part_number) }}</div>
-                            @endif
-                            @if(!empty($car_part->compatibility))
-                                <div><span class="kicon"><i class="fa-solid fa-link"></i></span>{{ html_decode($car_part->compatibility) }}</div>
-                            @endif
+                            @php
+                                $__fromY = $car_part->from_year ?? null;
+                                $__toY = $car_part->to_year ?? null;
+                                $__compatYears = '';
+                                if (!empty($__fromY) && !empty($__toY)) {
+                                    $__compatYears = $__fromY . '-' . $__toY;
+                                } elseif (!empty($__fromY)) {
+                                    $__compatYears = (string) $__fromY;
+                                } elseif (!empty($__toY)) {
+                                    $__compatYears = (string) $__toY;
+                                }
+                            @endphp
+                            @if(!empty($car_part?->brand?->name))<div>
+                        <span class="meta-label" style="font-weight: 400 !important;">Brand:</span><span class="meta-value">{{ html_decode($car_part->brand->name) }}{{ !empty($car_part?->car_model) ? ' ' . html_decode($car_part?->car_model) : '' }}</span></div>
+                    @endif
+                    @if(!empty($car_part->condition))<div>
+                       <span class="meta-label" style="font-weight: 400 !important;">Condition:</span><span class="meta-value">{{ html_decode($car_part->condition) }}</span></div>
+                    @endif
+                    @if(!empty($car_part->part_number))<div>
+                        <span class="meta-label" style="font-weight: 400 !important;">Part Number:</span><span class="meta-value">{{ html_decode($car_part->part_number) }}</span></div>
+                    @endif
+                    @if(!empty($__compatYears))<div>
+                        <span class="meta-label" style="font-weight: 400 !important;">Compatible:</span><span class="meta-value">{{ html_decode($__compatYears) }}</span></div>
+                    @endif
                         </div>
+
+                        <div class="listing-detail-hero__spacer"></div>
 
                         <div class="listing-detail-hero__price">
                             @if (!is_null($numericPrice))
-                                €{{ number_format($numericPrice, 0, '.', ',') }}
+                                <span>€{{ number_format($numericPrice, 0, '.', ',') }}</span>
                             @else
-                                {{ currency($rawPrice) }}
+                                <span>{{ currency($rawPrice) }}</span>
+                            @endif
+
+                            @if($isDealerSeller && !empty($car_part->warranty_months))
+                                @php
+                                    $__wm = (int) $car_part->warranty_months;
+                                    $__wLabel = '';
+                                    if ($__wm > 0 && $__wm % 12 === 0) {
+                                        $__years = (int) ($__wm / 12);
+                                        $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty';
+                                    } else {
+                                        $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty';
+                                    }
+                                @endphp
+                                <div class="listing-detail-hero__warranty">{{ $__wLabel }}</div>
                             @endif
                         </div>
                     </div>
@@ -676,146 +1077,195 @@
 
         <section class="listing-detail-description">
             <div class="container">
-                @if($partAddress)
-                    <div>
-                        <div class="listing-detail-description__title">{{ __('translate.Locations') }}</div>
-                        <div class="listing-detail-description__body">{{ $partAddress }}</div>
-                    </div>
-                @endif
-
-                <div style="margin-top: 24px;">
+                <div>
                     <div class="listing-detail-description__title">{{ __('translate.Description') }}</div>
                     <div class="listing-detail-description__body">
                         {!! clean($partDescription) !!}
                     </div>
                 </div>
+
+                
+
+                @if($partAddress)
+                    <div style="margin-top: 50px;">
+                        <div class="listing-detail-description__title">{{ __('Vehicle parts/acceceries trader address') }}</div>
+                        <div class="listing-detail-description__body">{{ $partAddress }}</div>
+                    </div>
+                @endif
+                
+                <div class="lp-detail__divider"></div>
+
+                <div class="lp-detail__report-wrap d-none d-md-block" style="margin-top: 30px;">
+                    @auth('web')
+                        <a class="lp-detail__report-link" href="#" data-bs-toggle="modal" data-bs-target="#reportCarPartAdModal">
+                            <span aria-hidden="true">⚑</span>
+                            <span>Report Ad</span>
+                        </a>
+                    @else
+                        <a class="lp-detail__report-link" href="{{ route('login') }}">
+                            <span aria-hidden="true">⚑</span>
+                            <span>Report Ad</span>
+                        </a>
+                    @endauth
+                </div>
+
+                <div class="lp-detail__report-wrap d-block d-md-none" style="margin-top: 20px;">
+                    @auth('web')
+                        <a class="lp-detail__report-link" href="#" data-bs-toggle="modal" data-bs-target="#reportCarPartAdModal">
+                            <span aria-hidden="true">⚑</span>
+                            <span>Report Ad</span>
+                        </a>
+                    @else
+                        <a class="lp-detail__report-link" href="{{ route('login') }}">
+                            <span aria-hidden="true">⚑</span>
+                            <span>Report Ad</span>
+                        </a>
+                    @endauth
+                </div>
             </div>
         </section>
+    </div>
+
+    <div class="modal fade" id="reportCarPartAdModal" tabindex="-1" aria-labelledby="reportCarPartAdModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('report.car-part', $car_part->id) }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reportCarPartAdModalLabel">Report Ad</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Reason</label>
+                            <select class="form-select" name="reason" required>
+                                <option value="Inappropriate">Inappropriate</option>
+                                <option value="Spam">Spam</option>
+                                <option value="Scam">Scam</option>
+                                <option value="Duplicate">Duplicate</option>
+                                <option value="Wrong information">Wrong information</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Details (optional)</label>
+                            <textarea class="form-control" name="details" rows="4" maxlength="5000"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </main>
 @endsection
 
+<div class="modal fade" id="chatComingSoonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                This feature will be available soon.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="callSellerModalPart" tabindex="-1" aria-labelledby="callSellerModalPartLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="callSellerModalPartLabel">Call Seller</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                @if(!empty($seller?->phone))
+                    <p class="fw-bold fs-4 mb-1">{{ html_decode($seller->phone) }}</p>
+                    <p class="text-muted small mb-0">On desktop? Copy this number and dial it manually.</p>
+                @else
+                    <p class="text-muted">Phone number not provided.</p>
+                @endif
+            </div>
+            <div class="modal-footer">
+                @if(!empty($seller?->phone))
+                    <a class="btn btn-success" href="tel:{{ html_decode($seller->phone) }}">Call</a>
+                @endif
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('js_section')
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
+        // Mobile lightbox opener – delegates to the gallery partial's exposed openAt
         (function(){
-            const modal = document.getElementById('cpLightbox');
-            if (!modal || typeof Swiper === 'undefined') return;
-
-            modal.classList.remove('is-open');
-            modal.setAttribute('aria-hidden', 'true');
-            if (modal.parentElement !== document.body) {
-                document.body.appendChild(modal);
-            }
-
-            const counterEl = document.getElementById('cpLightboxCounter');
-            const closeEls = modal.querySelectorAll('[data-cp-close]');
-            const openEls = document.querySelectorAll('.js-cp-open-lightbox');
-            const closeBtn = modal.querySelector('[data-cp-close].cd-lightbox__close');
-
-            let thumbsSwiper = null;
-            let mainSwiper = null;
-            let lastFocusedEl = null;
-
-            function setBodyLock(locked){
-                document.body.style.overflow = locked ? 'hidden' : '';
-            }
-
-            function updateCounter(){
-                if (!mainSwiper || !counterEl) return;
-                counterEl.textContent = (mainSwiper.realIndex + 1) + ' / ' + mainSwiper.slides.length;
-            }
-
-            function openAt(index){
-                if (modal.parentElement !== document.body) {
-                    document.body.appendChild(modal);
+            document.addEventListener('click', function(e){
+                var t = e.target && e.target.closest ? e.target.closest('.js-cp-open-lightbox') : null;
+                if (!t) return;
+                if (e.target.closest && e.target.closest('a')) return; // don't intercept anchor clicks (e.g. wishlist)
+                e.preventDefault();
+                e.stopPropagation();
+                var idx = parseInt(t.getAttribute('data-cp-index') || '0', 10);
+                if (!isFinite(idx)) idx = 0;
+                var gallery = document.querySelector('[data-cd-gallery="carpart"]');
+                if (gallery && typeof gallery.__cdOpenLightbox === 'function') {
+                    gallery.__cdOpenLightbox(idx);
                 }
+            });
+        })();
 
-                lastFocusedEl = document.activeElement;
-                if (lastFocusedEl && typeof lastFocusedEl.blur === 'function') {
-                    lastFocusedEl.blur();
-                }
-
-                modal.classList.add('is-open');
-                modal.setAttribute('aria-hidden', 'false');
-                setBodyLock(true);
-
-                if (!thumbsSwiper) {
-                    thumbsSwiper = new Swiper('#cpLightboxThumbs', {
-                        slidesPerView: 5,
-                        spaceBetween: 10,
-                        watchSlidesProgress: true,
-                        breakpoints: {
-                            0: { slidesPerView: 4 },
-                            768: { slidesPerView: 6 }
-                        }
-                    });
-                }
-
-                if (!mainSwiper) {
-                    mainSwiper = new Swiper('#cpLightboxMain', {
-                        initialSlide: index || 0,
-                        loop: false,
-                        zoom: { maxRatio: 3 },
-                        keyboard: { enabled: true },
-                        navigation: {
-                            nextEl: '#cpLightboxMain .swiper-button-next',
-                            prevEl: '#cpLightboxMain .swiper-button-prev'
-                        },
-                        thumbs: { swiper: thumbsSwiper },
-                        on: {
-                            slideChange: function(){
-                                updateCounter();
-                            },
-                            afterInit: function(){
-                                updateCounter();
-                            }
-                        }
-                    });
-                } else {
-                    mainSwiper.slideTo(index || 0, 0);
-                    updateCounter();
-                }
-
-                if (closeBtn && typeof closeBtn.focus === 'function') {
-                    closeBtn.focus();
-                }
-            }
-
-            function close(){
-                modal.classList.remove('is-open');
-                modal.setAttribute('aria-hidden', 'true');
-                setBodyLock(false);
-                if (mainSwiper && mainSwiper.zoom) mainSwiper.zoom.out();
-                if (lastFocusedEl && document.contains(lastFocusedEl) && typeof lastFocusedEl.focus === 'function') {
-                    lastFocusedEl.focus();
-                }
-            }
-
-            openEls.forEach((el) => {
-                const open = (e) => {
-                    if (e && e.target && e.target.closest && e.target.closest('a')) return;
-                    if (e && e.preventDefault) e.preventDefault();
-                    if (e && e.stopPropagation) e.stopPropagation();
-                    if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
-                    const idx = parseInt(el.getAttribute('data-cp-index') || '0', 10);
-                    openAt(Number.isFinite(idx) ? idx : 0);
-                };
-                el.addEventListener('click', open);
-                el.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        open(e);
+        (function(){
+            function openChatComingSoon(){
+                try {
+                    if (window.bootstrap && bootstrap.Modal) {
+                        var el = document.getElementById('chatComingSoonModal');
+                        if (!el) return;
+                        var modal = bootstrap.Modal.getOrCreateInstance(el);
+                        modal.show();
+                    } else {
+                        alert('This feature will be available soon.');
                     }
-                });
-            });
+                } catch (e) {
+                    alert('This feature will be available soon.');
+                }
+            }
 
-            closeEls.forEach((el) => el.addEventListener('click', close));
+            document.addEventListener('click', function(e){
+                var t = e.target && (e.target.closest ? e.target.closest('.js-chat-coming-soon') : null);
+                if (!t) return;
+                e.preventDefault();
+                e.stopPropagation();
+                openChatComingSoon();
+            }, true);
+        })();
 
-            document.addEventListener('keydown', (e) => {
-                if (!modal.classList.contains('is-open')) return;
-                if (e.key === 'Escape') close();
-            });
+        (function(){
+            try {
+                document.addEventListener('click', function(e){
+                    var btn = e.target && e.target.closest
+                        ? (e.target.closest('.lp-detail__actions .lp-detail__action[href^="tel:"]') || e.target.closest('.action-call[href^="tel:"]'))
+                        : null;
+                    if (!btn) return;
+                    if (window.matchMedia && window.matchMedia('(min-width: 768px)').matches) {
+                        var modalEl = document.getElementById('callSellerModalPart');
+                        if (!modalEl) return;
+                        if (window.bootstrap && bootstrap.Modal) {
+                            e.preventDefault();
+                            try { if (modalEl.parentElement !== document.body) document.body.appendChild(modalEl); } catch(ex){}
+                            bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                        }
+                    }
+                }, true);
+            } catch(e){}
         })();
     </script>
 @endpush

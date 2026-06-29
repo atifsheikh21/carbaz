@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @php
-        $__carBrandModelsJson = json_encode($carBrandModels ?? [], JSON_UNESCAPED_UNICODE);
-        $__partBrandModelsJson = json_encode($partBrandModels ?? [], JSON_UNESCAPED_UNICODE);
-    @endphp
+    $__carBrandModelsJson = json_encode($carBrandModels ?? [], JSON_UNESCAPED_UNICODE);
+    $__partBrandModelsJson = json_encode($partBrandModels ?? [], JSON_UNESCAPED_UNICODE);
+
+    $setting = $setting ?? \Modules\GeneralSetting\Entities\Setting::first();
+    $logoPath = $setting?->logo;
+
+    if ($logoPath && env('FILESYSTEM_DISK') === 's3') {
+        $logoUrl = \Illuminate\Support\Facades\Storage::disk('s3')->url($logoPath);
+    } else {
+        $logoUrl = $logoPath ? asset($logoPath) : 'https://placehold.co/170x46?text=170x46';
+    }
+@endphp
     <title>CarNPart - Search System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('global/makking-font.css') }}">
@@ -63,6 +72,12 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
+        .logo-section img{
+    display: block;
+    width: auto;
+    max-width: 220px;
+    height: auto;
+}
 
         .search-box {
             flex: 0 0 450px;
@@ -421,10 +436,10 @@
             }
 
             .ls-mobile__nav{
-                margin-top: 10px;
-                display:flex;
+                margin-top: 35px;
+                display:grid;
+                grid-template-columns: auto 1fr auto;
                 align-items:center;
-                justify-content:space-between;
                 gap:12px;
             }
 
@@ -432,13 +447,26 @@
                 display:flex;
                 align-items:center;
                 gap:12px;
+                flex-wrap: nowrap;
+            }
+
+            .ls-mobile__nav-center{
+                display:flex;
+                justify-content:center;
+                align-items:center;
             }
 
             .ls-mobile__nav a{
                 text-decoration:none;
-                font-size: 13px;
+                font-size: 12px;
                 font-weight: 500;
                 letter-spacing: .2px;
+            }
+
+            /* Keep labels on a single line */
+            .ls-mobile__placead,
+            .ls-mobile__myad{
+                white-space: nowrap;
             }
 
             .ls-mobile__placead{
@@ -447,16 +475,29 @@
 
             .ls-mobile__myad{
                 color:#b60304;
+                border: 0;
+                background: transparent;
+                padding: 0;
+                font-size: 12px;
+                font-weight: 500;
+                letter-spacing: .2px;
+                margin-left: 12px;
             }
 
             .ls-mobile__signin{
                 color:#8b8b8b;
+                max-width: 45vw;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .ls-mobile__nav-right{
                 display:flex;
                 align-items:center;
+                justify-content:flex-end;
                 gap:10px;
+                min-width: 0;
             }
 
             .ls-mobile__menu{
@@ -483,8 +524,8 @@
             .ls-mobile__keyword input{
                 width:100%;
                 height: 30px;
-                border-radius: 0px;
-                border:4px solid rgba(0,0,0,.25);
+                border-radius: 10px;
+                border:2px solid rgba(0,0,0,.25);
                 background:#dcdcdc;
                 padding: 0 14px;
                 outline:none;
@@ -510,8 +551,8 @@
 
             .ls-mobile__card{
                 margin-top: 70px;
-                border: 4px solid rgba(0,0,0,.35);
-                border-radius: 0px;
+                border: 2px solid rgba(0,0,0,.35);
+                border-radius: 25px;
                 padding: 14px 12px;
                 background: transparent;
             }
@@ -532,7 +573,7 @@
             .ls-mobile__card input{
                 width:100%;
                 height: 25px;
-                border-radius: 0px;
+                border-radius: 10px;
                 border:0;
                 background:#d7d7d7;
                 padding: 0 14px;
@@ -547,12 +588,14 @@
 
             .ls-mobile__btn{
                 width:100%;
-                height: 25px;
-                border-radius: 0px;
+                height: 30px;
+                border-radius: 15px;
                 border:0;
-                font-weight: 400;
+                font-weight: 700;
                 letter-spacing: 3px;
                 color:#fff;
+                font-size: 14px;
+                padding-top: 6px;
             }
 
             .ls-mobile__btn--car{
@@ -569,7 +612,7 @@
                 flex-wrap:wrap;
                 gap:10px;
                 padding-top: 50px;
-                font-size: 11px;
+                font-size: 12px;
                 color:#8b8b8b;
             }
 
@@ -596,7 +639,7 @@
             <div class="ls-mobile__header">
                 <div class="ls-mobile__logo">
                     <a href="{{ route('home') }}" style="text-decoration:none;">
-                        <img src="{{ asset('frontend/assets/images/logo/car-n-part.png') }}" alt="logo">
+                        <img src="{{ $logoUrl }}" alt="logo">
                     </a>
                 </div>
             </div>
@@ -607,15 +650,19 @@
                         <a class="ls-mobile__placead" href="{{ route('user.select-car-purpose') }}">Place Ad</a>
                         <button class="ls-mobile__myad" type="button" data-bs-toggle="offcanvas" data-bs-target="#lsMobileMyAds" aria-controls="lsMobileMyAds">My Ad</button>
                     </div>
+                    <div class="ls-mobile__nav-center"></div>
                 @else
                     <div class="ls-mobile__nav-left">
                         <a class="ls-mobile__placead" href="{{ route('login') }}">Place Ad</a>
+                    </div>
+                    <div class="ls-mobile__nav-center">
+                        <a class="ls-mobile__signin" href="{{ route('register') }}">Create Account</a>
                     </div>
                 @endauth
 
                 <div class="ls-mobile__nav-right">
                     @auth('web')
-                        <a class="ls-mobile__signin" href="{{ route('user.dashboard') }}">{{ auth('web')->user()->name }}</a>
+                        <a class="ls-mobile__signin" href="{{ route('user.edit-profile') }}">{{ auth('web')->user()->name }}</a>
                     @else
                         <a class="ls-mobile__signin" href="{{ route('login') }}">Sign In</a>
                     @endauth
@@ -647,7 +694,11 @@
 
                         @auth('web')
                             <a class="btn btn-light text-start" href="{{ route('user.change-password') }}">change password</a>
+                            <a class="btn btn-outline-danger text-start" href="#" onclick="event.preventDefault(); if(confirm('Are you sure you want to delete your account? We will send a verification link to your email.')){ document.getElementById('lsMobileDeleteAccountForm').submit(); }">delete account</a>
                             <a class="btn btn-danger text-start" href="{{ route('user.logout') }}">log out</a>
+                            <form id="lsMobileDeleteAccountForm" action="{{ route('user.account.delete.request') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                         @endauth
                     </div>
                 </div>
@@ -701,7 +752,7 @@
             @endauth
 
             <div class="ls-mobile__keyword">
-                <form method="GET" action="{{ route('listings') }}">
+                <form method="GET" action="{{ route('search-all') }}">
                     <input type="text" name="search" placeholder="search car & part by key word" aria-label="keyword search">
                 </form>
             </div>
@@ -752,7 +803,7 @@
                 </div>
 
                 <div class="ls-mobile__actions">
-                    <button class="ls-mobile__btn ls-mobile__btn--car" type="submit">SEARCH CAR</button>
+                    <button class="ls-mobile__btn ls-mobile__btn--car" type="submit" style="position:relative; z-index:5;">SEARCH CAR</button>
                 </div>
             </form>
 
@@ -795,11 +846,19 @@
             <div class="ls-mobile__footer">
                 <a href="{{ route('contact-us') }}">contact</a>
                 <span class="ls-mobile__footer-sep"></span>
+            <a href="https://staging.carnpart.ie/page/terms-of-use">website terms of use</a>
+                <span class="ls-mobile__footer-sep"></span>
+            <a href="{{ route('terms-conditions') }}">terms and condition</a>
+                <span class="ls-mobile__footer-sep"></span>
                 <a href="{{ route('privacy-policy') }}">privacy policy</a>
                 <span class="ls-mobile__footer-sep"></span>
-                <a href="{{ route('terms-conditions') }}">terms and condition</a>
+            <a href="https://staging.carnpart.ie/page/cookie-policy">cookie policy</a>
                 <span class="ls-mobile__footer-sep"></span>
-                <a href="{{ route('terms-conditions') }}">legal</a>
+                <a href="https://staging.carnpart.ie/page/legal">legal</a>
+                <span class="ls-mobile__footer-sep"></span>
+            <a href="https://staging.carnpart.ie/free-ad-offer">pricing</a>
+            
+                
             </div>
         </div>
     </div>
@@ -807,32 +866,31 @@
     <div class="ls-desktop">
         <div class="auth-links">
             @auth('web')
+                <a href="{{ route('user.edit-profile') }}" class="sign-in">{{ auth('web')->user()->name }}</a>
+                <span class="separatorss"></span>
                 <a href="{{ route('user.dashboard') }}" class="sign-in">MY ADS</a>
                 <span class="separatorss"></span>
                 <a href="{{ route('user.select-car-purpose') }}" class="place-ad">PLACE AD</a>
             @else
-                <a href="{{ route('login') }}" class="place-ad">PLACE AD</a>
-            @endauth
-            <span class="separatorss"></span>
-            @auth('web')
-                <a href="{{ route('user.edit-profile') }}" class="sign-in">{{ auth('web')->user()->name }}</a>
-            @else
+                <a href="{{ route('register') }}" class="sign-in">SIGN UP</a>
+                <span class="separatorss"></span>
                 <a href="{{ route('login') }}" class="sign-in">SIGN IN</a>
+                <span class="separatorss"></span>
+                <a href="{{ route('login') }}" class="place-ad">PLACE AD</a>
             @endauth
         </div>
 
         <div class="main-container">
             <div class="logo-section">
                 <a href="{{ route('home') }}" style="text-decoration:none;">
-                    <img class="d-lg-none" src="{{ asset('frontend/assets/images/logo/car-n-part.png') }}" alt="logo" style="width: 30%;">
-                    <img class="d-none d-lg-inline-block" src="{{ getImageOrPlaceholder($setting ? $setting->logo : null, '170x46') }}" alt="logo" style="width: 30%;">
+                    <img src="https://staging.carnpart.ie/frontend/assets/images/logo/car-n-part.png" style="max-width: 300px;" alt="logo">
                 </a>
             </div>
 
             <div class="search-section">
                 <div class="search-box">
                     <form method="GET" action="{{ route('listings') }}">
-                        <button class="search-btn search-car-btn" type="submit">SEARCH CAR</button>
+                        <button class="search-btn search-car-btn" type="submit" style="position:relative; z-index:5;">SEARCH CAR</button>
                         <div class="search-form">
                             <div class="make-model-row">
                                 <select class="form-select" name="brand_id" data-model-source="car" data-model-target="#ls_desktop_car_model">
@@ -877,7 +935,10 @@
                                 </select>
                             </div>
 
+                            
+
                         </div>
+                        
                     </form>
 
                     <div class="car-search-offer">
@@ -931,11 +992,17 @@
         <div class="footer-links">
             <a href="{{ route('contact-us') }}">contact</a>
             <span class="separators"></span>
-            <a href="{{ route('privacy-policy') }}">privacy policy</a>
+            <a href="https://staging.carnpart.ie/page/terms-of-use">website terms of use</a>
             <span class="separators"></span>
             <a href="{{ route('terms-conditions') }}">terms and condition</a>
             <span class="separators"></span>
-            <a href="{{ route('terms-conditions') }}">Legal</a>
+            <a href="{{ route('privacy-policy') }}">privacy policy</a>
+            <span class="separators"></span>
+            <a href="https://staging.carnpart.ie/page/cookie-policy">cookie policy</a>
+            <span class="separators"></span>
+            <a href="https://staging.carnpart.ie/page/legal">legal</a>
+            <span class="separators"></span>
+            <a href="https://staging.carnpart.ie/free-ad-offer">pricing</a>
         </div>
     </div>
 
@@ -993,6 +1060,87 @@
                 });
 
                 populateModelSelect(brandSelect);
+            });
+
+            function buildFreshSearchUrl(form){
+                var params = new URLSearchParams();
+                var fd = new FormData(form);
+
+                fd.forEach(function(value, key){
+                    if (value !== null && String(value).trim() !== '') {
+                        params.append(key, String(value).trim());
+                    }
+                });
+
+                var qs = params.toString();
+                return form.action + (qs ? ('?' + qs) : '');
+            }
+
+            document.querySelectorAll('form[action*="listings"], form[action*="car-parts"]').forEach(function(form){
+                form.addEventListener('submit', function(e){
+                    form.querySelectorAll('input[name="search"][type="hidden"]').forEach(function(input){
+                        input.remove();
+                    });
+                    setTimeout(function(){
+                        try{
+                            if (!document.hidden) {
+                                window.location.href = buildFreshSearchUrl(form);
+                            }
+                        }catch(err){}
+                    }, 0);
+                }, true);
+            });
+
+            document.querySelectorAll('.search-car-btn, .search-part-btn, .ls-mobile__btn--car, .ls-mobile__btn--part').forEach(function(btn){
+                btn.addEventListener('click', function(ev){
+                    var f = btn.closest('form');
+                    if (f && typeof f.submit === 'function') {
+                        setTimeout(function(){ try{ f.submit(); }catch(e){} }, 0);
+                    }
+                }, true);
+            });
+
+            function resetLandingSearchFields() {
+                const forms = document.querySelectorAll(
+                    '.ls-mobile form[action*="listings"], .ls-mobile form[action*="car-parts"], ' +
+                    '.ls-desktop form[action*="listings"], .ls-desktop form[action*="car-parts"]'
+                );
+
+                forms.forEach(function (form) {
+                    if (typeof form.reset === 'function') {
+                        form.reset();
+                    }
+                });
+
+                document.querySelectorAll('[data-model-source]').forEach(function (brandSelect) {
+                    const target = document.querySelector(brandSelect.getAttribute('data-model-target'));
+                    if (target) {
+                        target.setAttribute('data-selected', '');
+                    }
+                    populateModelSelect(brandSelect);
+                });
+
+                // Also clear the top keyword search input on mobile
+                const kwForm = document.querySelector('.ls-mobile__keyword form');
+                if (kwForm) {
+                    if (typeof kwForm.reset === 'function') kwForm.reset();
+                    const kwInput = kwForm.querySelector('input[name="search"]');
+                    if (kwInput) kwInput.value = '';
+                }
+            }
+
+            // Clear on initial load too
+            resetLandingSearchFields();
+
+            window.addEventListener('pageshow', function (event) {
+                const navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')
+                    ? performance.getEntriesByType('navigation')[0]
+                    : null;
+                const isBackForward = !!(navEntry && navEntry.type === 'back_forward');
+
+                if (event.persisted || isBackForward) {
+                    resetLandingSearchFields();
+                }
             });
         })();
     </script>

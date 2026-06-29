@@ -149,6 +149,12 @@
 
 												@php
 												$auth_admin = Auth::guard('admin')->user();
+												$adminAvatar = null;
+												if ($auth_admin && !empty($auth_admin->image)) {
+													$adminAvatar = asset($auth_admin->image);
+												} else {
+													$adminAvatar = asset('frontend/images/default-user.png');
+												}
 												@endphp
 
 
@@ -161,8 +167,8 @@
 															id="dropdownMenuButton1" data-bs-toggle="dropdown"
 															aria-expanded="false">
 															<span class="crancy-header__author-img"><img
-																	src="{{ asset($auth_admin->image) }}"
-																	alt="#"></span>
+																src="{{ $adminAvatar }}"
+																alt="#"></span>
 														</button>
 														<ul class="dropdown-menu "
 															aria-labelledby="dropdownMenuButton1">

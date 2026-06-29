@@ -97,19 +97,18 @@ class UserController extends Controller
 
     public function user_destroy($id){
 
-        $total_car = Car::where('agent_id', $id)->count();
-        if($total_car > 0){
-            $notification = trans('translate.You can not delete this user, multiple listing available under this user');
-            $notification = array('messege'=>$notification,'alert-type'=>'error');
-            return redirect()->route('admin.user-list')->with($notification);
-        }
-
         $user = User::find($id);
         $user_image = $user->image;
 
         if($user_image){
             if(File::exists(public_path().'/'.$user_image))unlink(public_path().'/'.$user_image);
         }
+
+        // Delete all cars associated with this user
+        Car::where('agent_id', $id)->delete();
+
+        // Delete all car parts associated with this user
+        \App\Models\CarPart::where('agent_id', $id)->delete();
 
         Review::where('user_id',$id)->delete();
         SubscriptionHistory::where('user_id',$id)->delete();

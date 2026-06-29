@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class ChatController extends Controller
@@ -19,9 +20,14 @@ class ChatController extends Controller
         $this->middleware('auth:web');
     }
 
-    public function index(): View
+    public function index(Request $request): View|RedirectResponse
     {
         $user = Auth::guard('web')->user();
+
+        $openId = (int) $request->query('open');
+        if ($openId > 0) {
+            return redirect()->route('user.messages.show', $openId);
+        }
 
         $conversations = Conversation::query()
             ->where(function ($q) use ($user) {
@@ -54,8 +60,12 @@ class ChatController extends Controller
     {
         $user = Auth::guard('web')->user();
 
+        if ($sellerId <= 0) {
+            abort(404);
+        }
+
         if ($sellerId === $user->id) {
-            $notification = trans('translate.Invalid request');
+            $notification = trans('translate.You can not chat with yourself');
             $notification = ['messege' => $notification, 'alert-type' => 'error'];
             return redirect()->back()->with($notification);
         }
@@ -74,17 +84,55 @@ class ChatController extends Controller
         $userOneId = min($user->id, $sellerId);
         $userTwoId = max($user->id, $sellerId);
 
-        $conversation = Conversation::firstOrCreate([
-            'user_one_id' => $userOneId,
-            'user_two_id' => $userTwoId,
-        ]);
+        try {
+            $conversation = Conversation::firstOrCreate([
+                'user_one_id' => $userOneId,
+                'user_two_id' => $userTwoId,
+            ]);
 
-        return redirect()->route('user.messages.show', $conversation->id);
+            if (!($conversation?->id > 0)) {
+                Log::warning('Chat start: conversation id invalid', [
+                    'auth_user_id' => $user?->id,
+                    'seller_id' => $sellerId,
+                    'user_one_id' => $userOneId,
+                    'user_two_id' => $userTwoId,
+                    'conversation_id' => $conversation?->id,
+                ]);
+
+                $notification = trans('translate.Invalid request');
+                $notification = ['messege' => $notification, 'alert-type' => 'error'];
+                return redirect()->route('user.messages.index')->with($notification);
+            }
+
+            Log::info('Chat start: redirecting to conversation', [
+                'auth_user_id' => $user?->id,
+                'seller_id' => $sellerId,
+                'conversation_id' => $conversation->id,
+            ]);
+
+            return redirect()->route('user.messages.index', ['open' => $conversation->id]);
+        } catch (\Throwable $e) {
+            Log::error('Chat start failed', [
+                'auth_user_id' => $user?->id,
+                'seller_id' => $sellerId,
+                'user_one_id' => $userOneId,
+                'user_two_id' => $userTwoId,
+                'error' => $e->getMessage(),
+            ]);
+
+            $notification = trans('translate.Something went wrong');
+            $notification = ['messege' => $notification, 'alert-type' => 'error'];
+            return redirect()->route('user.messages.index')->with($notification);
+        }
     }
 
-    public function show(int $conversationId): View
+    public function show(int $conversationId): View|RedirectResponse
     {
         $user = Auth::guard('web')->user();
+
+        if ($conversationId <= 0) {
+            abort(404);
+        }
 
         $conversation = Conversation::with([
             'messages.sender:id,name',

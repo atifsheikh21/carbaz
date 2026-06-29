@@ -69,7 +69,7 @@ class CarBasicRequest extends FormRequest
             'country_id.required' => trans('translate.Country is required'),
             'title.required' => trans('translate.Title is required'),
             'slug.required' => trans('translate.Slug is required'),
-            'slug.unique' => trans('translate.Slug already exist'),
+            'slug.unique' => trans('translate.This car is already listed on the site'),
             'description.required' => trans('translate.Description is required'),
             'condition.required' => trans('translate.Condition is required'),
             'regular_price.required' => trans('translate.Regular price is required'),

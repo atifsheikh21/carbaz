@@ -4,103 +4,54 @@
 @endsection
 
 @section('body-content')
+@php
+    $categories = ['All', 'Engine', 'Electrical', 'Body', 'Radiator', 'BMW'];
+    $sorts = ['latest' => 'Latest', 'most_replied' => 'Most Answered', 'unanswered' => 'Unanswered', 'trending' => 'Trending'];
+    $topContributors = $topContributors ?? collect();
+    $trendingParts = $trendingParts ?? collect();
+@endphp
 <main>
-    <section class="inner-banner">
+    <section class="forum-shell">
         <div class="container">
-            <div class="col-lg-12">
-                <div class="inner-banner-df">
-                    <h1 class="inner-banner-taitel">{{ __('translate.Community Forum') }}</h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ __('translate.Forum') }}</li>
-                        </ol>
-                    </nav>
-                </div>
+            <div class="forum-topbar" id="top">
+                <a href="{{ route('car-part-requests.index') }}" class="forum-logo">Part Help Forum</a>
+                <form action="{{ route('car-part-requests.index') }}" method="GET" class="forum-search">
+                    <input type="text" name="q" value="{{ $search }}" placeholder="Search questions, parts, models...">
+                    <input type="hidden" name="sort" value="{{ $sort }}">
+                </form>
+                <a href="{{ route('car-part-requests.create') }}" class="forum-ask">Ask a Question</a>
+                <div class="forum-avatar">@if(auth('web')->user()?->image)<img src="{{ getImageOrPlaceholder(auth('web')->user()->image,'40x40') }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">@else{{ strtoupper(substr(auth('web')->user()?->name ?? 'G', 0, 1)) }}@endif</div>
             </div>
-        </div>
-    </section>
-
-    <section class="brand-car brand-car-two py-120px forum-feed">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="brand-car-item p-4 shadow-sm rounded-3 forum-card forum-board">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
-                            <h2 class="mb-0 forum-board__title">{{ __('translate.Community Forum') }}</h2>
-                            <a class="thm-btn-two" href="{{ route('car-part-requests.create') }}">{{ __('translate.Create Request') }}</a>
-                        </div>
-
-                        <form method="GET" action="{{ route('car-part-requests.index') }}" class="forum-board__filters">
-                            <div class="row g-3 align-items-center">
-                                <div class="col-md-7">
-                                    <div class="forum-board__search">
-                                        <input type="text" name="q" class="form-control" placeholder="{{ __('translate.Search') }}..." value="{{ $search ?? '' }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <select class="form-control" name="sort" onchange="this.form.submit()">
-                                        <option value="latest" {{ ($sort ?? 'latest') === 'latest' ? 'selected' : '' }}>{{ __('translate.Latest') }}</option>
-                                        <option value="oldest" {{ ($sort ?? 'latest') === 'oldest' ? 'selected' : '' }}>{{ __('translate.Oldest') }}</option>
-                                        <option value="most_replied" {{ ($sort ?? 'latest') === 'most_replied' ? 'selected' : '' }}>{{ __('translate.Most Replied') }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </form>
-
-                        <div class="forum-board__table mt-3">
-                            <div class="forum-board__thead">
-                                <div class="forum-board__th">{{ __('translate.Category') }}</div>
-                                <div class="forum-board__th text-center">{{ __('translate.Status') }}</div>
-                                <div class="forum-board__th text-end">{{ __('translate.Activity') }}</div>
-                            </div>
-
-                            @forelse ($requests as $item)
-                                @php
-                                    $status = (string) $item->status;
-                                    $statusClass = 'bg-secondary';
-                                    if (strtolower($status) === 'open') {
-                                        $statusClass = 'bg-success';
-                                    }
-                                    if (strtolower($status) === 'closed') {
-                                        $statusClass = 'bg-dark';
-                                    }
-
-                                    $activityAt = $item->replies_max_created_at ?: $item->created_at;
-                                @endphp
-
-                                <a class="forum-board__row" href="{{ route('car-part-requests.show', $item->id) }}">
-                                    <div class="forum-board__cell">
-                                        <div class="forum-board__category">
-                                            <div class="forum-board__icon"></div>
-                                            <div class="forum-board__cat-text">
-                                                <div class="forum-board__cat-title">{{ $item->title }}</div>
-                                                <div class="forum-board__cat-desc">{{ \Illuminate\Support\Str::limit($item->part_description, 90) }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="forum-board__cell text-center">
-                                        <span class="badge {{ $statusClass }} forum-board__status">{{ $status }}</span>
-                                    </div>
-                                    <div class="forum-board__cell text-end">
-                                        <div class="forum-board__activity">{{ $activityAt?->diffForHumans() }}</div>
-                                        <div class="forum-board__activity-sub">{{ __('translate.Replies') }}: {{ $item->replies_count }}</div>
-                                    </div>
-                                </a>
-                            @empty
-                                <div class="forum-board__empty">{{ __('translate.No Item Found') }}</div>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
+            <div class="forum-grid">
+                <aside class="forum-left"><div class="forum-widget"><h3>Categories</h3>@foreach ($categories as $category)<a href="{{ route('car-part-requests.index', array_filter(['q' => $category === 'All' ? null : $category, 'sort' => $sort])) }}" class="{{ ($category === 'All' && !$search) || strcasecmp($search, $category) === 0 ? 'active' : '' }}">{{ $category }}</a>@endforeach</div></aside>
+                <section class="forum-feed-column">
+                    <div class="forum-hero"><span>Community Q&A</span><h1>Find help for car part requests</h1></div>
+                    <div class="forum-sortbar">@foreach ($sorts as $key => $label)<a href="{{ route('car-part-requests.index', array_filter(['q' => $search ?: null, 'sort' => $key])) }}" class="{{ $sort === $key ? 'active' : '' }}">{{ $label }}</a>@endforeach</div>
+                    @forelse ($requests as $item)
+                        <article class="forum-post-card">
+                            <div class="forum-card-tag">{{ trim(($item->car_make ?: 'Part Help') . ' · ' . ($item->car_model ?: 'General'), ' ·') }}</div>
+                            <a href="{{ route('car-part-requests.show', $item->id) }}" class="forum-card-title">{{ $item->title }}</a>
+                            <p>{{ \Illuminate\Support\Str::limit($item->part_description, 180) }}</p>
+                            <div class="forum-card-meta"><div class="forum-author"><span>@if($item->user?->image)<img src="{{ getImageOrPlaceholder($item->user->image,'40x40') }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">@else{{ strtoupper(substr($item->user?->name ?? 'U', 0, 1)) }}@endif</span><strong>{{ $item->user?->name ?? 'Community member' }}</strong><em>{{ $item->created_at?->diffForHumans() }}</em></div><div class="forum-actions"><span>▲ 0</span><span>{{ $item->replies_count }} replies</span><button type="button" aria-label="Bookmark">♡</button></div></div>
+                        </article>
+                    @empty
+                        <div class="forum-post-card"><p class="mb-0">{{ __('translate.No Item Found') }}</p></div>
+                    @endforelse
+                    <div class="forum-pagination">{{ $requests->links('pagination_box') }}</div>
+                </section>
+                <aside class="forum-right">
+                    <div class="forum-widget"><h3>Top Contributors</h3>@forelse ($topContributors as $contributor)<div class="forum-mini-user"><span>@if($contributor->image)<img src="{{ getImageOrPlaceholder($contributor->image,'40x40') }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">@else{{ strtoupper(substr($contributor->name ?? 'U', 0, 1)) }}@endif</span><div><strong>{{ $contributor->name }}</strong><small>{{ $contributor->car_part_request_replies_count }} replies</small></div></div>@empty<p>No contributors yet.</p>@endforelse</div>
+                    <div class="forum-widget"><h3>Trending Parts</h3>@forelse ($trendingParts as $part)<a href="{{ route('car-part-requests.index', ['q' => trim(($part->car_make ?? '') . ' ' . ($part->car_model ?? ''))]) }}">{{ trim(($part->car_make ?? '') . ' ' . ($part->car_model ?? '')) ?: 'General parts' }}</a>@empty<p>No trending parts yet.</p>@endforelse</div>
+                </aside>
             </div>
-
-            <div class="row mt-60px">
-                <div class="col-12">
-                    {{ $requests->links('pagination_box') }}
-                </div>
-            </div>
+            <nav class="forum-mobile-tabs"><a href="{{ route('car-part-requests.index') }}">Feed</a><a href="{{ route('car-part-requests.create') }}">Ask</a><a href="#top">Search</a></nav>
         </div>
     </section>
 </main>
 @endsection
+
+@push('style_section')
+<style>
+    .forum-shell{background:#F9FAFB;padding:24px 0 80px;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px;color:#111827}.forum-topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:24px}.forum-logo{font-weight:800;color:#111827;text-decoration:none;white-space:nowrap}.forum-search{flex:1}.forum-search input{width:100%;min-height:44px;border:1px solid #E5E7EB;border-radius:999px;padding:0 18px;background:#F9FAFB}.forum-ask{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 18px;border-radius:8px;background:#b60304;color:#fff;font-weight:700;text-decoration:none}.forum-avatar,.forum-author span,.forum-mini-user span{width:40px;height:40px;border-radius:50%;background:#fde8e8;color:#b60304;display:inline-flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 auto}.forum-grid{display:grid;grid-template-columns:220px minmax(0,1fr) 280px;gap:22px;align-items:start}.forum-left,.forum-right{position:sticky;top:92px}.forum-widget,.forum-post-card,.forum-hero,.forum-sortbar{background:#fff;border:1px solid #E5E7EB;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)}.forum-widget{padding:18px;margin-bottom:18px}.forum-widget h3{font-size:16px;font-weight:800;margin:0 0 14px}.forum-widget a{min-height:44px;display:flex;align-items:center;color:#374151;text-decoration:none;border-radius:8px;padding:0 10px}.forum-widget a.active,.forum-widget a:hover{background:#fff1f1;color:#b60304;font-weight:700}.forum-mini-user{display:flex;align-items:center;gap:10px;margin-bottom:12px}.forum-mini-user small{display:block;color:#6B7280;font-size:13px}.forum-hero{padding:22px;margin-bottom:14px}.forum-hero span{color:#b60304;font-weight:800}.forum-hero h1{font-size:24px;margin:6px 0 0}.forum-sortbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px;margin-bottom:14px}.forum-sortbar a{min-height:44px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;color:#4B5563;text-decoration:none}.forum-sortbar a.active{background:#b60304;color:#fff;font-weight:700}.forum-post-card{padding:22px;margin-bottom:14px}.forum-card-tag{display:inline-flex;color:#b60304;background:#fff1f1;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;margin-bottom:10px}.forum-card-title{display:block;color:#111827;text-decoration:none;font-size:18px;line-height:1.4;font-weight:700;margin-bottom:8px}.forum-post-card p{color:#4B5563;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0 0 16px}.forum-card-meta{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.forum-author,.forum-actions{display:flex;align-items:center;gap:10px}.forum-author em{color:#6B7280;font-style:normal;font-size:13px}.forum-actions span,.forum-actions button{min-height:36px;border:1px solid #E5E7EB;border-radius:999px;background:#fff;padding:0 12px;color:#4B5563}.forum-actions button{width:44px;padding:0}.forum-pagination{margin-top:24px}.forum-mobile-tabs{display:none}@media(max-width:991px){.forum-topbar{flex-wrap:wrap}.forum-search{order:5;flex:0 0 100%}.forum-grid{grid-template-columns:1fr}.forum-left,.forum-right{position:static;display:none}.forum-post-card,.forum-hero{padding:18px}.forum-hero h1{font-size:20px}.forum-mobile-tabs{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;display:flex;justify-content:space-around;background:#fff;border:1px solid #E5E7EB;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:8px}.forum-mobile-tabs a{min-height:44px;display:flex;align-items:center;color:#b60304;font-weight:700;text-decoration:none}}}
+</style>
+@endpush

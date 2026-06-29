@@ -493,6 +493,7 @@
   'Name already exist' => 'Name already exist',
   'Slug is required' => 'Slug is required',
   'Slug already exist' => 'Slug already exist',
+  'This car is already listed on the site' => 'This car is already listed on the site. Please check your existing ads or use a different registration number.',
   'Title is required' => 'Title is required',
   'Title already exist' => 'Title already exist',
   'Description is required' => 'Description is required',

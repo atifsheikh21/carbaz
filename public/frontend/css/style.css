@@ -1576,6 +1576,7 @@
   overflow: hidden;
   z-index: 1;
   border-radius: 8px 8px 0px 0px;
+  line-height: 0;
 }
 
 .brand-car-item .brand-car-item-img::after {
@@ -1610,6 +1611,8 @@
   height: 217px;
   width: 100%;
   object-fit: cover;
+  display: block;
+  max-width: 100%;
   transition: var(--transition-ease-in-out);
 }
 
@@ -1840,8 +1843,10 @@
 }
 
 .brand-car-item.two .brand-car-item-img img {
-  width: 186px;
-  height: 203px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .brand-car-item.two .brand-car-item-img .brand-car-item-img-text {
@@ -13936,16 +13941,26 @@ p {
 }
 
 .cookie_consent_modal {
-  width: 350px;
-  padding: 30px;
+  width: min(560px, calc(100vw - 30px));
+  padding: 24px;
   background-color: var(--white-color);
   position: fixed;
-  bottom: 30px;
-  left: 30px;
+  bottom: 15px;
+  left: 15px;
   z-index: 9999;
   border: 1px solid #e4e4e4;
-  box-shadow: 2px 3px 4px 0 rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+}
+
+.cookie_consent_backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .cookie_consent_modal .btn-close {
@@ -13966,8 +13981,117 @@ p {
   margin-top: 10px;
 }
 
-.cookie_consent_modal .thm-btn-two {
-  margin-top: 20px;
+.cookie_consent_sections {
+  margin-top: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.cookie_consent_section {
+  padding-top: 6px;
+}
+
+.cookie_consent_section_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cookie_consent_section_title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--headline-color);
+}
+
+.cookie_consent_section_actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.cookie_consent_choice_btn {
+  height: 40px;
+  min-width: 100px;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #d7d7d7;
+  background: var(--white-color);
+  color: var(--headline-color);
+}
+
+.cookie_consent_choice_btn.is-active {
+  border-color: var(--primary-color-2);
+  background: rgba(70, 217, 147, 0.12);
+}
+
+.cookie_consent_choice_btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.cookie_consent_bottom_actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+
+.cookie_consent_btn {
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid #d7d7d7;
+  background: var(--white-color);
+  color: var(--headline-color);
+}
+
+.cookie_consent_accept_all_btn,
+.cookie_consent_reject_all_btn {
+  border-color: var(--primary-color-2);
+}
+
+.cookie_consent_accept_all_btn {
+  background: var(--primary-color-2);
+  color: var(--white-color);
+}
+
+.cookie_consent_save_btn {
+  background: var(--white-color);
+}
+
+.cookie_consent_save_btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 575px) {
+  .cookie_consent_modal {
+    width: calc(100vw - 20px);
+    left: 10px;
+    bottom: 10px;
+    padding: 18px;
+  }
+
+  .cookie_consent_section_header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cookie_consent_section_actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .cookie_consent_choice_btn {
+    flex: 1 1 120px;
+  }
 }
 
 .car_list_table {

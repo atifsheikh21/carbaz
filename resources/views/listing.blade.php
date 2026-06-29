@@ -6,6 +6,22 @@
 @endsection
 
 @section('body-content')
+@push('style_section')
+    <style>
+        .listing-list-title{
+            display:block;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+                text-transform: uppercase;
+        }
+        .lp-mobile-card__title{
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        }
+    </style>
+@endpush
 <main>
     @php
         $__carBrandModelsJson = json_encode($carBrandModels ?? [], JSON_UNESCAPED_UNICODE);
@@ -169,7 +185,10 @@
                 try {
                     $cityIds = $cars->pluck('city_id')->filter()->unique()->values();
                     if ($cityIds->count() > 0) {
-                        $cityNameMap = Modules\City\Entities\City::whereIn('id', $cityIds)->pluck('name', 'id')->toArray();
+                        $cityRows = Modules\City\Entities\City::whereIn('id', $cityIds)->get();
+                        foreach ($cityRows as $cityRow) {
+                            $cityNameMap[$cityRow->id] = (string) $cityRow->name;
+                        }
                     }
                 } catch (\Throwable $e) {
                     $cityNameMap = [];
@@ -230,27 +249,79 @@
                             @endif
                         </div>
                         <div class="lp-mobile-card__meta">
-                            @if(!empty($car->year))
-                                <div>{{ html_decode($car->year) }}</div>
+                            @php
+                                $mobileSaleYear = !empty($car->year) ? (string) html_decode($car->year) : '';
+                                if ($mobileSaleYear === '' && !empty($car->motorcheck_last_date_of_sale)) {
+                                    try {
+                                        $mobileSaleYear = \Carbon\Carbon::parse($car->motorcheck_last_date_of_sale)->format('Y');
+                                    } catch (\Throwable $e) {
+                                        $mobileSaleYear = is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 4) : '';
+                                    }
+                                }
+
+                                $mobileFuelText = '';
+                                if (!empty($car->motorcheck_fuel)) {
+                                    $mobileFuelText = (string) html_decode($car->motorcheck_fuel);
+                                } elseif (!empty($car->fuel_type)) {
+                                    $mobileFuelText = (string) html_decode($car->fuel_type);
+                                }
+
+                                $mobileEngineLitres = null;
+                                if (!empty($car->motorcheck_engine_cc) && is_numeric($car->motorcheck_engine_cc)) {
+                                    $mobileEngineLitres = round(((float) $car->motorcheck_engine_cc) / 1000, 1);
+                                } elseif (!empty($car->engine_size) && is_numeric($car->engine_size)) {
+                                    $engineSizeNum = (float) $car->engine_size;
+                                    $mobileEngineLitres = $engineSizeNum > 20 ? round($engineSizeNum / 1000, 1) : round($engineSizeNum, 1);
+                                }
+                                if ($mobileEngineLitres && $mobileFuelText !== '') {
+                                    $mobileEngineLitresText = rtrim(rtrim(number_format($mobileEngineLitres, 1, '.', ''), '0'), '.');
+                                    $mobileFuelText = trim($mobileFuelText . ' ' . $mobileEngineLitresText);
+                                }
+
+                                $mobileNctDate = '';
+                                if (!empty($car->motorcheck_nct_expiry_date)) {
+                                    try {
+                                        $mobileNctDate = \Carbon\Carbon::parse($car->motorcheck_nct_expiry_date)->format('d-m-Y');
+                                    } catch (\Throwable $e) {
+                                        $mobileNctDate = '';
+                                    }
+                                }
+                            @endphp
+                            @if($mobileSaleYear !== '')
+                                <div>{{ $mobileSaleYear }}</div>
                             @endif
-                            @if(!empty($car->motorcheck_fuel))
-                                <div>{{ html_decode($car->motorcheck_fuel) }}</div>
-                            @elseif(!empty($car->fuel_type))
-                                <div>{{ html_decode($car->fuel_type) }}</div>
+                            @if($mobileFuelText !== '')
+                                <div>{{ $mobileFuelText }}</div>
                             @endif
                             @if(!empty($car->mileage))
-                                <div>{{ html_decode($car->mileage) }}</div>
+                                <div>{{ html_decode($car->mileage) }}{{ $car->mileage_unit ? ' ' . strtoupper((string) $car->mileage_unit) : '' }}</div>
                             @endif
-                            @if(!empty($car->motorcheck_last_date_of_sale))
-                                <div>{{ is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 10) : '' }}</div>
+                            @if($mobileNctDate !== '')
+                                <div>NCT {{ $mobileNctDate }}</div>
                             @endif
                         </div>
 
                         <div class="lp-mobile-card__bottom">
                             <div class="lp-mobile-card__label">{{ $isDealerSeller ? 'DEALER' : 'PRIVATE' }}</div>
-                            <div class="lp-mobile-card__price">
-                                @if(!is_null($numericPrice))
-                                    €{{ number_format($numericPrice, 0, '.', ',') }}
+                            <div class="lp-mobile-card__pricecol">
+                                <div class="lp-mobile-card__price">
+                                    @if(!is_null($numericPrice))
+                                        €{{ number_format($numericPrice, 0, '.', ',') }}
+                                    @endif
+                                </div>
+
+                                @if ($isDealerSeller && !empty($car->warranty_months))
+                                    @php
+                                        $__wm = (int) $car->warranty_months;
+                                        $__wLabel = '';
+                                        if ($__wm > 0 && $__wm % 12 === 0) {
+                                            $__years = (int) ($__wm / 12);
+                                            $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty';
+                                        } else {
+                                            $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty';
+                                        }
+                                    @endphp
+                                    <div class="lp-mobile-card__warranty">{{ $__wLabel }}</div>
                                 @endif
                             </div>
                         </div>
@@ -287,6 +358,30 @@
             .lp-mobile-card__call{
                 z-index:3;
             }
+        }
+        .d-none.d-lg-block .listing-list-card{
+            position:relative;
+        }
+        .listing-card-overlay{
+            position:absolute;
+            inset:0;
+            z-index:0;
+            display:block;
+        }
+        .d-none.d-lg-block .listing-list-card .listing-list-media,
+        .d-none.d-lg-block .listing-list-card .listing-list-content{
+            position:relative;
+            z-index:1;
+        }
+        .d-none.d-lg-block .listing-list-card .listing-list-top-actions{
+            z-index:3;
+        }
+        .d-none.d-lg-block .listing-list-card .listing-call-btn{
+            position:relative;
+            z-index:3;
+        }
+        .d-none.d-lg-block .listing-list-content[data-href]{
+            cursor:pointer;
         }
     </style>
     @endpush
@@ -381,7 +476,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-3">
-                    <form action="" id="search_form">
+                    <form action="{{ route('listings') }}" method="GET" id="search_form">
                         <div class="inventory-main-box">
                             <div class="inventory-taitel">
                                 <h5>Choose City</h5>
@@ -712,7 +807,7 @@
                                                         </div>
 
                                                         <span>
-                                                            {{ html_decode($car->mileage) }}
+                                                            {{ html_decode($car->mileage) }}{{ $car->mileage_unit ? ' ' . strtoupper((string) $car->mileage_unit) : '' }}
                                                         </span>
                                                     </div>
                                                     <div class="brand-car-inner-item-two">
@@ -894,9 +989,12 @@
                                             <div class="listing-list-card {{ $isDealerSeller ? 'has-seller-bar' : '' }}">
 
                                             @if ($isDealerSeller)
-                                                <div class="listing-list-seller">
-                                                    {{ $sellerName }}
-                                                </div>
+                                                <a href="{{ route('listing', $car->slug) }}" class="listing-list-seller" style="display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;">
+                                                    <span>{{ $sellerName }}</span>
+                                                    @if(!empty($car?->city?->name))
+                                                        <span>{{ strtoupper(trim((string) $car->city->name)) }}</span>
+                                                    @endif
+                                                </a>
                                             @endif
 
                                             <div class="listing-list-media">
@@ -923,24 +1021,21 @@
 
                                                 <div class="listing-list-badges">
                                                     @php
-                                                        $sellerLocation = null;
-                                                        if (!empty($car?->city_id)) {
-                                                            $sellerLocation = optional(Modules\City\Entities\City::find($car->city_id))->name;
-                                                        }
+                                                        $sellerLocation = !empty($car?->city?->name) ? trim((string) $car->city->name) : null;
                                                     @endphp
-                                                    @if ($sellerLocation)
+                                                    @if ($sellerLocation && !$isDealerSeller)
                                                         <span class="listing-badge listing-badge--used">{{ $sellerLocation }}</span>
                                                     @endif
                                                 </div>
                                             </div>
 
-                                            <div class="listing-list-content {{ $isDealerSeller ? 'is-dealer' : 'is-private' }}">
+                                            <div class="listing-list-content {{ $isDealerSeller ? 'is-dealer' : 'is-private' }}" data-href="{{ route('listing', $car->slug) }}">
                                                 <div class="listing-list-top-actions">
                                                     @php
                                                         $sellerPhone = preg_replace('/\s+/', '', (string) ($car?->dealer?->phone ?? ''));
                                                     @endphp
                                                     @if ($sellerPhone)
-                                                        <a class="listing-call-btn" href="tel:{{ $sellerPhone }}">{{ __('CALL') }}</a>
+                                                        <a class="listing-call-btn" href="tel:{{ $sellerPhone }}" data-phone="{{ $sellerPhone }}">{{ __('CALL') }}</a>
                                                     @endif
                                                 </div>
 
@@ -957,34 +1052,62 @@
 
                                                         <div class="listing-list-meta">
                                                             @php
-                                                                $saleYear = null;
-                                                                if (!empty($car->motorcheck_last_date_of_sale)) {
+                                                                $saleYear = !empty($car->year) ? (string) html_decode($car->year) : '';
+                                                                if ($saleYear === '' && !empty($car->motorcheck_last_date_of_sale)) {
                                                                     try {
                                                                         $saleYear = \Carbon\Carbon::parse($car->motorcheck_last_date_of_sale)->format('Y');
                                                                     } catch (\Throwable $e) {
-                                                                        $saleYear = is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 4) : null;
+                                                                        $saleYear = is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 4) : '';
+                                                                    }
+                                                                }
+
+                                                                $fuelText = '';
+                                                                if (!empty($car->motorcheck_fuel)) {
+                                                                    $fuelText = (string) html_decode($car->motorcheck_fuel);
+                                                                } elseif (!empty($car->fuel_type)) {
+                                                                    $fuelText = (string) html_decode($car->fuel_type);
+                                                                }
+
+                                                                $engineLitres = null;
+                                                                if (!empty($car->motorcheck_engine_cc) && is_numeric($car->motorcheck_engine_cc)) {
+                                                                    $engineLitres = round(((float) $car->motorcheck_engine_cc) / 1000, 1);
+                                                                } elseif (!empty($car->engine_size) && is_numeric($car->engine_size)) {
+                                                                    $engineSizeNum = (float) $car->engine_size;
+                                                                    $engineLitres = $engineSizeNum > 20 ? round($engineSizeNum / 1000, 1) : round($engineSizeNum, 1);
+                                                                }
+                                                                if ($engineLitres && $fuelText !== '') {
+                                                                    $engineLitresText = rtrim(rtrim(number_format($engineLitres, 1, '.', ''), '0'), '.');
+                                                                    $fuelText = trim($fuelText . ' ' . $engineLitresText);
+                                                                }
+
+                                                                $nctDate = null;
+                                                                if (!empty($car->motorcheck_nct_expiry_date)) {
+                                                                    try {
+                                                                        $nctDate = \Carbon\Carbon::parse($car->motorcheck_nct_expiry_date)->format('d-m-Y');
+                                                                    } catch (\Throwable $e) {
+                                                                        $nctDate = null;
                                                                     }
                                                                 }
                                                             @endphp
-                                                            @if ($saleYear)
+                                                            @if ($saleYear !== '')
                                                                 <span>{{ $saleYear }}</span>
                                                             @endif
 
-                                                            @if (!empty($car->motorcheck_fuel))
-                                                                <span>{{ html_decode($car->motorcheck_fuel) }}</span>
-                                                            @elseif (!empty($car->fuel_type))
-                                                                <span>{{ html_decode($car->fuel_type) }}</span>
+                                                            @if ($fuelText !== '')
+                                                                <span>{{ $fuelText }}</span>
                                                             @endif
 
                                                             @if (!empty($car->mileage))
-                                                                <span>{{ html_decode($car->mileage) }}</span>
+                                                                <span>{{ html_decode($car->mileage) }}{{ $car->mileage_unit ? ' ' . strtoupper((string) $car->mileage_unit) : '' }}</span>
                                                             @endif
-                                                           
-                                                            
+
+                                                            @if ($nctDate)
+                                                                <span>NCT {{ $nctDate }}</span>
+                                                            @endif
                                                         </div>
                                                     </div>
 
-                                                    <div class="listing-list-pricecol">
+                                                    <div class="listing-list-pricecol {{ ($isDealerSeller && !empty($car->warranty_months)) ? 'has-warranty' : 'no-warranty' }}">
                                                         <div class="listing-price">
                                                             @php
                                                                 $rawPrice = $car->offer_price ?: $car->regular_price;
@@ -994,6 +1117,20 @@
                                                                 €{{ number_format($numericPrice, 0, '.', ',') }}
                                                             @endif
                                                         </div>
+
+                                                        @if ($isDealerSeller && !empty($car->warranty_months))
+                                                            @php
+                                                                $__wm = (int) $car->warranty_months;
+                                                                $__wLabel = '';
+                                                                if ($__wm > 0 && $__wm % 12 === 0) {
+                                                                    $__years = (int) ($__wm / 12);
+                                                                    $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty';
+                                                                } else {
+                                                                    $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty';
+                                                                }
+                                                            @endphp
+                                                            <div style="margin-top: 0px; border: 0px solid #c9c9c9; padding: 6px 10px; font-size: 12px; line-height: 1; color: #666; display: block; width: 100%; text-align: right; box-sizing: border-box;">{{ $__wLabel }}</div>
+                                                        @endif
                                                     </div>
                                                 </div>
 
@@ -1072,6 +1209,20 @@
                                                                 {{ currency($car->regular_price) }}
                                                             @endif
                                                         </p>
+
+                                                        @if ($isDealerSeller && !empty($car->warranty_months))
+                                                            @php
+                                                                $__wm = (int) $car->warranty_months;
+                                                                $__wLabel = '';
+                                                                if ($__wm > 0 && $__wm % 12 === 0) {
+                                                                    $__years = (int) ($__wm / 12);
+                                                                    $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty';
+                                                                } else {
+                                                                    $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty';
+                                                                }
+                                                            @endphp
+                                                            <div style="margin-top: 8px; border: 1px solid #c9c9c9; padding: 6px 10px; font-size: 12px; line-height: 1; color: #666; display: inline-block;">{{ $__wLabel }}</div>
+                                                        @endif
                                                     </div>
 
                                                     <a href="{{ route('listing', $car->slug) }}">
@@ -1088,7 +1239,7 @@
                                                                     </svg>
                                                                 </span>
                                                             </div>
-                                                            <span>{{ html_decode($car->mileage) }}</span>
+                                                            <span>{{ html_decode($car->mileage) }}{{ $car->mileage_unit ? ' ' . strtoupper((string) $car->mileage_unit) : '' }}</span>
                                                         </div>
 
                                                         <div class="brand-car-inner-item-two">
@@ -1292,8 +1443,16 @@
                     $("#inside_form_search").val(inputValue);
                 })
 
+                // Ensure hidden inside_form_search mirrors the visible outside field
+                $("#search_form").on("submit", function(){
+                    let val = $("#outside_form_search").val();
+                    $("#inside_form_search").val(val);
+                });
+
                 $("#outside_form_btn").on("click",function(e){
-                    $("#search_form").submit();
+                    let val = $("#outside_form_search").val();
+                    $("#inside_form_search").val(val);
+                    $("#search_form").trigger('submit');
                 })
 
                 $("#country_id").on("change", function(e){
@@ -1322,4 +1481,69 @@
         })(jQuery);
 
     </script>
+@endpush
+
+@push('js_section')
+<script>
+(function(){
+    try {
+        document.addEventListener('click', function(e){
+            var content = e.target && e.target.closest ? e.target.closest('.listing-list-content[data-href]') : null;
+            if (!content) return;
+            if (e.target.closest('.listing-call-btn') || e.target.closest('a') || e.target.closest('button')) return;
+            window.location.href = content.getAttribute('data-href');
+        });
+    } catch(e){}
+})();
+</script>
+@endpush
+
+<div class="modal fade" id="callSellerModalListing" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Call Seller</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="fw-bold fs-4 mb-1" id="callSellerModalListingNumber"></p>
+                <p class="text-muted small mb-0">On desktop? Copy this number and dial it manually.</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success" id="callSellerModalListingCallBtn" href="#">Call</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('js_section')
+<script>
+(function(){
+    try {
+        document.addEventListener('click', function(e){
+            var btn = e.target && e.target.closest ? e.target.closest('.listing-call-btn[data-phone]') : null;
+            if (!btn) return;
+            if (window.matchMedia && window.matchMedia('(min-width: 768px)').matches) {
+                var phone = btn.getAttribute('data-phone') || '';
+                var modalEl = document.getElementById('callSellerModalListing');
+                if (!modalEl) return;
+                document.getElementById('callSellerModalListingNumber').textContent = phone;
+                document.getElementById('callSellerModalListingCallBtn').href = 'tel:' + phone;
+                if (window.bootstrap && bootstrap.Modal) {
+                    e.preventDefault();
+                    try { if (modalEl.parentElement !== document.body) document.body.appendChild(modalEl); } catch(ex){}
+                    bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                }
+            }
+        }, true);
+    } catch(e){}
+})();
+
+(function(){
+    window.addEventListener('pageshow', function(e){
+        if (e.persisted) { window.location.reload(); }
+    });
+})();
+</script>
 @endpush

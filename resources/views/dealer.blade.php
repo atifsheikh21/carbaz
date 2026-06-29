@@ -97,7 +97,14 @@
                                         </span>
                                     @endif
                                 </h3>
-                                <div class="dealer-list-item__subtitle">{{ __('translate.Total Cars') }} {{ $dealer->total_car }}</div>
+                                <div class="dealer-list-item__subtitle">
+                                    @if((bool) $dealer->is_vehicle_seller)
+                                        <div>{{ __('translate.Total Cars') }} {{ $dealer->cars_count ?? 0 }}</div>
+                                    @endif
+                                    @if((bool) $dealer->is_part_seller)
+                                        <div>{{ __('Total Car Parts') }} {{ $dealer->car_parts_count ?? 0 }}</div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
 

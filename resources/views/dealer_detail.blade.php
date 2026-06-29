@@ -60,7 +60,7 @@
                                                     <path d="M15.947 3.83112C15.9355 3.81691 15.9258 3.80306 15.9123 3.78922L15.3165 3.16922C15.8106 3.04836 16.3425 2.60198 16.3425 2.14399C16.3425 1.61043 15.6558 1.4211 15.0698 1.4211C14.4571 1.4211 14.3859 1.87384 14.3787 2.19376L12.8416 0.595678C12.5293 0.262293 11.9371 0 11.4943 0H8.50069H8.5H5.50567C5.06329 0 4.47136 0.262293 4.15875 0.595678L2.62203 2.19376C2.61405 1.87384 2.54292 1.4211 1.93087 1.4211C1.34415 1.4211 0.65785 1.61043 0.65785 2.14399C0.65785 2.60198 1.1901 3.04836 1.68418 3.16922L1.08844 3.78922C1.0749 3.80306 1.06554 3.81691 1.05374 3.83112C0.41636 4.41857 0 5.50815 0 6.29877V8.64819C0 9.21842 0.208527 9.7359 0.545432 10.1217V11.0328C0.545432 11.5656 0.959017 12 1.46767 12H2.58282C3.09148 12 3.50471 11.5663 3.50471 11.0328V10.7997H8.5H8.50069H13.4956V11.0328C13.4956 11.5663 13.9085 12 14.4179 12H15.5327C16.0417 12 16.4546 11.5656 16.4546 11.0328V10.1217C16.7918 9.7359 17 9.21842 17 8.64819V6.29877C17.0007 5.50815 16.5843 4.41857 15.947 3.83112Z" fill="#405FF2"/>
                                                 </svg>
                                             </span>
-                                            {{ __('Vehicle Seller') }}: {{ $__vehicleCompanyName }}
+                                            {{ __('Vehicle Dealer') }}: {{ $__vehicleCompanyName }}
                                         </a>
                                     </li>
                                 @endif
@@ -72,7 +72,7 @@
                                                     <path d="M15.947 3.83112C15.9355 3.81691 15.9258 3.80306 15.9123 3.78922L15.3165 3.16922C15.8106 3.04836 16.3425 2.60198 16.3425 2.14399C16.3425 1.61043 15.6558 1.4211 15.0698 1.4211C14.4571 1.4211 14.3859 1.87384 14.3787 2.19376L12.8416 0.595678C12.5293 0.262293 11.9371 0 11.4943 0H8.50069H8.5H5.50567C5.06329 0 4.47136 0.262293 4.15875 0.595678L2.62203 2.19376C2.61405 1.87384 2.54292 1.4211 1.93087 1.4211C1.34415 1.4211 0.65785 1.61043 0.65785 2.14399C0.65785 2.60198 1.1901 3.04836 1.68418 3.16922L1.08844 3.78922C1.0749 3.80306 1.06554 3.81691 1.05374 3.83112C0.41636 4.41857 0 5.50815 0 6.29877V8.64819C0 9.21842 0.208527 9.7359 0.545432 10.1217V11.0328C0.545432 11.5656 0.959017 12 1.46767 12H2.58282C3.09148 12 3.50471 11.5663 3.50471 11.0328V10.7997H8.5H8.50069H13.4956V11.0328C13.4956 11.5663 13.9085 12 14.4179 12H15.5327C16.0417 12 16.4546 11.5656 16.4546 11.0328V10.1217C16.7918 9.7359 17 9.21842 17 8.64819V6.29877C17.0007 5.50815 16.5843 4.41857 15.947 3.83112Z" fill="#405FF2"/>
                                                 </svg>
                                             </span>
-                                            {{ __('Part Seller') }}: {{ $__partCompanyName }}
+                                            {{ __('Vehicle parts trader') }}: {{ $__partCompanyName }}
                                         </a>
                                     </li>
                                 @endif
@@ -191,7 +191,7 @@
                     <div class="dealers-details-side-bar dealer-mobile-accordion" data-accordion>
 
                         <div class="contact-beach-box-taitel dealer-mobile-accordion__toggle dealer-mobile-sidebar-toggle" data-accordion-toggle>
-                            <h3>{{ __('Dealer Details') }}</h3>
+                            <h3>{{ __('Contact Details') }}</h3>
                             <span class="dealer-mobile-accordion__icon">+</span>
                         </div>
 
@@ -239,42 +239,25 @@
                                         {{ html_decode($dealer->email) }}
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="javascript:;">
-                                        <span>
-                                            <svg width="18" height="22" viewBox="0 0 18 22" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M3 20.25C2.58579 20.25 2.25 20.5858 2.25 21C2.25 21.4142 2.58579 21.75 3 21.75V20.25ZM15 21.75C15.4142 21.75 15.75 21.4142 15.75 21C15.75 20.5858 15.4142 20.25 15 20.25V21.75ZM15.75 8.5C15.75 10.2065 14.6599 12.4136 13.1547 14.2468C12.4148 15.1481 11.6072 15.9179 10.8465 16.4554C10.0624 17.0094 9.42269 17.25 9 17.25V18.75C9.88982 18.75 10.8438 18.294 11.7121 17.6804C12.6038 17.0504 13.5071 16.1815 14.314 15.1987C15.9026 13.2638 17.25 10.7209 17.25 8.5H15.75ZM9 17.25C8.59247 17.25 7.95947 16.9993 7.171 16.4074C6.409 15.8353 5.59932 15.0178 4.85679 14.0668C3.34675 12.1327 2.25 9.82498 2.25 8.11111H0.75C0.75 10.3246 2.09075 12.9614 3.67446 14.9899C4.4788 16.0201 5.38006 16.9385 6.27041 17.6069C7.13428 18.2555 8.09503 18.75 9 18.75V17.25ZM2.25 8.11111C2.25 4.48059 5.47857 1.75 9 1.75V0.25C4.78944 0.25 0.75 3.51941 0.75 8.11111H2.25ZM9 1.75C12.4938 1.75 15.75 4.45503 15.75 8.5H17.25C17.25 3.54497 13.2382 0.25 9 0.25V1.75ZM11.25 8C11.25 9.24264 10.2426 10.25 9 10.25V11.75C11.0711 11.75 12.75 10.0711 12.75 8H11.25ZM9 10.25C7.75736 10.25 6.75 9.24264 6.75 8H5.25C5.25 10.0711 6.92893 11.75 9 11.75V10.25ZM6.75 8C6.75 6.75736 7.75736 5.75 9 5.75V4.25C6.92893 4.25 5.25 5.92893 5.25 8H6.75ZM9 5.75C10.2426 5.75 11.25 6.75736 11.25 8H12.75C12.75 5.92893 11.0711 4.25 9 4.25V5.75ZM3 21.75H15V20.25H3V21.75Z" />
-                                            </svg>
-                                        </span>
-
-                                        {{ html_decode($dealer->address) }}
-                                    </a>
-                                </li>
-                                @if($__vehicleCompanyAddress)
-                                    <li>
-                                        <a href="javascript:;">
-                                            <span>
-                                                <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M3 20.25C2.58579 20.25 2.25 20.5858 2.25 21C2.25 21.4142 2.58579 21.75 3 21.75V20.25ZM15 21.75C15.4142 21.75 15.75 21.4142 15.75 21C15.75 20.5858 15.4142 20.25 15 20.25V21.75ZM15.75 8.5C15.75 10.2065 14.6599 12.4136 13.1547 14.2468C12.4148 15.1481 11.6072 15.9179 10.8465 16.4554C10.0624 17.0094 9.42269 17.25 9 17.25V18.75C9.88982 18.75 10.8438 18.294 11.7121 17.6804C12.6038 17.0504 13.5071 16.1815 14.314 15.1987C15.9026 13.2638 17.25 10.7209 17.25 8.5H15.75ZM9 17.25C8.59247 17.25 7.95947 16.9993 7.171 16.4074C6.409 15.8353 5.59932 15.0178 4.85679 14.0668C3.34675 12.1327 2.25 9.82498 2.25 8.11111H0.75C0.75 10.3246 2.09075 12.9614 3.67446 14.9899C4.4788 16.0201 5.38006 16.9385 6.27041 17.6069C7.13428 18.2555 8.09503 18.75 9 18.75V17.25ZM2.25 8.11111C2.25 4.48059 5.47857 1.75 9 1.75V0.25C4.78944 0.25 0.75 3.51941 0.75 8.11111H2.25ZM9 1.75C12.4938 1.75 15.75 4.45503 15.75 8.5H17.25C17.25 3.54497 13.2382 0.25 9 0.25V1.75ZM11.25 8C11.25 9.24264 10.2426 10.25 9 10.25V11.75C11.0711 11.75 12.75 10.0711 12.75 8H11.25ZM9 10.25C7.75736 10.25 6.75 9.24264 6.75 8H5.25C5.25 10.0711 6.92893 11.75 9 11.75V10.25ZM6.75 8C6.75 6.75736 7.75736 5.75 9 5.75V4.25C6.92893 4.25 5.25 5.92893 5.25 8H6.75ZM9 5.75C10.2426 5.75 11.25 6.75736 11.25 8H12.75C12.75 5.92893 11.0711 4.25 9 4.25V5.75ZM3 21.75H15V20.25H3V21.75Z" />
-                                                </svg>
-                                            </span>
-                                            {{ __('Vehicle company address') }}: {{ $__vehicleCompanyAddress }}
-                                        </a>
-                                    </li>
-                                @endif
-                                @if($__partCompanyAddress)
-                                    <li>
-                                        <a href="javascript:;">
-                                            <span>
-                                                <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M3 20.25C2.58579 20.25 2.25 20.5858 2.25 21C2.25 21.4142 2.58579 21.75 3 21.75V20.25ZM15 21.75C15.4142 21.75 15.75 21.4142 15.75 21C15.75 20.5858 15.4142 20.25 15 20.25V21.75ZM15.75 8.5C15.75 10.2065 14.6599 12.4136 13.1547 14.2468C12.4148 15.1481 11.6072 15.9179 10.8465 16.4554C10.0624 17.0094 9.42269 17.25 9 17.25V18.75C9.88982 18.75 10.8438 18.294 11.7121 17.6804C12.6038 17.0504 13.5071 16.1815 14.314 15.1987C15.9026 13.2638 17.25 10.7209 17.25 8.5H15.75ZM9 17.25C8.59247 17.25 7.95947 16.9993 7.171 16.4074C6.409 15.8353 5.59932 15.0178 4.85679 14.0668C3.34675 12.1327 2.25 9.82498 2.25 8.11111H0.75C0.75 10.3246 2.09075 12.9614 3.67446 14.9899C4.4788 16.0201 5.38006 16.9385 6.27041 17.6069C7.13428 18.2555 8.09503 18.75 9 18.75V17.25ZM2.25 8.11111C2.25 4.48059 5.47857 1.75 9 1.75V0.25C4.78944 0.25 0.75 3.51941 0.75 8.11111H2.25ZM9 1.75C12.4938 1.75 15.75 4.45503 15.75 8.5H17.25C17.25 3.54497 13.2382 0.25 9 0.25V1.75ZM11.25 8C11.25 9.24264 10.2426 10.25 9 10.25V11.75C11.0711 11.75 12.75 10.0711 12.75 8H11.25ZM9 10.25C7.75736 10.25 6.75 9.24264 6.75 8H5.25C5.25 10.0711 6.92893 11.75 9 11.75V10.25ZM6.75 8C6.75 6.75736 7.75736 5.75 9 5.75V4.25C6.92893 4.25 5.25 5.92893 5.25 8H6.75ZM9 5.75C10.2426 5.75 11.25 6.75736 11.25 8H12.75C12.75 5.92893 11.0711 4.25 9 4.25V5.75ZM3 21.75H15V20.25H3V21.75Z" />
-                                                </svg>
-                                            </span>
-                                            {{ __('Car part company address') }}: {{ $__partCompanyAddress }}
-                                        </a>
-                                    </li>
+                                @if($dealer->is_dealer && $dealer->is_vehicle_seller && $dealer->is_part_seller)
+                                    @if($__vehicleCompanyAddress)
+                                        <li>
+                                            <a href="javascript:;" style="align-items:flex-start;">
+                                                <span style="display:none;"></span>
+                                                <span style="color:#b60304;font-weight:800;">{{ __('Vehicle dealer address') }}:</span>
+                                                <span style="margin-left:6px;">{{ $__vehicleCompanyAddress }}</span>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if($__partCompanyAddress)
+                                        <li>
+                                            <a href="javascript:;" style="align-items:flex-start;">
+                                                <span style="display:none;"></span>
+                                                <span style="color:#b60304;font-weight:800;">{{ __('Vehicle parts trader address') }}:</span>
+                                                <span style="margin-left:6px;">{{ $__partCompanyAddress }}</span>
+                                            </a>
+                                        </li>
+                                    @endif
                                 @endif
                             </ul>
 
@@ -301,17 +284,19 @@
 
                             <div class="inventory-ber-left">
                                 <ul class="shaf-filter course-filter j ">
-                                    <li class="active" data-group="car-all">{{ __('translate.All Car') }}</li>
-                                    <li data-group="Used">{{ __('translate.Used Car') }}</li>
-                                    <li data-group="New">{{ __('translate.New Car') }}</li>
+                                    <li class="active" data-group="car-all">{{ __('All Ad') }}</li>
+                                    <li data-group="Used">{{ __('Used Car') }}</li>
+                                    <li data-group="New">{{ __('New Car') }}</li>
                                     @if($car_parts->count() > 0)
-                                        <li data-group="Car Part">{{ __('Part Ads') }}</li>
+                                        <li data-group="New Part">{{ __('New Part Ad') }}</li>
+                                        <li data-group="Used Part">{{ __('Used Part Ad') }}</li>
                                     @endif
                                 </ul>
                             </div>
                         </div>
 
                         <div class="d-block d-md-none">
+                            <div class="dealer-mobile-container">
                             @foreach ($cars as $car)
                                 @php
                                     $dealerFlagRaw = $car?->dealer?->is_dealer ?? null;
@@ -329,7 +314,7 @@
                                     $rawPrice = $car->offer_price ?: $car->regular_price;
                                     $numericPrice = is_numeric($rawPrice) ? (float) $rawPrice : null;
                                 @endphp
-                                <div class="lp-mobile-card shaf-item" data-groups='[ "car-all", "{{ $car->condition }}" ]'>
+                                <div class="lp-mobile-card dealer-mobile-item" data-groups='[ "car-all", "{{ $car->condition }}" ]'>
                                     <a class="dealer-mobile-card-link" href="{{ route('listing', $car->slug) }}" aria-label="{{ strtoupper(trim((string) html_decode($car->title))) }}"></a>
                                     <div class="lp-mobile-card__top">
                                         <div class="lp-mobile-card__top-left">{{ $sellerName !== '' ? $sellerName : ' ' }}</div>
@@ -381,9 +366,19 @@
 
                                         <div class="lp-mobile-card__bottom">
                                             <div class="lp-mobile-card__label">{{ $isDealerSeller ? 'DEALER' : 'PRIVATE' }}</div>
-                                            <div class="lp-mobile-card__price">
-                                                @if(!is_null($numericPrice))
-                                                    €{{ number_format($numericPrice, 0, '.', ',') }}
+                                            <div class="lp-mobile-card__pricecol">
+                                                <div class="lp-mobile-card__price">
+                                                    @if(!is_null($numericPrice))
+                                                        €{{ number_format($numericPrice, 0, '.', ',') }}
+                                                    @endif
+                                                </div>
+                                                @if ($isDealerSeller && !empty($car->warranty_months))
+                                                    @php
+                                                        $__wm = (int) $car->warranty_months;
+                                                        if ($__wm > 0 && $__wm % 12 === 0) { $__years = (int) ($__wm / 12); $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty'; }
+                                                        else { $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty'; }
+                                                    @endphp
+                                                    <div class="lp-mobile-card__warranty">{{ $__wLabel }}</div>
                                                 @endif
                                             </div>
                                         </div>
@@ -407,8 +402,9 @@
                                     $rawPrice = $part->offer_price ?: $part->regular_price;
                                     $numericPrice = is_numeric($rawPrice) ? (float) $rawPrice : null;
                                     $sellerTypeLabel = $isDealerSeller ? 'DEALER' : 'PRIVATE';
+                                    $partConditionGroup = strtolower(trim((string) ($part->condition ?? ''))) === 'new' ? 'New Part' : 'Used Part';
                                 @endphp
-                                <div class="lp-mobile-card shaf-item" data-groups='[ "Car Part" ]'>
+                                <div class="lp-mobile-card dealer-mobile-item" data-groups='[ "car-all", "{{ $partConditionGroup }}" ]'>
                                     <a class="dealer-mobile-card-link" href="{{ route('car-part', $part->slug) }}" aria-label="{{ strtoupper(trim((string) html_decode($partTranslation?->title))) }}"></a>
                                     <div class="lp-mobile-card__top">
                                         <div class="lp-mobile-card__top-left">{{ $sellerName !== '' ? $sellerName : ' ' }}</div>
@@ -431,31 +427,42 @@
                                         </div>
 
                                         <div class="lp-mobile-card__meta">
-                                            @if(!empty($part?->brand?->name))
-                                                <div>{{ html_decode($part?->brand?->name) }}</div>
-                                            @endif
-                                            @if(!empty($part->condition))
-                                                <div>{{ html_decode($part->condition) }}</div>
-                                            @endif
-                                            @if(!empty($part->part_number))
-                                                <div>{{ html_decode($part->part_number) }}</div>
-                                            @endif
-                                            @if(!empty($part->compatibility))
-                                                <div>{{ html_decode($part->compatibility) }}</div>
-                                            @endif
+                                            <div><span class="meta-label">Brand:</span> <span class="meta-value">{{ !empty($part?->brand?->name) ? html_decode($part?->brand?->name) : '—' }}{{ !empty($part?->car_model) ? ' ' . html_decode($part?->car_model) : '' }}</span></div>
+                                            <div><span class="meta-label">Condition:</span> <span class="meta-value">{{ !empty($part->condition) ? html_decode($part->condition) : '—' }}</span></div>
+                                            <div><span class="meta-label">Part Number:</span> <span class="meta-value">{{ !empty($part->part_number) ? html_decode($part->part_number) : '—' }}</span></div>
+                                            @php
+                                                $__fromY = $part->from_year;
+                                                $__toY = $part->to_year;
+                                                $__compatYears = '';
+                                                if (!empty($__fromY) && !empty($__toY)) { $__compatYears = $__fromY . '-' . $__toY; }
+                                                elseif (!empty($__fromY)) { $__compatYears = (string) $__fromY; }
+                                                elseif (!empty($__toY)) { $__compatYears = (string) $__toY; }
+                                            @endphp
+                                            <div><span class="meta-label">Compatible:</span> <span class="meta-value">{{ $__compatYears !== '' ? $__compatYears : '—' }}</span></div>
                                         </div>
 
                                         <div class="lp-mobile-card__bottom">
                                             <div class="lp-mobile-card__label">{{ $sellerTypeLabel }}</div>
-                                            <div class="lp-mobile-card__price">
-                                                @if(!is_null($numericPrice))
-                                                    €{{ number_format($numericPrice, 0, '.', ',') }}
+                                            <div class="lp-mobile-card__pricecol">
+                                                <div class="lp-mobile-card__price">
+                                                    @if(!is_null($numericPrice))
+                                                        €{{ number_format($numericPrice, 0, '.', ',') }}
+                                                    @endif
+                                                </div>
+                                                @if ($isDealerSeller && !empty($part->warranty_months))
+                                                    @php
+                                                        $__wm = (int) $part->warranty_months;
+                                                        if ($__wm > 0 && $__wm % 12 === 0) { $__years = (int) ($__wm / 12); $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty'; }
+                                                        else { $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty'; }
+                                                    @endphp
+                                                    <div class="lp-mobile-card__warranty">{{ $__wLabel }}</div>
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
+                            </div>
                         </div>
 
                         <div class="row g-5 shafull-container d-none d-md-flex">
@@ -533,22 +540,41 @@
                                                     </a>
 
                                                     <div class="listing-list-meta">
-                                                        @if (!empty($car->year))
-                                                            <span>{{ html_decode($car->year) }}</span>
+                                                        @php
+                                                            $saleYear = !empty($car->year) ? (string) html_decode($car->year) : '';
+                                                            if ($saleYear === '' && !empty($car->motorcheck_last_date_of_sale)) {
+                                                                try { $saleYear = \Carbon\Carbon::parse($car->motorcheck_last_date_of_sale)->format('Y'); }
+                                                                catch (\Throwable $e) { $saleYear = is_string($car->motorcheck_last_date_of_sale) ? substr($car->motorcheck_last_date_of_sale, 0, 4) : ''; }
+                                                            }
+                                                            $fuelText = '';
+                                                            if (!empty($car->motorcheck_fuel)) { $fuelText = (string) html_decode($car->motorcheck_fuel); }
+                                                            elseif (!empty($car->fuel_type)) { $fuelText = (string) html_decode($car->fuel_type); }
+                                                            $engineLitres = null;
+                                                            if (!empty($car->motorcheck_engine_cc) && is_numeric($car->motorcheck_engine_cc)) { $engineLitres = round(((float) $car->motorcheck_engine_cc) / 1000, 1); }
+                                                            elseif (!empty($car->engine_size) && is_numeric($car->engine_size)) { $engineSizeNum = (float) $car->engine_size; $engineLitres = $engineSizeNum > 20 ? round($engineSizeNum / 1000, 1) : round($engineSizeNum, 1); }
+                                                            if ($engineLitres && $fuelText !== '') { $engineLitresText = rtrim(rtrim(number_format($engineLitres, 1, '.', ''), '0'), '.'); $fuelText = trim($fuelText . ' ' . $engineLitresText); }
+                                                            $nctDate = null;
+                                                            if (!empty($car->motorcheck_nct_expiry_date)) {
+                                                                try { $nctDate = \Carbon\Carbon::parse($car->motorcheck_nct_expiry_date)->format('d-m-Y'); }
+                                                                catch (\Throwable $e) { $nctDate = null; }
+                                                            }
+                                                        @endphp
+                                                        @if ($saleYear !== '')
+                                                            <span>{{ $saleYear }}</span>
                                                         @endif
-                                                        @if (!empty($car->fuel_type))
-                                                            <span>{{ html_decode($car->fuel_type) }}</span>
+                                                        @if ($fuelText !== '')
+                                                            <span>{{ $fuelText }}</span>
                                                         @endif
                                                         @if (!empty($car->mileage))
-                                                            <span>{{ html_decode($car->mileage) }}</span>
+                                                            <span>{{ html_decode($car->mileage) }}{{ $car->mileage_unit ? ' ' . strtoupper((string) $car->mileage_unit) : '' }}</span>
                                                         @endif
-                                                        @if (!empty($car->engine_size))
-                                                            <span>{{ html_decode($car->engine_size) }}</span>
+                                                        @if ($nctDate)
+                                                            <span>NCT {{ $nctDate }}</span>
                                                         @endif
                                                     </div>
                                                 </div>
 
-                                                <div class="listing-list-pricecol">
+                                                <div class="listing-list-pricecol {{ ($isDealerSeller && !empty($car->warranty_months)) ? 'has-warranty' : 'no-warranty' }}">
                                                     <div class="listing-price">
                                                         @php
                                                             $rawPrice = $car->offer_price ?: $car->regular_price;
@@ -558,6 +584,14 @@
                                                             €{{ number_format($numericPrice, 0, '.', ',') }}
                                                         @endif
                                                     </div>
+                                                    @if ($isDealerSeller && !empty($car->warranty_months))
+                                                        @php
+                                                            $__wm = (int) $car->warranty_months;
+                                                            if ($__wm > 0 && $__wm % 12 === 0) { $__years = (int) ($__wm / 12); $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty'; }
+                                                            else { $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty'; }
+                                                        @endphp
+                                                        <div style="margin-top: 0px; border: 0px solid #c9c9c9; padding: 6px 10px; font-size: 12px; line-height: 1; color: #666; display: block; width: 100%; text-align: right; box-sizing: border-box;">{{ $__wLabel }}</div>
+                                                    @endif
                                                 </div>
                                             </div>
 
@@ -588,8 +622,9 @@
                                     $sellerTypeLabel = $isDealerSeller
                                         ? ($isPartSeller ? 'CAR PART SELLER' : 'DEALER')
                                         : 'PRIVATE';
+                                    $partConditionGroup = strtolower(trim((string) ($part->condition ?? ''))) === 'new' ? 'New Part' : 'Used Part';
                                 @endphp
-                                <div class="col-12 shaf-item" data-groups='[ "Car Part" ]'>
+                                <div class="col-12 shaf-item" data-groups='[ "car-all", "{{ $partConditionGroup }}" ]'>
                                     <div class="listing-list-card {{ $isDealerSeller ? 'has-seller-bar' : '' }}">
                                         @if ($isDealerSeller)
                                             <div class="listing-list-seller">
@@ -620,22 +655,22 @@
                                                     </a>
 
                                                     <div class="listing-list-meta">
-                                                        @if (!empty($part?->brand?->name))
-                                                            <span>{{ $part?->brand?->name }}</span>
-                                                        @endif
-                                                        @if (!empty($part->condition))
-                                                            <span>{{ html_decode($part->condition) }}</span>
-                                                        @endif
-                                                        @if (!empty($part->part_number))
-                                                            <span>{{ html_decode($part->part_number) }}</span>
-                                                        @endif
-                                                        @if (!empty($part->compatibility))
-                                                            <span>{{ html_decode($part->compatibility) }}</span>
-                                                        @endif
+                                                        <span><span class="meta-label">Brand:</span> <span class="meta-value">{{ !empty($part?->brand?->name) ? html_decode($part?->brand?->name) : '—' }}{{ !empty($part?->car_model) ? ' ' . html_decode($part?->car_model) : '' }}</span></span>
+                                                        <span><span class="meta-label">Condition:</span> <span class="meta-value">{{ !empty($part->condition) ? html_decode($part->condition) : '—' }}</span></span>
+                                                        <span><span class="meta-label">Part Number:</span> <span class="meta-value">{{ !empty($part->part_number) ? html_decode($part->part_number) : '—' }}</span></span>
+                                                        @php
+                                                            $__fromY = $part->from_year;
+                                                            $__toY = $part->to_year;
+                                                            $__compatYears = '';
+                                                            if (!empty($__fromY) && !empty($__toY)) { $__compatYears = $__fromY . '-' . $__toY; }
+                                                            elseif (!empty($__fromY)) { $__compatYears = (string) $__fromY; }
+                                                            elseif (!empty($__toY)) { $__compatYears = (string) $__toY; }
+                                                        @endphp
+                                                        <span><span class="meta-label">Compatible:</span> <span class="meta-value">{{ $__compatYears !== '' ? $__compatYears : '—' }}</span></span>
                                                     </div>
                                                 </div>
 
-                                                <div class="listing-list-pricecol">
+                                                <div class="listing-list-pricecol {{ ($isDealerSeller && !empty($part->warranty_months)) ? 'has-warranty' : 'no-warranty' }}">
                                                     <div class="listing-price">
                                                         @php
                                                             $rawPrice = $part->offer_price ?: $part->regular_price;
@@ -645,6 +680,14 @@
                                                             €{{ number_format($numericPrice, 0, '.', ',') }}
                                                         @endif
                                                     </div>
+                                                    @if ($isDealerSeller && !empty($part->warranty_months))
+                                                        @php
+                                                            $__wm = (int) $part->warranty_months;
+                                                            if ($__wm > 0 && $__wm % 12 === 0) { $__years = (int) ($__wm / 12); $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty'; }
+                                                            else { $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty'; }
+                                                        @endphp
+                                                        <div style="margin-top: 0px; border: 0px solid #c9c9c9; padding: 6px 10px; font-size: 12px; line-height: 1; color: #666; display: block; width: 100%; text-align: right; box-sizing: border-box;">{{ $__wLabel }}</div>
+                                                    @endif
                                                 </div>
                                             </div>
 
@@ -817,8 +860,38 @@
         display:none;
     }
     @media (max-width: 991.98px){
+        .dealer-mobile-container{
+            display:block;
+        }
+        .dealer-mobile-item{
+            width:100%;
+        }
         .lp-mobile-card{
             position:relative;
+            display:block;
+        }
+        .lp-mobile-card__media{
+            position:relative;
+            display:block;
+            overflow:hidden;
+        }
+        .lp-mobile-card__media-link{
+            display:block;
+        }
+        .lp-mobile-card__media img{
+            width:100%;
+            height:220px;
+            object-fit:cover;
+            display:block;
+        }
+        .lp-mobile-card__title{
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        }
+        .lp-mobile-card__meta{
+            min-height:72px;
+            overflow:hidden;
         }
         .dealer-mobile-card-link{
             display:block;
@@ -875,6 +948,82 @@
         if (window.innerWidth > 991) {
             return;
         }
+
+        var filterLists = document.querySelectorAll('.shaf-filter');
+        filterLists.forEach(function (list) {
+            if (list.dataset.filterBound === 'true') {
+                return;
+            }
+            list.dataset.filterBound = 'true';
+
+            var mobileContainer = document.querySelector('.d-block.d-md-none .dealer-mobile-container');
+            var items = mobileContainer ? Array.prototype.slice.call(mobileContainer.querySelectorAll('.dealer-mobile-item')) : [];
+
+            function getGroups(el) {
+                if (!el) {
+                    return [];
+                }
+                var raw = el.getAttribute('data-groups');
+                if (!raw) {
+                    return [];
+                }
+                try {
+                    var parsed = JSON.parse(raw);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function applyFilter(group) {
+                if (!items.length) {
+                    return;
+                }
+
+                items.forEach(function (card) {
+                    if (!group || group === 'car-all') {
+                        card.style.display = '';
+                        return;
+                    }
+
+                    var groups = getGroups(card);
+                    card.style.display = groups.indexOf(group) !== -1 ? '' : 'none';
+                });
+            }
+
+            var mobileContainerExists = !!document.querySelector('.d-block.d-md-none .dealer-mobile-container');
+
+            function bindFilter(li) {
+                var handler = function (ev) {
+                    if (!mobileContainerExists) {
+                        return;
+                    }
+
+                    if (ev && typeof ev.preventDefault === 'function') {
+                        ev.preventDefault();
+                    }
+                    if (ev && typeof ev.stopPropagation === 'function') {
+                        ev.stopPropagation();
+                    }
+
+                    list.querySelectorAll('li').forEach(function (x) {
+                        x.classList.remove('active');
+                    });
+                    li.classList.add('active');
+                    applyFilter(li.getAttribute('data-group'));
+                };
+
+                li.addEventListener('touchstart', handler, { capture: true, passive: false });
+                li.addEventListener('click', handler, true);
+            }
+
+            list.querySelectorAll('li[data-group]').forEach(function (li) {
+                bindFilter(li);
+            });
+
+            var active = list.querySelector('li.active[data-group]');
+            applyFilter(active ? active.getAttribute('data-group') : 'car-all');
+        });
 
         document.querySelectorAll('[data-accordion]').forEach(function (accordion) {
             var toggle = accordion.querySelector('[data-accordion-toggle]');

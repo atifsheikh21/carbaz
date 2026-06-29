@@ -5,6 +5,24 @@
 
 @section('body-content')
 
+@push('style_section')
+    <style>
+        @media (max-width: 991.98px){
+            .login-head{
+                display:flex;
+                justify-content:space-between;
+                align-items:baseline;
+                gap:12px;
+            }
+            .login-head span{
+                margin:0;
+                white-space:nowrap;
+                text-align:right;
+            }
+        }
+    </style>
+@endpush
+
 <main>
     <!-- banner-part-start  -->
 
@@ -13,11 +31,11 @@
         <div class="container">
         <div class="col-lg-12">
             <div class="inner-banner-df">
-                <h1 class="inner-banner-taitel">{{ __('translate.Sign In') }}</h1>
+                <h1 class="inner-banner-taitel">{{ __('CARNPART') }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ __('translate.Sign In') }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ __('CARNPART') }}</li>
                     </ol>
                 </nav>
             </div>
@@ -38,7 +56,7 @@
                     <div class="login-head">
                         <h3>{{ __('translate.Sign In') }}</h3>
 
-                        <span>{{ __('translate.Welcome to CARBAZ') }}</span>
+                        <span></span>
                     </div>
 
                     <form method="POST" action="{{ route('user-login') }}">
@@ -50,7 +68,7 @@
                                     <span>*</span> </label>
                                     @if(env('APP_MODE') == 'DEMO')
                                     <input type="email" class="form-control" id="exampleFormControlInput1"
-                                    placeholder="{{ __('translate.Email address') }}" name="email" value="user@gmail.com">
+                                    placeholder="{{ __('Email') }}" name="email" value="user@gmail.com">
                                     @else
                                     <input type="email" class="form-control" id="exampleFormControlInput1"
                                     placeholder="{{ __('translate.Email address') }}" name="email" value="{{ old('email') }}">

@@ -285,52 +285,72 @@ $(function () {
 
   // inventory-details-slick
 
-  $(".inventory-details-slick-for").slick({
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    fade: true,
-    autoplay: true,
-    speed: 1000,
-    asNavFor: ".inventory-details-slick-nav",
-  });
+  const $invFor = $(".inventory-details-slick-for");
+  const $invNav = $(".inventory-details-slick-nav");
 
-  $(".inventory-details-slick-nav").slick({
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    asNavFor: ".inventory-details-slick-for",
-    dots: true,
-    focusOnSelect: true,
-    arrows: false,
-    dots: false,
-    centerMode: true,
-    centerPadding: "0px",
-    speed: 2000,
-    responsive: [
-      {
-        breakpoint: 992,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
+  const invIsSwiper = ($el) => {
+    try {
+      if (!$el || !$el.length) return false;
+      return (
+        $el.hasClass("swiper") ||
+        $el.find(".swiper-wrapper").length > 0 ||
+        $el.find(".swiper-slide").length > 0
+      );
+    } catch (e) {
+      return false;
+    }
+  };
 
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 576,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  });
+  if (!(invIsSwiper($invFor) || invIsSwiper($invNav))) {
+    if ($invFor.length && !$invFor.hasClass("slick-initialized")) {
+      $invFor.slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false,
+        fade: true,
+        autoplay: true,
+        speed: 1000,
+        asNavFor: $invNav.length ? ".inventory-details-slick-nav" : null,
+      });
+    }
+
+    if ($invNav.length && !$invNav.hasClass("slick-initialized")) {
+      $invNav.slick({
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        asNavFor: $invFor.length ? ".inventory-details-slick-for" : null,
+        focusOnSelect: true,
+        arrows: false,
+        dots: false,
+        centerMode: true,
+        centerPadding: "0px",
+        speed: 2000,
+        responsive: [
+          {
+            breakpoint: 992,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 1,
+            },
+          },
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 1,
+            },
+          },
+          {
+            breakpoint: 576,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 1,
+            },
+          },
+        ],
+      });
+    }
+  }
 
   // $('.dealer-two-slick
   $(".payment-method-slick").slick({

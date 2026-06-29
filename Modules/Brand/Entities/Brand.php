@@ -4,6 +4,7 @@ namespace Modules\Brand\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Brand\Entities\BrandTranslation;
 use Modules\Car\Entities\Car;
 
@@ -26,12 +27,12 @@ class Brand extends Model
         return $this->cars->count();
     }
 
-    public function translate(){
-        return $this->belongsTo(BrandTranslation::class, 'id', 'brand_id')->where('lang_code', admin_lang());
+    public function translate(): HasOne{
+        return $this->hasOne(BrandTranslation::class, 'brand_id', 'id')->where('lang_code', admin_lang());
     }
 
-    public function front_translate(){
-        return $this->belongsTo(BrandTranslation::class, 'id', 'brand_id')->where('lang_code', front_lang());
+    public function front_translate(): HasOne{
+        return $this->hasOne(BrandTranslation::class, 'brand_id', 'id')->where('lang_code', front_lang());
     }
 
     public function getNameAttribute()

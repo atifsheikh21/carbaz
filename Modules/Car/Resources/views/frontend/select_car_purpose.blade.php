@@ -15,7 +15,7 @@
             width: 100%;
         }
         .select-purpose-simple__card{
-            background: #fff;
+            background: #d5d4d4;
             border-radius: 0;
             padding: 36px 24px;
             min-height: 220px;
@@ -29,8 +29,34 @@
             margin-top: 0;
         }
         .select-purpose-simple__actions .thm-btn-two{
-            min-width: 190px;
+            width: 250px;
             text-align: center;
+            border-radius: 12px !important;
+            overflow: hidden;
+        }
+        .select-purpose-simple__actions .thm-btn-two::before,
+        .select-purpose-simple__actions .thm-btn-two::after{
+            border-radius: 12px !important;
+        }
+        .select-purpose-simple__actions .select-purpose-simple__part-btn{
+            background: #00aeef !important;
+            border-color: #00aeef !important;
+        }
+        .select-purpose-simple__actions .select-purpose-simple__part-btn::before{
+            background: #00aeef !important;
+        }
+        .select-purpose-simple__actions .select-purpose-simple__part-btn::after{
+            background: #00aeef !important;
+        }
+        .select-purpose-simple__actions .select-purpose-simple__part-btn:hover{
+            background: #0099d6 !important;
+            border-color: #0099d6 !important;
+        }
+        .select-purpose-simple__actions .select-purpose-simple__part-btn:hover::before{
+            background: #0099d6 !important;
+        }
+        .select-purpose-simple__actions .select-purpose-simple__part-btn:hover::after{
+            background: #0099d6 !important;
         }
         @media (max-width: 767.98px){
             .select-purpose-simple{
@@ -45,7 +71,13 @@
                 padding: 28px 18px;
             }
             .select-purpose-simple__actions .thm-btn-two{
-                min-width: 170px;
+                width: 250px;
+            }
+            main > .dashboard{
+                min-height: calc(100dvh - 120px);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
             }
         }
     </style>
@@ -82,15 +114,16 @@
                                     @endif
                                 </div>
                             </div>
+
                         @endif
 
                         @if($__canSellPart)
                             <div class="select-purpose-simple__card">
                                 <div class="select-purpose-simple__actions">
                                     @if(Auth::guard('web')->user()?->is_dealer || $__feeFreeModeEnabled)
-                                        <a href="{{ route('user.car-part.create') }}" class="thm-btn-two">{{ __('Place Vehicle Part Ad') }}</a>
+                                        <a href="{{ route('user.car-part.create') }}" class="thm-btn-two select-purpose-simple__part-btn">{{ __('Place Vehicle Part Ad') }}</a>
                                     @else
-                                        <a href="javascript:;" class="thm-btn-two" data-bs-toggle="modal" data-bs-target="#individualAdPaidModal">{{ __('Place Vehicle Part Ad') }}</a>
+                                        <a href="javascript:;" class="thm-btn-two select-purpose-simple__part-btn" data-bs-toggle="modal" data-bs-target="#individualAdPaidModal">{{ __('Place Vehicle Part Ad') }}</a>
                                     @endif
                                 </div>
                             </div>
@@ -119,7 +152,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="payment-modal-item">
-                        <h4>{{ __('This ad is currently free to publish because fee free mode is enabled from admin settings.') }}</h4>
+                        <h4>{{ __('This ad is currently free to publish.') }}</h4>
                     </div>
 
                     <div class="payment-modal-from-item">

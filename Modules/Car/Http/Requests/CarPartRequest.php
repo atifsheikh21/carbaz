@@ -11,30 +11,36 @@ class CarPartRequest extends FormRequest
         if ($this->isMethod('post')) {
             return [
                 'title' => 'required|string|max:255',
-                'brand_id' => 'nullable|integer',
+                'description' => 'required|string',
+                'brand_id' => 'nullable|string|max:255',
+                'car_model' => 'nullable|string|max:255',
+                'from_year' => 'nullable|integer|min:1900|max:2100',
+                'to_year' => 'nullable|integer|min:1900|max:2100',
+                'warranty_months' => 'nullable|integer|min:1|max:144',
                 'city_id' => 'required|exists:cities,id',
                 'condition' => 'required|string|max:50',
                 'regular_price' => 'required|numeric',
                 'part_number' => 'nullable|string|max:255',
-                'compatibility' => 'nullable|string|max:255',
-                'description' => 'required|string',
-                'images' => 'required|array|min:1',
-                'images.*' => 'nullable|mimes:jpg,png,webp,jpeg|max:5120',
+                'images' => 'nullable|array|max:8',
+                'images.*' => 'nullable|mimes:jpg,png,jpeg,webp|max:5120',
             ];
         }
 
         if ($this->isMethod('put')) {
             return [
                 'title' => 'required|string|max:255',
-                'brand_id' => 'nullable|integer',
+                'brand_id' => 'nullable|string|max:255',
+                'car_model' => 'nullable|string|max:255',
+                'from_year' => 'nullable|integer|min:1900|max:2100',
+                'to_year' => 'nullable|integer|min:1900|max:2100',
+                'warranty_months' => 'nullable|integer|min:1|max:144',
                 'city_id' => 'required|exists:cities,id',
                 'condition' => 'required|string|max:50',
                 'regular_price' => 'required|numeric',
                 'part_number' => 'nullable|string|max:255',
-                'compatibility' => 'nullable|string|max:255',
                 'description' => 'required|string',
-                'images' => 'nullable|array',
-                'images.*' => 'nullable|mimes:jpg,png,webp,jpeg|max:5120',
+                'images' => 'nullable|array|max:8',
+                'images.*' => 'nullable|mimes:jpg,png,jpeg,webp|max:5120',
             ];
         }
 

@@ -2998,3 +2998,21 @@
     justify-content: space-between;
   }
 }
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .header {
+    display: none !important;
+  }
+  .mobile-header {
+    display: block !important;
+  }
+  .d-md-block {
+    display: none !important;
+  }
+  .d-md-none {
+    display: block !important;
+  }
+  .container {
+    max-width: 100% !important;
+  }
+}

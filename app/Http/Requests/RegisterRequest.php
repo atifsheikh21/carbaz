@@ -34,6 +34,9 @@ class RegisterRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => ['required', 'string', 'max:50'],
+            'phone_country_code' => ['required', 'in:+353,+44'],
+            'phone_number' => ['required', 'string', 'max:50'],
             'password' => ['required', 'confirmed', 'min:4', 'max:100'],
             'user_type' => ['required', 'in:dealer,individual'],
             'city_id' => [
@@ -52,12 +55,25 @@ class RegisterRequest extends FormRequest
 
             'vehicle_company_name' => ($isDealer && $isVehicleSeller) ? ['required', 'string', 'max:255'] : ['nullable', 'string', 'max:255'],
             'vehicle_company_address' => ($isDealer && $isVehicleSeller) ? ['required', 'string', 'max:220'] : ['nullable', 'string', 'max:220'],
+            'vehicle_company_postal_code' => ['nullable', 'string', 'max:50'],
 
             'part_company_name' => ($isDealer && $isPartSeller) ? ['required', 'string', 'max:255'] : ['nullable', 'string', 'max:255'],
             'part_company_address' => ($isDealer && $isPartSeller) ? ['required', 'string', 'max:220'] : ['nullable', 'string', 'max:220'],
+            'part_company_postal_code' => ['nullable', 'string', 'max:50'],
 
             'g-recaptcha-response'=>new Captcha()
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $code = trim((string) $this->input('phone_country_code'));
+        $num = trim((string) $this->input('phone_number'));
+
+        if ($this->missing('phone') || trim((string) $this->input('phone')) === '') {
+            $combined = trim(($code ? $code : '+353') . ' ' . $num);
+            $this->merge(['phone' => $combined]);
+        }
     }
 
     public function withValidator($validator)
@@ -83,6 +99,7 @@ class RegisterRequest extends FormRequest
             'name.required' => trans('translate.Name is required'),
             'email.required' => trans('translate.Email is required'),
             'email.unique' => trans('translate.Email already exist'),
+            'phone.required' => trans('translate.Phone is required'),
             'password.required' => trans('translate.Password is required'),
             'password.confirmed' => trans('translate.Confirm password does not match'),
             'password.min' => trans('translate.You have to provide minimum 4 character password'),

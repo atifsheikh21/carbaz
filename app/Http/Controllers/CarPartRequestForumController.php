@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\CarPartRequest;
 use App\Models\CarPartRequestReply;
+use App\Models\CarPartRequestVote;
+use App\Models\CarPartRequestReplyVote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -80,11 +82,29 @@ class CarPartRequestForumController extends Controller
 
     public function show($id)
     {
-        $requestModel = CarPartRequest::with(['user', 'replies.user'])
+        $requestModel = CarPartRequest::with(['user', 'replies.user', 'replies.votes', 'votes'])
             ->findOrFail($id);
 
+        $relatedQuestions = CarPartRequest::where('id', '!=', $id)
+            ->where(function ($q) use ($requestModel) {
+                $q->where('car_make', $requestModel->car_make)
+                  ->orWhere('car_model', $requestModel->car_model);
+            })
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        $userId = Auth::guard('web')->id();
+        $myRequestVote = $userId ? CarPartRequestVote::where('car_part_request_id', $id)->where('user_id', $userId)->value('type') : null;
+        $myReplyVotes = $userId ? CarPartRequestReplyVote::where('user_id', $userId)
+            ->whereIn('car_part_request_reply_id', $requestModel->replies->pluck('id'))
+            ->pluck('type', 'car_part_request_reply_id') : collect();
+
         return view('car_part_requests.show', [
-            'request' => $requestModel,
+            'request'        => $requestModel,
+            'relatedQuestions' => $relatedQuestions,
+            'myRequestVote'  => $myRequestVote,
+            'myReplyVotes'   => $myReplyVotes,
         ]);
     }
 
@@ -93,7 +113,7 @@ class CarPartRequestForumController extends Controller
         $requestModel = CarPartRequest::findOrFail($id);
 
         $validated = $request->validate([
-            'message' => ['required', 'string'],
+            'message'     => ['required', 'string'],
             'offer_price' => ['nullable', 'numeric', 'min:0'],
         ]);
 
@@ -101,14 +121,143 @@ class CarPartRequestForumController extends Controller
 
         $reply = new CarPartRequestReply();
         $reply->car_part_request_id = $requestModel->id;
-        $reply->user_id = $user->id;
-        $reply->message = $validated['message'];
+        $reply->user_id  = $user->id;
+        $reply->message  = $validated['message'];
         $reply->offer_price = $validated['offer_price'] ?? null;
         $reply->save();
 
-        $notification = trans('translate.Reply submitted successfully');
-        $notification = ['messege' => $notification, 'alert-type' => 'success'];
-
+        $notification = ['messege' => trans('translate.Reply submitted successfully'), 'alert-type' => 'success'];
         return redirect()->back()->with($notification);
+    }
+
+    public function editRequest($id)
+    {
+        $requestModel = CarPartRequest::findOrFail($id);
+        $this->authorizeOwner($requestModel->user_id);
+        return view('car_part_requests.edit_request', ['requestModel' => $requestModel]);
+    }
+
+    public function updateRequest(Request $request, $id)
+    {
+        $requestModel = CarPartRequest::findOrFail($id);
+        $this->authorizeOwner($requestModel->user_id);
+
+        $validated = $request->validate([
+            'title'            => ['required', 'string', 'max:255'],
+            'part_description' => ['required', 'string'],
+            'car_make'         => ['nullable', 'string', 'max:255'],
+            'car_model'        => ['nullable', 'string', 'max:255'],
+            'car_year'         => ['nullable', 'string', 'max:255'],
+            'additional_notes' => ['nullable', 'string'],
+        ]);
+
+        $requestModel->update($validated);
+
+        $notification = ['messege' => 'Post updated successfully.', 'alert-type' => 'success'];
+        return redirect()->route('car-part-requests.show', $requestModel->id)->with($notification);
+    }
+
+    public function deleteRequest($id)
+    {
+        $requestModel = CarPartRequest::findOrFail($id);
+        $this->authorizeOwner($requestModel->user_id);
+
+        $requestModel->replies()->delete();
+        $requestModel->votes()->delete();
+        $requestModel->delete();
+
+        $notification = ['messege' => 'Post deleted successfully.', 'alert-type' => 'success'];
+        return redirect()->route('car-part-requests.index')->with($notification);
+    }
+
+    public function editReply($id)
+    {
+        $reply = CarPartRequestReply::findOrFail($id);
+        $this->authorizeOwner($reply->user_id);
+        return response()->json(['message' => $reply->message, 'offer_price' => $reply->offer_price]);
+    }
+
+    public function updateReply(Request $request, $id)
+    {
+        $reply = CarPartRequestReply::findOrFail($id);
+        $this->authorizeOwner($reply->user_id);
+
+        $validated = $request->validate([
+            'message'     => ['required', 'string'],
+            'offer_price' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $reply->update($validated);
+
+        $notification = ['messege' => 'Reply updated successfully.', 'alert-type' => 'success'];
+        return redirect()->back()->with($notification);
+    }
+
+    public function deleteReply($id)
+    {
+        $reply = CarPartRequestReply::findOrFail($id);
+        $this->authorizeOwner($reply->user_id);
+
+        $reply->votes()->delete();
+        $reply->delete();
+
+        $notification = ['messege' => 'Reply deleted successfully.', 'alert-type' => 'success'];
+        return redirect()->back()->with($notification);
+    }
+
+    public function voteRequest(Request $request, $id)
+    {
+        if (!Auth::guard('web')->check()) {
+            return redirect()->route('login');
+        }
+
+        $requestModel = CarPartRequest::findOrFail($id);
+        $user = Auth::guard('web')->user();
+        $type = $request->input('type') === 'down' ? 'down' : 'up';
+
+        $existing = CarPartRequestVote::where('car_part_request_id', $id)->where('user_id', $user->id)->first();
+        if ($existing) {
+            if ($existing->type === $type) {
+                $existing->delete();
+            } else {
+                $existing->update(['type' => $type]);
+            }
+        } else {
+            CarPartRequestVote::create(['car_part_request_id' => $id, 'user_id' => $user->id, 'type' => $type]);
+        }
+
+        return redirect()->back();
+    }
+
+    public function voteReply(Request $request, $id)
+    {
+        if (!Auth::guard('web')->check()) {
+            return redirect()->route('login');
+        }
+
+        $reply = CarPartRequestReply::findOrFail($id);
+        $user  = Auth::guard('web')->user();
+        $type  = $request->input('type') === 'down' ? 'down' : 'up';
+
+        $existing = CarPartRequestReplyVote::where('car_part_request_reply_id', $id)->where('user_id', $user->id)->first();
+        if ($existing) {
+            if ($existing->type === $type) {
+                $existing->delete();
+            } else {
+                $existing->update(['type' => $type]);
+            }
+        } else {
+            CarPartRequestReplyVote::create(['car_part_request_reply_id' => $id, 'user_id' => $user->id, 'type' => $type]);
+        }
+
+        return redirect()->back();
+    }
+
+    private function authorizeOwner($ownerId)
+    {
+        $user = Auth::guard('web')->user();
+        if (!$user || (int) $user->id !== (int) $ownerId) {
+            abort(403);
+        }
     }
 }

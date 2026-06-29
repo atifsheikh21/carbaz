@@ -38,7 +38,7 @@
                     <!-- Change Password  -->
 
                     <div class="row login-bg">
-                        <div class="col-lg-6">
+                        <div class="col-lg-12">
                             <div class="login-head">
                                 <h3>{{ __('translate.Change your Password') }}</h3>
 
@@ -93,11 +93,7 @@
 
                         </div>
 
-                        <div class="col-lg-6">
-                            <div class="login-img">
-                                <img src="{{ getImageOrPlaceholder($setting->login_page_bg, '571x708') }}" alt="img">
-                            </div>
-                        </div>
+                        
                     </div>
 
 

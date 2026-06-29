@@ -36,7 +36,33 @@ class ProfileController extends Controller
 
         $total_featured_car = Car::where('agent_id', $user->id)->where('is_featured', 'enable')->count();
 
-        $total_wishlist = Wishlist::where('user_id', $user->id)->count();
+        $wishlists = Wishlist::where('user_id', $user->id)->get();
+
+        $wishlist_car_arr = array();
+        $wishlist_part_arr = array();
+
+        foreach ($wishlists as $wishlist) {
+            if ($wishlist->car_id > 0) {
+                $wishlist_car_arr[] = $wishlist->car_id;
+            }
+            if ($wishlist->car_part_id > 0) {
+                $wishlist_part_arr[] = $wishlist->car_part_id;
+            }
+        }
+
+        $valid_wishlist_cars = Car::where(function ($query) {
+            $query->where('expired_date', null)
+                ->orWhere('expired_date', '>=', date('Y-m-d'));
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+            ->whereIn('id', $wishlist_car_arr)->count();
+
+        $valid_wishlist_parts = CarPart::where(function ($query) {
+            $query->where('expired_date', null)
+                ->orWhere('expired_date', '>=', date('Y-m-d'));
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+            ->whereIn('id', $wishlist_part_arr)->count();
+
+        $total_wishlist = $valid_wishlist_cars + $valid_wishlist_parts;
 
         return view('profile.dashboard', ['user' => $user, 'cars' => $cars, 'total_car' => $total_car, 'total_car_part' => $total_car_part, 'total_featured_car' => $total_featured_car, 'total_wishlist' => $total_wishlist]);
     }
@@ -57,19 +83,34 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
+        $code = trim((string) $request->input('phone_country_code'));
+        $num = trim((string) $request->input('phone_number'));
+
+        if (($request->missing('phone') || trim((string) $request->input('phone')) === '') && ($code !== '' || $num !== '')) {
+            $combined = trim(($code ? $code : '+353') . ' ' . $num);
+            $request->merge(['phone' => $combined]);
+        }
+
         $rules = [
             'name'=>'required',
             'email'=>'required',
             'phone'=>'required',
+            'phone_country_code' => 'required|in:+353,+44',
+            'phone_number' => 'required|string|max:50',
+            'city_id' => 'nullable|integer',
             'vehicle_company_name' => 'nullable|string|max:255',
             'vehicle_company_address' => 'nullable|string|max:220',
+            'vehicle_company_postal_code' => 'nullable|string|max:50',
             'part_company_name' => 'nullable|string|max:255',
             'part_company_address' => 'nullable|string|max:220',
+            'part_company_postal_code' => 'nullable|string|max:50',
         ];
         $customMessages = [
             'name.required' => trans('translate.Name is required'),
             'email.required' => trans('translate.Email is required'),
             'phone.required' => trans('translate.Phone is required'),
+            'phone_country_code.required' => trans('translate.Phone is required'),
+            'phone_number.required' => trans('translate.Phone is required'),
         ];
         $this->validate($request, $rules,$customMessages);
 
@@ -77,11 +118,30 @@ class ProfileController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
 
+        if ($request->has('city_id')) {
+            $user->city_id = $request->city_id;
+        }
+
         $user->about_me = $request->about_me;
-        $user->vehicle_company_name = $request->vehicle_company_name;
-        $user->vehicle_company_address = $request->vehicle_company_address;
-        $user->part_company_name = $request->part_company_name;
-        $user->part_company_address = $request->part_company_address;
+
+        if ($request->has('vehicle_company_name')) {
+            $user->vehicle_company_name = $request->vehicle_company_name;
+        }
+        if ($request->has('vehicle_company_address')) {
+            $user->vehicle_company_address = $request->vehicle_company_address;
+        }
+        if ($request->has('vehicle_company_postal_code')) {
+            $user->vehicle_company_postal_code = $request->vehicle_company_postal_code;
+        }
+        if ($request->has('part_company_name')) {
+            $user->part_company_name = $request->part_company_name;
+        }
+        if ($request->has('part_company_address')) {
+            $user->part_company_address = $request->part_company_address;
+        }
+        if ($request->has('part_company_postal_code')) {
+            $user->part_company_postal_code = $request->part_company_postal_code;
+        }
 
         if ($request->has('instagram')) {
             $user->instagram = $request->instagram;
@@ -121,7 +181,7 @@ class ProfileController extends Controller
 
         $notification= trans('translate.Your profile updated successfully');
         $notification=array('messege'=>$notification,'alert-type'=>'success');
-        return redirect()->back()->with($notification);
+        return redirect()->route('home')->with($notification);
     }
 
     public function change_password(Request $request)
@@ -150,7 +210,7 @@ class ProfileController extends Controller
 
             $notification = trans('translate.Password change successfully');
             $notification=array('messege'=>$notification,'alert-type'=>'success');
-            return redirect()->back()->with($notification);
+            return redirect()->route('home')->with($notification);
 
         }else{
             $notification = trans('translate.Current password does not match');
@@ -162,7 +222,7 @@ class ProfileController extends Controller
     public function upload_user_avatar(Request $request){
 
         $rules = [
-            'image' => 'sometimes|required|mimes:jpeg,png,jpg|max:1024'
+            'image' => 'sometimes|required|mimes:jpeg,png,jpg,webp|max:2048'
         ];
         $customMessages = [
             'image.required' => trans('translate.Image is required'),
@@ -178,7 +238,10 @@ class ProfileController extends Controller
         }
 
         $notification = trans('translate.Image updated successfully');
-        return response()->json(['message' => $notification]);
+        return response()->json([
+            'message' => $notification,
+            'image_url' => getImageOrPlaceholder($user->image, '68x68'),
+        ]);
     }
 
 
@@ -282,18 +345,37 @@ class ProfileController extends Controller
 
         $user = Auth::guard('web')->user();
         $wishlists = Wishlist::where(['user_id' => $user->id])->get();
-        $wishlist_arr = array();
+
+        $wishlist_car_arr = array();
+        $wishlist_part_arr = array();
+
         foreach($wishlists as $wishlist){
-            $wishlist_arr [] = $wishlist->car_id;
+            if($wishlist->car_id > 0){
+                $wishlist_car_arr [] = $wishlist->car_id;
+            }
+            if($wishlist->car_part_id > 0){
+                $wishlist_part_arr [] = $wishlist->car_part_id;
+            }
         }
 
         $cars = Car::with('dealer', 'brand')->where(function ($query) {
             $query->where('expired_date', null)
                 ->orWhere('expired_date', '>=', date('Y-m-d'));
-        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->whereIn('id', $wishlist_arr)->get();
+        })->where(['status' => 'enable', 'approved_by_admin' => 'approved'])->whereIn('id', $wishlist_car_arr)->get();
 
+        $carParts = \App\Models\CarPart::with('brand', 'agent', 'translations', 'galleries')
+            ->where(function ($query) {
+                $query->where('expired_date', null)
+                    ->orWhere('expired_date', '>=', date('Y-m-d'));
+            })
+            ->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+            ->whereIn('id', $wishlist_part_arr)
+            ->get();
 
-        return view('profile.wishlists', ['cars' => $cars]);
+        return view('profile.wishlists', [
+            'cars' => $cars,
+            'carParts' => $carParts
+        ]);
 
     }
 
@@ -301,6 +383,35 @@ class ProfileController extends Controller
 
         $user = Auth::guard('web')->user();
         Wishlist::where(['user_id' => $user->id, 'car_id' => $id])->delete();
+
+        $notification = trans('translate.Item remove to favourite list');
+        $notification = array('messege'=>$notification,'alert-type'=>'success');
+        return redirect()->back()->with($notification);
+    }
+
+    public function add_to_car_part_wishlist($id){
+        $user = Auth::guard('web')->user();
+        $is_exist = Wishlist::where(['user_id' => $user->id, 'car_part_id' => $id])->count();
+        if($is_exist == 0){
+            $wishlist = new Wishlist();
+            $wishlist->car_part_id = $id;
+            $wishlist->car_id = 0;
+            $wishlist->user_id = $user->id;
+            $wishlist->save();
+
+            $notification = trans('translate.Item added to favourite list');
+            $notification=array('messege'=>$notification,'alert-type'=>'success');
+            return redirect()->back()->with($notification);
+        }else{
+            $notification = trans('translate.Already added to favourite list');
+            $notification=array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->back()->with($notification);
+        }
+    }
+
+    public function remove_car_part_wishlist($id){
+        $user = Auth::guard('web')->user();
+        Wishlist::where(['user_id' => $user->id, 'car_part_id' => $id])->delete();
 
         $notification = trans('translate.Item remove to favourite list');
         $notification = array('messege'=>$notification,'alert-type'=>'success');

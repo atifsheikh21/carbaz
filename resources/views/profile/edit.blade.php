@@ -41,9 +41,16 @@
                 <div class="col-lg-9">
                     <!-- Profile Settings  -->
 
-                    <div class="row join-a-dealer-bg">
-                        <div class="col-lg-8">
+                    <div class="join-a-dealer-bg">
+                        <div class="row">
+                        <div class="col-12 col-sm-8">
                             <h3 class="dealers-information">{{ __('translate.Profile Information') }}</h3>
+
+                            <div style="margin:-6px 0 14px; font-weight:600;">
+                                <span>{{ __('Seller Type') }}: {{ $user->is_dealer ? __('Dealer') : __('Private') }}</span>
+                                <span style="margin:0 10px;">|</span>
+                                <span>{{ __('translate.Country') }}: {{ $ireland?->name ?? 'Ireland' }}</span>
+                            </div>
 
 
                             <form action="{{ route('user.update-profile') }}" enctype="multipart/form-data" method="POST">
@@ -75,31 +82,32 @@
                                                 {{ __('translate.Phone number') }}
                                                 <span>*</span></label>
 
-                                            <input type="text" value="{{ html_decode($user->phone) }}" class="form-control"
-                                                id="exampleFormControlInput3" name="phone">
+                                            <div class="d-flex" style="gap:10px;">
+                                                <select class="form-control @error('phone_country_code') is-invalid @enderror" id="phone_country_code" name="phone_country_code" style="max-width: 140px;">
+                                                    <option value="+353" {{ old('phone_country_code', '+353') === '+353' ? 'selected' : '' }}>Ireland (+353)</option>
+                                                    <option value="+44" {{ old('phone_country_code') === '+44' ? 'selected' : '' }}>UK (+44)</option>
+                                                </select>
+                                                <input type="text" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number"
+                                                    placeholder="{{ __('translate.Phone number') }}" name="phone_number" value="{{ old('phone_number') }}">
+                                            </div>
+                                            <input type="hidden" id="phone" name="phone" value="{{ old('phone', html_decode($user->phone)) }}">
+                                            @error('phone_country_code')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                            @error('phone_number')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                            @error('phone')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
                                     <div class="join-a-dealer-form-item">
-                                        <div class="join-a-dealer-form-inner">
-                                            <label for="user_type" class="form-label">{{ __('User Type') }}
-                                                <span>*</span></label>
-                                            <input type="text" class="form-control" id="user_type" name="user_type" value="{{ $user->is_dealer ? __('translate.Dealer') : __('translate.Individual') }}" readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="join-a-dealer-form-item">
-
-                                        <div class="join-a-dealer-form-inner">
-                                            <label for="country" class="form-label">{{ __('translate.Country') }}
-                                                <span>*</span></label>
-                                            <input type="text" class="form-control" id="country" name="country" value="Ireland" readonly>
-                                        </div>
-
                                         <div class="join-a-dealer-form-inner">
                                             <label for="city_id" class="form-label">{{ __('translate.City') }}
                                                 <span>*</span></label>
-                                            <select class="form-control" id="city_id" name="city_id" disabled>
+                                            <select class="form-control" id="city_id" name="city_id">
                                                 <option value="">{{ __('translate.Select City') }}</option>
                                                 @foreach ($cities as $city)
                                                     <option value="{{ $city->id }}" {{ (string) $user->city_id === (string) $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
@@ -109,37 +117,43 @@
                                     </div>
 
                                     @if ($user->is_dealer)
-                                        <div class="join-a-dealer-form-item">
-                                            <div class="join-a-dealer-form-inner">
-                                                <label for="postal_code" class="form-label">{{ __('Post Code') }}
-                                                    <span>*</span></label>
-                                                <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{ html_decode($user->postal_code) }}" readonly>
-                                            </div>
-                                        </div>
+                                        @if ($user->is_vehicle_seller)
+                                            <div class="join-a-dealer-form-item">
+                                                <div class="join-a-dealer-form-inner">
+                                                    <label for="vehicle_company_name" class="form-label">{{ __('Vehicle company name') }}</label>
+                                                    <input type="text" class="form-control" id="vehicle_company_name" name="vehicle_company_name" value="{{ old('vehicle_company_name', html_decode($user->vehicle_company_name)) }}">
+                                                </div>
 
-                                        <div class="join-a-dealer-form-item">
-                                            <div class="join-a-dealer-form-inner">
-                                                <label for="vehicle_company_name" class="form-label">{{ __('Vehicle company name') }}</label>
-                                                <input type="text" class="form-control" id="vehicle_company_name" name="vehicle_company_name" value="{{ old('vehicle_company_name', html_decode($user->vehicle_company_name)) }}">
-                                            </div>
+                                                <div class="join-a-dealer-form-inner">
+                                                    <label for="vehicle_company_address" class="form-label">{{ __('Vehicle company address') }}</label>
+                                                    <input type="text" class="form-control" id="vehicle_company_address" name="vehicle_company_address" value="{{ old('vehicle_company_address', html_decode($user->vehicle_company_address)) }}">
+                                                </div>
 
-                                            <div class="join-a-dealer-form-inner">
-                                                <label for="vehicle_company_address" class="form-label">{{ __('Vehicle company address') }}</label>
-                                                <input type="text" class="form-control" id="vehicle_company_address" name="vehicle_company_address" value="{{ old('vehicle_company_address', html_decode($user->vehicle_company_address)) }}">
+                                                <div class="join-a-dealer-form-inner">
+                                                    <label for="vehicle_company_postal_code" class="form-label">{{ __('Post Code') }}</label>
+                                                    <input type="text" class="form-control" id="vehicle_company_postal_code" name="vehicle_company_postal_code" value="{{ old('vehicle_company_postal_code', html_decode($user->vehicle_company_postal_code)) }}">
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
 
-                                        <div class="join-a-dealer-form-item">
-                                            <div class="join-a-dealer-form-inner">
-                                                <label for="part_company_name" class="form-label">{{ __('Car part company name') }}</label>
-                                                <input type="text" class="form-control" id="part_company_name" name="part_company_name" value="{{ old('part_company_name', html_decode($user->part_company_name)) }}">
-                                            </div>
+                                        @if ($user->is_part_seller)
+                                            <div class="join-a-dealer-form-item">
+                                                <div class="join-a-dealer-form-inner">
+                                                    <label for="part_company_name" class="form-label">{{ __('Car part company name') }}</label>
+                                                    <input type="text" class="form-control" id="part_company_name" name="part_company_name" value="{{ old('part_company_name', html_decode($user->part_company_name)) }}">
+                                                </div>
 
-                                            <div class="join-a-dealer-form-inner">
-                                                <label for="part_company_address" class="form-label">{{ __('Car part company address') }}</label>
-                                                <input type="text" class="form-control" id="part_company_address" name="part_company_address" value="{{ old('part_company_address', html_decode($user->part_company_address)) }}">
+                                                <div class="join-a-dealer-form-inner">
+                                                    <label for="part_company_address" class="form-label">{{ __('Car part company address') }}</label>
+                                                    <input type="text" class="form-control" id="part_company_address" name="part_company_address" value="{{ old('part_company_address', html_decode($user->part_company_address)) }}">
+                                                </div>
+
+                                                <div class="join-a-dealer-form-inner">
+                                                    <label for="part_company_postal_code" class="form-label">{{ __('Post Code') }}</label>
+                                                    <input type="text" class="form-control" id="part_company_postal_code" name="part_company_postal_code" value="{{ old('part_company_postal_code', html_decode($user->part_company_postal_code)) }}">
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     @endif
 
                                     <div class="join-a-dealer-form-item">
@@ -160,17 +174,12 @@
                                     <button type="submit" class="thm-btn-two">{{ __('translate.Update') }}</button>
                                 </div>
 
-
-                                </div>
-
-
-
                             </form>
                         </div>
 
 
-                        <div class="col-lg-4">
-                            <div class="upload-picture">
+                        <div class="col-12 col-sm-4">
+                            <div class="upload-picture" id="profile_avatar_section">
                                 <div class="upload-picture-img">
                                     <img id="preview-user-avatar-edit-page" src="{{ getImageOrPlaceholder($user->image, '68x68') }}" alt="img">
                                 </div>
@@ -203,6 +212,7 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                     </div>
 
 
@@ -229,6 +239,78 @@
     (function($) {
         "use strict";
         $(document).ready(function () {
+            const isAvatarOnly = "{{ request()->get('section') }}" === 'avatar';
+            const isMobile = window.matchMedia && window.matchMedia('(max-width: 767.98px)').matches;
+            if (isMobile) {
+                const formCol = document.querySelector('.join-a-dealer-bg .row > .col-12.col-sm-8');
+                const avatarCol = document.querySelector('.join-a-dealer-bg .row > .col-12.col-sm-4');
+
+                if (isAvatarOnly) {
+                    if (formCol) {
+                        formCol.style.display = 'none';
+                    }
+
+                    const avatar = document.getElementById('profile_avatar_section');
+                    if (avatar && typeof avatar.scrollIntoView === 'function') {
+                        avatar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                } else {
+                    if (avatarCol) {
+                        avatarCol.style.display = 'none';
+                    }
+                }
+            }
+
+            function syncPhoneToHidden() {
+                const code = (phoneCountryCode?.value || '').trim();
+                const num = (phoneNumber?.value || '').trim();
+                phoneHidden.value = (code + ' ' + num).trim();
+            }
+
+            function parseOldPhone() {
+                const old = (phoneHidden?.value || '').trim();
+                if (!old) {
+                    syncPhoneToHidden();
+                    return;
+                }
+
+                const m = old.match(/^(\+\d{1,4})\s*(.*)$/);
+                if (m) {
+                    const code = m[1];
+                    const num = (m[2] || '').trim();
+                    if (code === '+353' || code === '+44') {
+                        phoneCountryCode.value = code;
+                        if (!phoneNumber.value) {
+                            phoneNumber.value = num;
+                        }
+                    } else {
+                        if (!phoneNumber.value) {
+                            phoneNumber.value = old;
+                        }
+                    }
+                } else {
+                    if (!phoneNumber.value) {
+                        phoneNumber.value = old;
+                    }
+                }
+
+                syncPhoneToHidden();
+            }
+
+            const phoneCountryCode = document.getElementById('phone_country_code');
+            const phoneNumber = document.getElementById('phone_number');
+            const phoneHidden = document.getElementById('phone');
+
+            if (phoneCountryCode) {
+                phoneCountryCode.addEventListener('change', syncPhoneToHidden);
+            }
+            if (phoneNumber) {
+                phoneNumber.addEventListener('input', syncPhoneToHidden);
+            }
+            if (phoneCountryCode && phoneNumber && phoneHidden) {
+                parseOldPhone();
+            }
+
             $("#upload_user_avatar_edit_form").on("submit", function(e){
                 e.preventDefault();
 
@@ -248,6 +330,12 @@
                     url: "{{ route('user.upload-user-avatar') }}",
                     success: function (response) {
                         toastr.success(response.message)
+                        if (response.image_url) {
+                            var bust = (new Date()).getTime();
+                            var newUrl = response.image_url + (response.image_url.indexOf('?') >= 0 ? '&' : '?') + 'v=' + bust;
+                            $('#preview-user-avatar-edit-page').attr('src', newUrl);
+                            $('#preview-user-avatar').attr('src', newUrl);
+                        }
                     },
                     error: function(response) {
                         console.log(response);

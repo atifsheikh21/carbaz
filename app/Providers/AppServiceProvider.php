@@ -17,6 +17,8 @@ use Modules\Currency\app\Models\MultiCurrency;
 use Modules\Blog\Entities\Blog;
 use View;
 use Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -33,6 +35,29 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Session::put('admin_lang', 'en');
+
+        if (app()->environment('local')) {
+            DB::listen(function ($query) {
+                $sql = strtolower((string) ($query->sql ?? ''));
+                if (str_contains($sql, 'delete') && str_contains($sql, 'cars')) {
+                    try {
+                        $url = request()?->fullUrl();
+                        $method = request()?->method();
+                    } catch (\Throwable $e) {
+                        $url = null;
+                        $method = null;
+                    }
+
+                    Log::error('sql.delete_detected', [
+                        'sql' => $query->sql,
+                        'bindings' => $query->bindings,
+                        'time_ms' => $query->time,
+                        'request_method' => $method,
+                        'request_url' => $url,
+                    ]);
+                }
+            });
+        }
 
         View::composer('*', function($view){
             $setting = Cache::remember('global.setting', 60, function () {

@@ -20,6 +20,7 @@ class CarPartRequest extends Model
         'additional_notes',
         'image',
         'status',
+        'image',
     ];
 
     public function user(): BelongsTo
@@ -30,5 +31,10 @@ class CarPartRequest extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(CarPartRequestReply::class, 'car_part_request_id');
+    }
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(CarPartRequestVote::class, 'car_part_request_id');
     }
 }

@@ -35,6 +35,8 @@
 
                         <li><a href="{{ route('admin.car-part.index') }}"><span class="menu-bar__text"><span class="menu-bar__name">{{ __('translate.Car Parts') }}</span></span></a></li>
 
+                        <li><a href="{{ route('admin.ad-reports.index') }}"><span class="menu-bar__text"><span class="menu-bar__name">Ad Reports</span></span></a></li>
+
                         <li><a href="{{ route('admin.awaiting-car') }}"><span class="menu-bar__text"><span class="menu-bar__name">{{ __('translate.Awaiting Car') }}</span></span></a></li>
 
                         <li><a href="{{ route('admin.featured-car') }}"><span class="menu-bar__text"><span class="menu-bar__name">{{ __('translate.Featured Car') }}</span></span></a></li>

@@ -59,6 +59,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'username' => Str::slug($request->name).'-'.date('Ymdhis'),
             'status' => 'enable',
             'is_banned' => 'no',
@@ -67,8 +68,10 @@ class RegisteredUserController extends Controller
             'is_part_seller' => $isPartSeller ? 1 : 0,
             'vehicle_company_name' => ($isDealer && $isVehicleSeller) ? $request->input('vehicle_company_name') : null,
             'vehicle_company_address' => ($isDealer && $isVehicleSeller) ? $request->input('vehicle_company_address') : null,
+            'vehicle_company_postal_code' => ($isDealer && $isVehicleSeller) ? $request->input('vehicle_company_postal_code') : null,
             'part_company_name' => ($isDealer && $isPartSeller) ? $request->input('part_company_name') : null,
             'part_company_address' => ($isDealer && $isPartSeller) ? $request->input('part_company_address') : null,
+            'part_company_postal_code' => ($isDealer && $isPartSeller) ? $request->input('part_company_postal_code') : null,
             'country' => 'Ireland',
             'city_id' => $request->city_id,
             'address' => null,

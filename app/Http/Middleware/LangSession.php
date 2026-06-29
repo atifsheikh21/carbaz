@@ -47,7 +47,7 @@ class LangSession
         // for currency
         if(!Session::get('currency_code')){
 
-            $default_currency = MultiCurrency::where('is_default', 'Yes')->first();
+            $default_currency = MultiCurrency::where('is_default', 'yes')->first();
 
             if($default_currency) {
                 Session::put('currency_name', $default_currency->currency_name);
@@ -56,17 +56,17 @@ class LangSession
                 Session::put('currency_rate', $default_currency->currency_rate);
                 Session::put('currency_position', $default_currency->currency_position);
             } else {
-                Session::put('currency_name', 'USD');
-                Session::put('currency_code', 'USD');
-                Session::put('currency_icon', '$');
+                Session::put('currency_name', 'EUR');
+                Session::put('currency_code', 'EUR');
+                Session::put('currency_icon', '€');
                 Session::put('currency_rate', 1);
-                Session::put('currency_position', 'left');
+                Session::put('currency_position', 'before_price');
             }
 
         }else{
             $session_currency = MultiCurrency::where('currency_code', Session::get('currency_code'))->first();
             if(!$session_currency){
-                $default_currency = MultiCurrency::where('id', 1)->first();
+                $default_currency = MultiCurrency::where('is_default', 'yes')->first();
 
                 if($default_currency) {
                     Session::put('currency_name', $default_currency->currency_name);
@@ -75,11 +75,11 @@ class LangSession
                     Session::put('currency_rate', $default_currency->currency_rate);
                     Session::put('currency_position', $default_currency->currency_position);
                 } else {
-                    Session::put('currency_name', 'USD');
-                    Session::put('currency_code', 'USD');
-                    Session::put('currency_icon', '$');
+                    Session::put('currency_name', 'EUR');
+                    Session::put('currency_code', 'EUR');
+                    Session::put('currency_icon', '€');
                     Session::put('currency_rate', 1);
-                    Session::put('currency_position', 'left');
+                    Session::put('currency_position', 'before_price');
                 }
             }
         }

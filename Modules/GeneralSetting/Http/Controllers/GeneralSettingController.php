@@ -103,6 +103,9 @@ class GeneralSettingController extends Controller
         $general_setting->timezone = $request->timezone;
         $general_setting->contact_message_mail = $request->contact_message_mail;
         $general_setting->fee_free_mode = $request->fee_free_mode ? 'enable' : 'disable';
+        $general_setting->single_ad_pricing_enabled = $request->single_ad_pricing_enabled ? 'enable' : 'disable';
+        $general_setting->single_ad_price = is_numeric($request->single_ad_price) ? (float) $request->single_ad_price : 0;
+        $general_setting->single_ad_duration_days = is_numeric($request->single_ad_duration_days) ? (int) $request->single_ad_duration_days : 30;
         $general_setting->save();
 
         $notification = trans('translate.Update Successfully');

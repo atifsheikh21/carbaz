@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use Modules\Brand\Entities\Brand;
 use Modules\Car\Http\Requests\CarPartRequest;
 use Modules\City\Entities\City;
@@ -56,7 +57,10 @@ class CarPartController extends Controller
         $carPart->regular_price = $request->regular_price;
         $carPart->offer_price = null;
         $carPart->part_number = $request->part_number;
-        $carPart->compatibility = $request->compatibility;
+        $carPart->car_model = $request->car_model;
+        $carPart->from_year = $request->from_year;
+        $carPart->to_year = $request->to_year;
+        $carPart->warranty_months = $request->warranty_months;
 
         $carPart->approved_by_admin = 'approved';
         $carPart->status = 'enable';
@@ -136,7 +140,10 @@ class CarPartController extends Controller
         $carPart->regular_price = $request->regular_price;
         $carPart->offer_price = null;
         $carPart->part_number = $request->part_number;
-        $carPart->compatibility = $request->compatibility;
+        $carPart->car_model = $request->car_model;
+        $carPart->from_year = $request->from_year;
+        $carPart->to_year = $request->to_year;
+        $carPart->warranty_months = $request->warranty_months;
 
         $carPart->save();
 
@@ -181,6 +188,38 @@ class CarPartController extends Controller
         $carPart->delete();
 
         $notification = trans('translate.Deleted Successfully');
+        $notification = ['messege' => $notification, 'alert-type' => 'success'];
+
+        return redirect()->back()->with($notification);
+    }
+
+    public function deleteGallery(int $id): RedirectResponse
+    {
+        $gallery = CarPartGallery::findOrFail($id);
+        $oldImage = $gallery->image;
+        $carPartId = $gallery->car_part_id;
+
+        if ($oldImage && File::exists(public_path($oldImage))) {
+            File::delete(public_path($oldImage));
+        }
+
+        $gallery->delete();
+
+        if ($carPartId) {
+            $carPart = CarPart::find($carPartId);
+            if ($carPart) {
+                $thumbExistsInGalleries = !empty($carPart->thumb_image)
+                    && CarPartGallery::where('car_part_id', $carPartId)->where('image', $carPart->thumb_image)->exists();
+
+                if ($carPart->thumb_image === $oldImage || !$thumbExistsInGalleries) {
+                    $nextThumb = CarPartGallery::where('car_part_id', $carPartId)->oldest('id')->value('image');
+                    $carPart->thumb_image = $nextThumb ?: '';
+                    $carPart->save();
+                }
+            }
+        }
+
+        $notification = trans('translate.Delete Successfully');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
 
         return redirect()->back()->with($notification);

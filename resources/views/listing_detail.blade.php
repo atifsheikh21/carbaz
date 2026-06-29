@@ -5,6 +5,23 @@
     <meta name="description" content="{{ html_decode($car->seo_description) }}">
 @endsection
 
+<div class="modal fade" id="chatComingSoonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                This feature will be available soon.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('style_section')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <style>
@@ -27,39 +44,166 @@
             flex-direction: column;
             margin-top: 50px !important;
         }
-        .listing-detail-hero .inventory-details-slick-for{
+        .listing-detail-hero #car_gallery_for{
             margin: 0;
+            position: relative;
         }
-        .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img{
-            height: 430px;
+        .listing-detail-hero #car_gallery_for,
+        .listing-detail-hero #car_gallery_nav{
+            overflow: hidden;
+        }
+        .listing-detail-hero #car_gallery_for{
+            height: 360px;
+        }
+        .listing-detail-hero #car_gallery_nav{
+            height: 80px;
+            margin-top: 18px;
+            width: 100%;
+        }
+        .listing-detail-hero #car_gallery_for .swiper-wrapper,
+        .listing-detail-hero #car_gallery_nav .swiper-wrapper{
+            display: flex;
+        }
+        .listing-detail-hero #car_gallery_nav .swiper-wrapper{ height: 100%; }
+        .listing-detail-hero #car_gallery_for .swiper-slide{
+            flex: 0 0 100%;
+            width: 100%;
+        }
+        .listing-detail-hero #car_gallery_nav .swiper-slide{
+            flex: 0 0 120px !important;
+            width: 120px !important;
+            height: 100%;
+        }
+        .listing-detail-hero #car_gallery_nav .inventory-details-slick-img{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .listing-detail-hero #car_gallery_nav .inventory-details-slick-img img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .listing-detail-hero #car_gallery_for .inventory-details-slick-img{
+            height: 100%;
+        }
+        .listing-detail-hero #car_gallery_for .inventory-details-slick-img{
+            position: relative;
+            height: 360px;
             display: flex !important;
             align-items: center;
             justify-content: center;
             border-radius: 16px;
-            border: 8px solid #2f2f2f;
+            border: 6px solid #2f2f2f;
             background: #f4f4f4;
             overflow: hidden;
         }
-        .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img img{
+        .listing-detail-hero #car_gallery_for .inventory-details-slick-img .inventory-details-slick-img-tag{
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 3;
+        }
+        .listing-detail-hero #car_gallery_for .inventory-details-slick-img img{
             width: 100%;
             height: 100%;
             max-height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             border-radius: 0;
             border: 0;
             background: transparent;
         }
-        .listing-detail-hero .inventory-details-slick-nav{
-            margin-top: 18px;
+        .listing-detail-hero .inventory-details-slick-arrow{
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border: 0;
+            border-radius: 10px;
+            background: rgba(0,0,0,.45);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
         }
+        .listing-detail-hero .inventory-details-slick-prev{ left: 18px; }
+        .listing-detail-hero .inventory-details-slick-next{ right: 18px; }
+        .listing-detail-hero .inventory-details-slick-arrow span{
+            font-size: 30px;
+            line-height: 1;
+            margin-top: -2px;
+        }
+        .ad-share-btn{
+                position: absolute;
+    right: 10px;
+    bottom: 18px;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 40px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 6px;
+    background: #ffffff00;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .14);
+        }
+        .ad-share-btn:hover{
+            background: #ffffff00;
+            color: #000;
+        }
+        .ad-share-btn.is-copied{
+            background: #fff;
+        }
+        .ad-share-btn svg{
+            width: 18px;
+            height: 18px;
+            fill: #ffffff;
+            flex: 0 0 auto;
+        }
+        .ad-wishlist-btn{
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            color: #e74c3c;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,.15);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .ad-wishlist-btn:hover{ background: #fff; transform: scale(1.05); }
+        .ad-wishlist-btn svg{ width: 20px; height: 18px; flex: 0 0 auto; }
+        .ad-wishlist-btn.active svg{ fill: #e74c3c; }
+        .listing-detail-hero #car_gallery_nav{ margin-top: 18px; }
         .listing-detail-hero__mobile-image{
             display: none;
         }
-        .listing-detail-hero .inventory-details-slick-nav .inventory-details-slick-img img{
+        .listing-detail-hero #car_gallery_nav .inventory-details-slick-img img{
             border-radius: 10px;
             background: #f4f4f4;
         }
-        .inventory-details .inventory-details-slick-nav .inventory-details-slick-img img{
+        .js-cd-open-lightbox{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+        .inventory-details #car_gallery_nav .inventory-details-slick-img img{
 
             width: 100%;
     height: 80px !important;
@@ -74,19 +218,21 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            text-align: right;
-            margin-top: 100px
+           justify-content: flex-start; */
+    flex-wrap: wrap;
+    text-align: right;
+    margin-top: 100px;
+    margin-left: 65px;
         }
         .listing-detail-hero__meta-type{
             font-weight: 800;
         }
         .listing-detail-hero__meta-type--dealer{
             color: #b60304;
+            font-size: 22px;
         }
         .listing-detail-hero__meta-type--private{
-            color: #23a549;
+            color: #b60304;
             font-size: 20px;
         }
         .listing-detail-hero__meta-sep{
@@ -94,6 +240,9 @@
         }
         .listing-detail-hero__meta-name{
             color: #23a549;
+            font-size: 22px;
+            font-weight: 400;
+            margin-left: 6px;
         }
         .lp-detail__seller{
             display: inline-flex;
@@ -109,12 +258,12 @@
             text-transform: uppercase;
         }
         .lp-detail__seller-sep{
-            color: rgba(0,0,0,.65);
+            color: rgb(184 10 11);
             font-weight: 700;
         }
         .lp-detail__seller-name{
-            color: #23a549;
-            font-weight: 800;
+            color: white;
+            font-weight: 400;
             text-transform: uppercase;
         }
         .listing-detail-hero__badge{
@@ -144,26 +293,64 @@
             display: flex;
             flex-direction: column;
         }
+        .separatorss {
+    display: inline-block;
+    width: 4px;
+    height: 23px;
+    background: #b60304;
+    vertical-align: sub;
+    margin: 0 6px;
+}
+.separatorsss {
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background: #b60304;
+    vertical-align: sub;
+    margin: 0 6px;
+}
         .listing-detail-hero__keyinfo{
             margin-top: 100px;
-            display: grid;
-            gap: 15px 28px;
-            color: #6f6f6f;
-            font-size: 14px;
-            text-transform: lowercase;
-            justify-content: center;
+    display: grid;
+    gap: 12px 44px;
+    color: #6f6f6f;
+    font-size: 17px;
+    text-transform: lowercase;
+    justify-content: center;
+    margin-bottom: 50px;
         }
         .listing-detail-hero__keyinfo div{
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 40px;
             line-height: 1.35;
+            font-weight: 700; /* make values bold */
+            /*justify-content: space-between;  push values to right edge */
+            text-transform: uppercase; /* values uppercase */
+            text-align: right; /* wrap lines aligned to right */
         }
         .listing-detail-hero__keyinfo div span{
-            min-width: 100px;
+            min-width: 110px;
             color: #8b8b8b;
             flex: 0 0 100px;
+            font-weight: 400; /* labels normal */
+            text-transform: lowercase;
+            text-align: right; /* keep label left-aligned */
         }
+        .lp-detail__specs div{
+            font-weight: 700;
+    display: flex;
+    align-items: flex-start;
+    /* justify-content: space-between; */
+    text-transform: uppercase;
+    text-align: right;
+        }
+        .lp-detail__specs div span{
+            font-weight: 400;
+            text-transform: lowercase;
+            text-align: left; /* keep label left-aligned */
+        }
+        .lp-detail__title{ font-weight: 800 !important; text-transform: Uppercase !important; font-size: 16px; }
         .listing-detail-hero__specs{
             margin-top: 22px;
             display: grid;
@@ -189,7 +376,7 @@
             /*margin-top: 100px;*/
             display: flex;
             border: 2px solid #2b2b2b;
-            border-radius: 999px;
+            border-radius: 16px;
             overflow: hidden;
             background: #e3e5ea;
             width: 90%;
@@ -220,7 +407,7 @@
             justify-content: center;
             font-weight: 800;
             letter-spacing: 0.08em;
-            background: #7cb4ff;
+            background: #00AEEF;
             color: white;
             line-height: 1;
             flex: 1 1 0;
@@ -245,19 +432,52 @@
             flex: 1 1 0;
             min-width: 0;
             box-sizing: border-box;
-            border-radius: 15px;
+            border-radius: 9px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            background-color: #e3e2e2;
         }
 
-        .listing-detail-hero__actions a.action-email{ background: #b9bcc3; }
-        .listing-detail-hero__actions a.action-call{ background: #d2cdcd; }
-        .listing-detail-hero__actions a.action-chat{ background: #e9e6e3; }
+.listing-detail-hero__actions a.action-email{ background: #c8c8c8; }
+.listing-detail-hero__actions a.action-call{ background: #d2cdcd; }
+.listing-detail-hero__actions a.action-chat{ background: #b9bcc3; }
+.listing-detail-hero__actions a.action-report{
+    background: #dc3545;
+    color: #ffffff;
+}
 
-        .listing-detail-hero__actions a + a{ border-left: 0; }
+.lp-detail__report-wrap{
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+.lp-detail__report-link{
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+    background: transparent;
+    color: #6c6c6c;
+    border-radius: 0;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    line-height: 1;
+    gap: 8px;
+}
+.lp-detail__report-link:hover{
+    color: #111;
+    background: transparent;
+}
+
+.lp-detail__divider{
+    width: 100%;
+    border-top: 1px solid #e2e2e2;
+    margin: 14px 0;
+    border-bottom: 1px solid black;
+}
         .listing-detail-hero__price{
-            margin-top: 175px;
             font-size: 55px;
             font-weight: 700;
             color: #2b2b2b;
@@ -277,9 +497,11 @@
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 55px;
+            text-transform: uppercase;
+            line-height:1.5;
         }
         .listing-detail-hero__left-subtitle{
-            margin-top: -10px;
+            margin-top: -4px;
             font-size: 16px;
             color: #6b6b6b;
         }
@@ -308,7 +530,7 @@
             margin-bottom: 10px;
         }
         .listing-detail-description__body{
-            color: #4b4b4b;
+            color: #6b6c6c;;
             line-height: 1.8;
             font-size: 18px;
         }
@@ -353,9 +575,9 @@ font-weight: 300;
                 max-width: 100%;
                 display: block;
             }
-            .listing-detail-hero .inventory-details-slick-for,
-            .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img,
-            .listing-detail-hero .inventory-details-slick-for .inventory-details-slick-img img{
+            .listing-detail-hero #car_gallery_for,
+            .listing-detail-hero #car_gallery_for .inventory-details-slick-img,
+            .listing-detail-hero #car_gallery_for .inventory-details-slick-img img{
                 height: auto !important;
                 max-height: none !important;
             }
@@ -364,20 +586,16 @@ font-weight: 300;
                 display: none;
             }
 
-            .listing-detail-hero .inventory-details-slick-for{
+            .listing-detail-hero #car_gallery_for{
                 display: block !important;
             }
 
-            .listing-detail-hero .inventory-details-slick-nav{
+            .listing-detail-hero #car_gallery_nav{
                 display: none !important;
             }
 
-            .listing-detail-hero .inventory-details-slick-for,
-            .listing-detail-hero .inventory-details-slick-nav,
-            .listing-detail-hero .inventory-details-slick-for .slick-list,
-            .listing-detail-hero .inventory-details-slick-for .slick-track,
-            .listing-detail-hero .inventory-details-slick-nav .slick-list,
-            .listing-detail-hero .inventory-details-slick-nav .slick-track,
+            .listing-detail-hero #car_gallery_for,
+            .listing-detail-hero #car_gallery_nav,
             .listing-detail-hero__left-info,
             .listing-detail-hero__right{
                 opacity: 1 !important;
@@ -536,25 +754,31 @@ font-weight: 300;
             bottom: 0 !important;
             left: 0 !important;
             width: 100vw !important;
+            height: 100svh !important;
             height: 100vh !important;
-            z-index: 9999999 !important;
-            display: none;
+            z-index: 9999999;
             overflow: hidden;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .2s ease;
         }
         .cd-lightbox.is-open{
-            display: block;
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
         }
         .cd-lightbox__backdrop{
             position: absolute;
             inset: 0;
             background: rgba(0,0,0,.86);
             backdrop-filter: blur(6px);
+            z-index: 0;
         }
         .cd-lightbox__dialog{
-            position: relative;
+            position: absolute;
+            inset: 0;
             z-index: 1;
-            width: 100%;
-            height: 100%;
             display: flex;
             flex-direction: column;
         }
@@ -581,36 +805,68 @@ font-weight: 300;
             color: #fff;
             font-size: 24px;
             line-height: 1;
+            cursor: pointer;
         }
-        .cd-lightbox__main{
-            flex: 1 1 auto;
-            min-height: 0;
+        .cd-lightbox__infobar{
+            flex: 0 0 auto;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 14px;
+            padding: 10px 16px;
+            color: #fff;
+            background: rgba(0,0,0,.35);
+            border-top: 1px solid rgba(255,255,255,.10);
+        }
+        .cd-lightbox__meta{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 14px;
+            align-items: center;
+            font-size: 12px;
+            opacity: .95;
+        }
+        .cd-lightbox__meta span{ white-space: nowrap; }
+        .cd-lightbox__price{
+            margin-left: auto;
+            font-weight: 800;
+            font-size: 16px;
+            letter-spacing: .02em;
+            white-space: nowrap;
+        }
+        .cd-lightbox__main{
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
             padding: 0 16px;
         }
+        .cd-lightbox__main{ min-height: min(70vh, 640px); }
         .cd-lightbox__swiper{
-            width: min(1100px, 100%);
+            width: 100%;
+            max-width: 1100px;
             height: 100%;
+            margin: 0 auto;
         }
+        .cd-lightbox__swiper{ min-height: min(70vh, 640px); }
+        .cd-lightbox__swiper .swiper-wrapper{height:100%;}
         .cd-lightbox__swiper .swiper-slide{
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .cd-lightbox__swiper .swiper-zoom-container{
-            width: 100%;
+            overflow: hidden;
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-        .cd-lightbox__swiper img{
+        .cd-lightbox__swiper .swiper-slide img{
+            display: block;
             width: 100%;
             height: 100%;
             object-fit: contain;
-            display: block;
+            -webkit-transform: none;
+            transform: none;
+            will-change: auto;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            position: relative;
+            z-index: 1;
         }
         .cd-lightbox__swiper iframe,
         .cd-lightbox__swiper video{
@@ -667,16 +923,50 @@ font-weight: 300;
             font-size: 22px;
             font-weight: 900;
         }
+
+        /* iOS WebKit: disable backdrop blur and relax overflow to avoid compositing blank */
+        @supports (-webkit-touch-callout: none){
+            .cd-lightbox__backdrop{backdrop-filter:none;}
+            .cd-lightbox__main{overflow:visible;}
+            .cd-lightbox__swiper .swiper-slide{overflow:visible;}
+        }
         @media (max-width: 767.98px){
-            .cd-lightbox__main{
-                padding: 0 10px;
-            }
+            .cd-lightbox__main{ padding: 0 10px; min-height: min(60vh, 420px); }
+            .cd-lightbox__swiper{ min-height: min(60vh, 420px); }
             .cd-lightbox__thumbs img{
                 height: 56px;
             }
             .cd-lightbox__swiper iframe,
             .cd-lightbox__swiper video{
                 height: min(60vh, 420px);
+            }
+            #lpContactSeller{
+                height: auto;
+                max-height: 72vh;
+            }
+            #lpContactSeller .offcanvas-body{
+                overflow-y: auto;
+                padding-top: 8px;
+                padding-bottom: 96px;
+            }
+            #lpContactSeller .lp-detail__actions{
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            #lpContactSeller .lp-detail__action{
+                min-height: 48px;
+                width: 100%;
+                white-space: normal;
+                text-align: center;
+            }
+
+            .lp-detail__report-link{
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-weight: 800;
+                letter-spacing: 0.06em;
+                font-size: 10px;
             }
         }
     </style>
@@ -693,6 +983,7 @@ font-weight: 300;
             } else {
                 $__isDealerAd = ((int) ($dealer?->is_dealer ?? 0)) === 1;
             }
+            $__chatUserId = (int) ($dealer?->id ?? ($car->agent_id ?? 0));
             $__sellerDisplayName = $__isDealerAd && !empty($dealer?->is_vehicle_seller) && !empty($dealer?->vehicle_company_name)
                 ? html_decode($dealer->vehicle_company_name)
                 : html_decode($dealer?->name);
@@ -711,13 +1002,35 @@ font-weight: 300;
             }
             $__sellerPhoneRaw = (string) ($dealer?->phone ?? '');
             $__sellerPhone = preg_replace('/\D+/', '', $__sellerPhoneRaw);
+            // Normalize for wa.me: if starts with 0, replace with 353 (Ireland default)
             $__whatsAppPhone = $__sellerPhone;
+            if ($__whatsAppPhone !== '' && str_starts_with($__whatsAppPhone, '0')) {
+                $__whatsAppPhone = '353' . substr($__whatsAppPhone, 1);
+            }
             $__priceRaw = $car->offer_price ?: $car->regular_price;
             $__priceNum = is_numeric($__priceRaw) ? (float) $__priceRaw : null;
             $__picsCount = is_countable($galleries) ? count($galleries) : 0;
             $__thumbs = [];
             foreach ($galleries as $__g) { $__thumbs[] = $__g; }
             $__mainImg = $__thumbs[0] ?? null;
+
+            $__fullLocation = '';
+            if (!empty($dealer?->is_vehicle_seller) && !empty($dealer?->vehicle_company_address)) {
+                $__fullLocation = trim((string) html_decode($dealer->vehicle_company_address));
+            }
+            if ($__fullLocation === '' && !empty($dealer?->address)) {
+                $__fullLocation = trim((string) html_decode($dealer->address));
+            }
+            if ($__fullLocation === '' && !empty($car->address)) {
+                $__fullLocation = trim((string) html_decode($car->address));
+            }
+            if ($__fullLocation !== '' && $__cityOnly) {
+                $lowerLoc = strtolower($__fullLocation);
+                $lowerCity = strtolower((string) $__cityOnly);
+                if (!str_contains($lowerLoc, $lowerCity)) {
+                    $__fullLocation = rtrim($__fullLocation, ', ') . ', ' . (string) $__cityOnly;
+                }
+            }
         @endphp
 
         <div class="lp-mobile__filter">
@@ -751,14 +1064,10 @@ font-weight: 300;
                 <div class="lp-mobile-card__top-left">
                     @if(!empty($dealer?->username))
                         <a href="{{ route('dealer', $dealer->username) }}" class="lp-detail__seller">
-                            <span class="lp-detail__seller-type">{{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}</span>
-                            <span class="lp-detail__seller-sep">|</span>
                             <span class="lp-detail__seller-name">{{ $__sellerName !== '' ? $__sellerName : ' ' }}</span>
                         </a>
                     @else
                         <span class="lp-detail__seller">
-                            <span class="lp-detail__seller-type">{{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}</span>
-                            <span class="lp-detail__seller-sep">|</span>
                             <span class="lp-detail__seller-name">{{ $__sellerName !== '' ? $__sellerName : ' ' }}</span>
                         </span>
                     @endif
@@ -768,14 +1077,18 @@ font-weight: 300;
 
             <div class="lp-detail__media js-cd-open-lightbox" data-cd-index="0" role="button" tabindex="0">
                 @if($__mainImg)
-                    <img class="lp-detail__main-img" src="{{ getImageOrPlaceholder($__mainImg->image, '920x636') }}" alt="img">
+                    <img class="lp-detail__main-img" src="{{ getImageOrPlaceholder($__mainImg->image) }}" alt="img">
                 @else
-                    <img class="lp-detail__main-img" src="{{ getImageOrPlaceholder($car->thumb_image, '920x636') }}" alt="img">
+                    <img class="lp-detail__main-img" src="{{ getImageOrPlaceholder($car->thumb_image) }}" alt="img">
                 @endif
 
                 <div class="lp-detail__heart">
                     @guest('web')
-                        <a href="javascript:;" class="before_auth_wishlist" aria-label="wishlist"></a>
+                        <a href="javascript:;" class="before_auth_wishlist" aria-label="wishlist">
+                            <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
                     @else
                         @php
                             $isInWishlist = false;
@@ -785,13 +1098,20 @@ font-weight: 300;
                                     ->first();
                             }
                         @endphp
-                        <a href="{{ route('user.add-to-wishlist', $car->id) }}" class="{{ $isInWishlist ? 'active' : '' }}" aria-label="wishlist"></a>
+                        <a href="{{ route('user.add-to-wishlist', $car->id) }}" class="{{ $isInWishlist ? 'active' : '' }}" aria-label="wishlist">
+                            <svg width="18" height="16" viewBox="0 0 18 16" fill="{{ $isInWishlist ? 'currentColor' : 'none' }}" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
                     @endguest
                 </div>
 
-                @if($__picsCount > 0)
-                    <div class="lp-detail__pics">+{{ $__picsCount }} PIC</div>
-                @endif
+                <button type="button" class="ad-share-btn js-ad-share-btn" data-share-url="{{ url()->current() }}" data-share-title="{{ html_decode($car->title) ?: config('app.name') }}" aria-label="Share ad">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .24.04.47.09.7L8.04 9.81a3 3 0 1 0 0 4.38l7.12 4.18c-.05.2-.08.41-.08.63a2.92 2.92 0 1 0 2.92-2.92Z"/>
+                    </svg>
+                    <span>Share</span>
+                </button>
             </div>
 
             <div class="lp-detail__thumbs">
@@ -812,18 +1132,61 @@ font-weight: 300;
             </div>
 
             <div class="lp-detail__body">
-                <div class="lp-detail__title">{{ strtoupper(trim((string) html_decode($car->title))) }}</div>
-                <div class="lp-detail__subtitle">{{ __('Go to motorcheck for history check') }}</div>
+                @php
+                    $__titleText = trim((string) html_decode($car->title));
+                    if ($__titleText === '') {
+                        $__mcTitleParts = array_filter([
+                            trim((string) ($car->motorcheck_make ?? '')),
+                            trim((string) ($car->motorcheck_model ?? '')),
+                            trim((string) ($car->motorcheck_version ?? '')),
+                        ]);
+                        $__titleText = trim((string) implode(' ', $__mcTitleParts));
+                    }
+                @endphp
+                <div class="lp-detail__title">{{ $__titleText !== '' ? $__titleText : 'Car' }}</div>
+               <div class="lp-detail__subtitle">{!! __('For history check <a style="color: #867b85 !important;" href="https://www.motorcheck.ie">www.motorcheck.ie</a>') !!}</div>
 
                 <div class="lp-detail__specs">
-                    @if(!empty($car->year))<div><span>year</span>{{ html_decode($car->year) }}</div>@endif
-                    @if(!empty($car->engine_size))<div><span>engine</span>{{ html_decode($car->engine_size) }}</div>@endif
-                    @if(!empty($car->fuel_type))<div><span>fuel type</span>{{ html_decode($car->fuel_type) }}</div>@endif
-                    @if(!empty($car->transmission))<div><span>transmission</span>{{ html_decode($car->transmission) }}</div>@endif
-                    @if(!empty($car->mileage))<div><span>mileage</span>{{ html_decode($car->mileage) }}</div>@endif
-                    @if(!empty($car->body_type))<div><span>body type</span>{{ html_decode($car->body_type) }}</div>@endif
-                    @if(!empty($car->drive))<div><span>drive</span>{{ html_decode($car->drive) }}</div>@endif
-                    @if(!empty($car->interior_color))<div><span>color</span>{{ html_decode($car->interior_color) }}</div>@endif
+                    @php
+                        $__specs = [];
+
+                        $__transText = trim((string) ($car->motorcheck_transmission ?? ''));
+                        if ($__transText === '') $__transText = trim((string) ($car->transmission ?? ''));
+
+                        $__fuelText = trim((string) ($car->motorcheck_fuel ?? ''));
+                        if ($__fuelText === '') $__fuelText = trim((string) ($car->fuel_type ?? ''));
+
+                        $__engineText = trim((string) ($car->engine_size ?? ''));
+                        if ($__engineText === '' && !empty($car->motorcheck_engine_cc)) $__engineText = (string) $car->motorcheck_engine_cc . 'cc';
+
+                        $__bodyText = trim((string) ($car->motorcheck_body ?? ''));
+                        if ($__bodyText === '') $__bodyText = trim((string) ($car->body_type ?? ''));
+
+                        $__colorText = trim((string) ($car->motorcheck_colour ?? ''));
+                        if ($__colorText === '') $__colorText = trim((string) ($car->exterior_color ?? ''));
+                        if ($__colorText === '') $__colorText = trim((string) ($car->interior_color ?? ''));
+
+                        if (!empty($car->mileage)) $__specs[] = ['mileage', html_decode($car->mileage) . ($car->mileage_unit ? ' ' . strtoupper((string) $car->mileage_unit) : '')];
+                        if (!empty($car->year)) $__specs[] = ['year', html_decode($car->year)];
+                        if (!empty($car->motorcheck_make)) $__specs[] = ['make', html_decode($car->motorcheck_make)];
+                        if (!empty($car->motorcheck_model)) $__specs[] = ['model', html_decode($car->motorcheck_model)];
+                        if (!empty($car->motorcheck_version)) $__specs[] = ['version', html_decode($car->motorcheck_version)];
+                        if ($__engineText !== '') $__specs[] = ['engine', html_decode($__engineText)];
+                        if ($__fuelText !== '') $__specs[] = ['fuel type', html_decode($__fuelText)];
+                        if ($__transText !== '') $__specs[] = ['transmission', html_decode($__transText)];
+                        if ($__bodyText !== '') $__specs[] = ['body type', html_decode($__bodyText)];
+                        if (!empty($car->motorcheck_doors)) $__specs[] = ['doors', html_decode($car->motorcheck_doors)];
+                        if (!empty($car->drive)) $__specs[] = ['drive', html_decode($car->drive)];
+                        if ($__colorText !== '') $__specs[] = ['colour', html_decode($__colorText)];
+                        if (!empty($car->motorcheck_no_of_owners)) $__specs[] = ['owners', html_decode($car->motorcheck_no_of_owners)];
+                        if (!empty($car->motorcheck_tax_expiry_date)) $__specs[] = ['tax expiry', html_decode($car->motorcheck_tax_expiry_date)];
+                        if (!empty($car->motorcheck_nct_expiry_date)) $__specs[] = ['nct expiry', html_decode($car->motorcheck_nct_expiry_date)];
+                        if (!empty($car->condition)) $__specs[] = ['condition', html_decode($car->condition)];
+                        
+                    @endphp
+                    @foreach($__specs as $__s)
+                        <div><span>{{ $__s[0] }}</span>{{ $__s[1] }}</div>
+                    @endforeach
                 </div>
 
                 <div class="lp-detail__price-row">
@@ -831,13 +1194,13 @@ font-weight: 300;
                         @if(!empty($dealer?->username))
                             <a href="{{ route('dealer', $dealer->username) }}" class="lp-detail__seller">
                                 <span class="lp-detail__seller-type">{{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}</span>
-                                <span class="lp-detail__seller-sep">|</span>
-                                <span class="lp-detail__seller-name">{{ $__sellerName !== '' ? $__sellerName : ' ' }}</span>
+                                <span class="separatorsss"></span>
+                                <span class="lp-detail__seller-name" style="color: #19a109;">{{ $__sellerName !== '' ? $__sellerName : ' ' }}</span>
                             </a>
                         @else
                             <span class="lp-detail__seller">
                                 <span class="lp-detail__seller-type">{{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}</span>
-                                <span class="lp-detail__seller-sep">|</span>
+                                <span class="separatorsss"></span>
                                 <span class="lp-detail__seller-name">{{ $__sellerName !== '' ? $__sellerName : ' ' }}</span>
                             </span>
                         @endif
@@ -846,21 +1209,58 @@ font-weight: 300;
                         @if(!is_null($__priceNum))
                             €{{ number_format($__priceNum, 0, '.', ',') }}
                         @endif
-                        <div class="lp-detail__warranty">3 Month Warranty</div>
+                        @php
+                            $__dealerFlagRaw = $car?->dealer?->is_dealer ?? null;
+                            $__dealerFlagNorm = strtolower(trim((string) $__dealerFlagRaw));
+                            $__sellerTypeNorm = strtolower(trim((string) ($car->seller_type ?? '')));
+                            $__isDealerSeller = in_array($__dealerFlagNorm, ['1', 'true', 'yes'], true) || str_contains($__sellerTypeNorm, 'dealer');
+                        @endphp
+                        @if($__isDealerSeller && !empty($car->warranty_months))
+                            @php
+                                $__wm = (int) $car->warranty_months;
+                                $__wLabel = '';
+                                if ($__wm > 0 && $__wm % 12 === 0) {
+                                    $__years = (int) ($__wm / 12);
+                                    $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty';
+                                } else {
+                                    $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty';
+                                }
+                            @endphp
+                            <div class="lp-detail__warranty">{{ $__wLabel }}</div>
+                        @endif
                     </div>
                 </div>
 
-                <div class="lp-detail__section">
+                <div class="lp-detail__section" style="margin-top:60px;">
                     <div class="lp-detail__section-title">Description</div>
                     <div class="lp-detail__section-body">
                         {!! clean(html_decode($car->description)) !!}
+                        @if(!$__isDealerAd && ($car->vehicle_source ?? '') === 'unregistered')
+                            <p style="margin-top:14px;font-weight:600;color:#b60304;">{{ __('If importing car from the UK to Ireland, buyers should perform a full history check and verify all UK logbooks, service history, and customs/import paperwork directly with the seller.') }}</p>
+                        @endif
+                    </div>
+
+                    <div class="lp-detail__divider"></div>
+
+                    <div class="lp-detail__report-wrap d-block d-md-none">
+                        @auth('web')
+                            <a class="lp-detail__report-link" href="#" data-bs-toggle="modal" data-bs-target="#reportCarAdModal">
+                                <span aria-hidden="true">⚑</span>
+                                <span>Report Ad</span>
+                            </a>
+                        @else
+                            <a class="lp-detail__report-link" href="{{ route('login') }}">
+                                <span aria-hidden="true">⚑</span>
+                                <span>Report Ad</span>
+                            </a>
+                        @endauth
                     </div>
                 </div>
 
-                @if(!empty($car->address))
+                @if(!empty($__fullLocation))
                     <div class="lp-detail__section">
-                        <div class="lp-detail__section-title">Dealer address</div>
-                        <div class="lp-detail__section-body">{{ html_decode($car->address) }}</div>
+                        <div class="lp-detail__section-title">Locations</div>
+                        <div class="lp-detail__section-body">{{ $__fullLocation }}</div>
                     </div>
                 @endif
             </div>
@@ -880,15 +1280,16 @@ font-weight: 300;
                     @php
                         $__waText = rawurlencode('Hi, I am interested in your car ad: ' . (string) html_decode($car->title));
                     @endphp
+                    <a class="lp-detail__action" href="{{ $__whatsAppPhone ? 'https://wa.me/'.$__whatsAppPhone.'?text='.$__waText : '#' }}" target="_blank">whatsapp</a>
                     @auth('web')
-                        <a class="lp-detail__action" href="{{ $__whatsAppPhone ? 'https://wa.me/'.$__whatsAppPhone.'?text='.$__waText : '#' }}" target="_blank">whatsapp chat</a>
-                        <a class="lp-detail__action" href="{{ $__sellerPhoneRaw ? 'tel:'.html_decode($__sellerPhoneRaw) : '#' }}">call</a>
-                        <a class="lp-detail__action" href="{{ !empty($dealer?->email) ? 'mailto:'.html_decode($dealer?->email) : '#' }}">email</a>
+                        @if($__chatUserId > 0)
+                            <a class="lp-detail__action js-chat-coming-soon" href="javascript:;">chat</a>
+                        @endif
                     @else
-                        <a class="lp-detail__action" href="{{ route('login') }}">whatsapp chat</a>
-                        <a class="lp-detail__action" href="{{ route('login') }}">call</a>
-                        <a class="lp-detail__action" href="{{ route('login') }}">email</a>
+                        <a class="lp-detail__action" href="{{ route('login') }}">chat</a>
                     @endauth
+                    <a class="lp-detail__action" href="{{ $__sellerPhoneRaw ? 'tel:'.html_decode($__sellerPhoneRaw) : '#' }}">call</a>
+                    <a class="lp-detail__action" href="{{ !empty($dealer?->email) ? 'mailto:'.html_decode($dealer?->email) : '#' }}">email</a>
                 </div>
             </div>
         </div>
@@ -902,7 +1303,7 @@ font-weight: 300;
         <div class="container">
         <div class="col-lg-12">
             <div class="inner-banner-df">
-                <h1 class="inner-banner-taitel">{{ __('translate.Car Details') }}</h1>
+                <h1 class="inner-banner-taitel">{{ __('vehicle Details') }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
@@ -927,18 +1328,83 @@ font-weight: 300;
                     @php
                         $__firstGallery = null;
                         foreach ($galleries as $__g) { $__firstGallery = $__g; break; }
+
+                        $__youtubeId = null;
+                        $__rawVideo = trim((string) ($car->video_id ?? ''));
+                        if ($__rawVideo !== '') {
+                            if (preg_match('~^[a-zA-Z0-9_-]{11}$~', $__rawVideo)) {
+                                $__youtubeId = $__rawVideo;
+                            } else {
+                                $url = $__rawVideo;
+                                if (!preg_match('~^https?://~i', $url)) {
+                                    $url = 'https://' . ltrim($url, '/');
+                                }
+                                $parts = @parse_url($url);
+                                if (is_array($parts)) {
+                                    $host = strtolower((string) ($parts['host'] ?? ''));
+                                    $path = (string) ($parts['path'] ?? '');
+                                    $query = (string) ($parts['query'] ?? '');
+
+                                    if (str_contains($host, 'youtu.be')) {
+                                        $id = trim($path, '/');
+                                        $id = explode('/', $id)[0] ?? '';
+                                        $__youtubeId = $id !== '' ? $id : $__rawVideo;
+                                    } elseif (str_contains($host, 'youtube.com') || str_contains($host, 'youtube-nocookie.com')) {
+                                        parse_str($query, $qs);
+                                        if (!empty($qs['v'])) {
+                                            $__youtubeId = (string) $qs['v'];
+                                        } elseif (preg_match('~/(shorts|embed)/([^/?#]+)~i', $path, $m)) {
+                                            $__youtubeId = (string) ($m[2] ?? $__rawVideo);
+                                        } else {
+                                            $__youtubeId = $__rawVideo;
+                                        }
+                                    } else {
+                                        $__youtubeId = $__rawVideo;
+                                    }
+                                } else {
+                                    $__youtubeId = $__rawVideo;
+                                }
+                            }
+                        }
+
+                        $__videoThumbUrl = '';
+                        if (!empty($car->video_image)) {
+                            $__videoThumbUrl = getImageOrPlaceholder($car->video_image, '920x636');
+                        } elseif ($__youtubeId) {
+                            $__videoThumbUrl = 'https://i.ytimg.com/vi/' . rawurlencode($__youtubeId) . '/hqdefault.jpg';
+                        }
+
+                        $__videoThumbSmallUrl = '';
+                        if (!empty($car->video_image)) {
+                            $__videoThumbSmallUrl = getImageOrPlaceholder($car->video_image, '216x148');
+                        } elseif ($__youtubeId) {
+                            $__videoThumbSmallUrl = 'https://i.ytimg.com/vi/' . rawurlencode($__youtubeId) . '/hqdefault.jpg';
+                        }
                     @endphp
                     @if($__firstGallery)
                         <div class="listing-detail-hero__mobile-image">
-                            <img src="{{ getImageOrPlaceholder($__firstGallery->image, '920x636') }}" alt="img">
+                            <img src="{{ getImageOrPlaceholder($__firstGallery->image) }}" alt="img">
                         </div>
                     @endif
-                    <div class="inventory-details-slick-for">
-
-
-
+                    @php
+                        $__imgUrl = function ($path) {
+                            $path = trim((string) $path);
+                            if ($path === '') return '';
+                            if (preg_match('~^https?://~i', $path)) return $path;
+                            if (env('FILESYSTEM_DISK') === 's3') {
+                                try {
+                                    return \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
+                                } catch (\Throwable $e) {
+                                }
+                            }
+                            return asset($path);
+                        };
+                    @endphp
+                    <div class="swiper" id="car_gallery_for">
+                        <div class="swiper-wrapper">
                             @foreach ($galleries as $gallery)
-                                <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ $loop->index }}" role="button" tabindex="0">
+                                <div class="swiper-slide">
+                                    <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ $loop->index }}" role="button" tabindex="0">
 
                                         <div class="inventory-details-slick-img-tag">
                                         <div class="icon-main">
@@ -964,7 +1430,7 @@ font-weight: 300;
                                                                 ->first();
                                                         }
                                                     @endphp
-                                                    <a href="{{ route('user.add-to-wishlist', $car->id) }}" 
+                                                    <a href="{{ route('user.add-to-wishlist', $car->id) }}"
                                                     class="icon {{ $isInWishlist ? 'active' : '' }}">
                                                         <span>
                                                             <svg width="18" height="16" viewBox="0 0 18 16" fill="{{ $isInWishlist ? 'currentColor' : 'none' }}" xmlns="http://www.w3.org/2000/svg">
@@ -979,45 +1445,89 @@ font-weight: 300;
                                         </div>
 
 
-                                    <img src="{{ getImageOrPlaceholder($gallery->image, '920x636') }}" alt="img">
+                                        <img src="{{ $__imgUrl($gallery->image) }}" alt="img">
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            @if($__youtubeId)
+                                <div class="swiper-slide">
+                                    <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ is_countable($galleries) ? count($galleries) : 0 }}" role="button" tabindex="0">
+                                        <span class="inventory-details-vedio">
+                                            <img src="{{ $__videoThumbUrl }}" alt="img">
+                                            <span class="overlay">
+                                                <a class="my-video-links" data-autoplay="true" data-vbtype="video"
+                                                    href="https://youtu.be/{{ $__youtubeId }}">
+                                                    <span>
+                                                        <svg width="80" height="80" viewBox="0 0 80 80" fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M40 76.0001C59.8822 76.0001 76.0001 59.8827 76.0001 40C76.0001 20.1178 59.8827 3.99992 40 3.99992C20.1178 3.99992 3.99992 20.1178 3.99992 40C3.99992 59.8822 20.1178 76.0001 40 76.0001ZM40 80C62.0911 80 80 62.0911 80 40C80 17.9084 62.0911 0 40 0C17.9084 0 0 17.9084 0 40C0 62.0911 17.9084 80 40 80Z" />
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M50.3927 40.0003L31.9984 27.7375V52.2634L50.3927 40.0003ZM54.1089 37.6706C55.7716 38.7791 55.7716 41.2219 54.1089 42.3303L32.3513 56.8357C30.4906 58.0763 27.998 56.742 27.998 54.5057V25.4953C27.998 23.259 30.4906 21.9251 32.3513 23.1657L54.1089 37.6706Z" />
+                                                        </svg>
+                                                    </span>
+                                                </a>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <button type="button" class="inventory-details-slick-arrow inventory-details-slick-prev" aria-label="Previous"><span aria-hidden="true">‹</span></button>
+                        <button type="button" class="inventory-details-slick-arrow inventory-details-slick-next" aria-label="Next"><span aria-hidden="true">›</span></button>
+                        <button type="button" class="ad-share-btn js-ad-share-btn" data-share-url="{{ url()->current() }}" data-share-title="{{ html_decode($car->title) ?: config('app.name') }}" aria-label="Share ad">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11A2.99 2.99 0 1 0 15 5c0 .24.04.47.09.7L8.04 9.81a3 3 0 1 0 0 4.38l7.12 4.18c-.05.2-.08.41-.08.63a2.92 2.92 0 1 0 2.92-2.92Z"/>
+                            </svg>
+                            <span>Share</span>
+                        </button>
+
+                        @guest('web')
+                            <a href="javascript:;" class="ad-wishlist-btn before_auth_wishlist" title="{{ __('translate.Add to Favourite') }}" aria-label="wishlist">
+                                <svg width="20" height="18" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z" stroke="#e74c3c" stroke-width="1.5" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        @else
+                            @php
+                                $__desktopWishlist = false;
+                                if (\Illuminate\Support\Facades\Schema::hasTable('wishlists')) {
+                                    $__desktopWishlist = App\Models\Wishlist::where('car_id', $car->id)
+                                        ->where('user_id', Auth::user()->id)
+                                        ->first();
+                                }
+                            @endphp
+                            <a href="{{ route('user.add-to-wishlist', $car->id) }}"
+                               class="ad-wishlist-btn {{ $__desktopWishlist ? 'active' : '' }}"
+                               title="{{ $__desktopWishlist ? __('translate.Remove from Favourite') : __('translate.Add to Favourite') }}"
+                               aria-label="wishlist">
+                                <svg width="20" height="18" viewBox="0 0 18 16" fill="{{ $__desktopWishlist ? '#e74c3c' : 'none' }}" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z" stroke="#e74c3c" stroke-width="1.5" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        @endguest
+                    </div>
+
+                    <div class="swiper" id="car_gallery_nav">
+                        <div class="swiper-wrapper">
+                            @foreach ($galleries as $gallery)
+                                <div class="swiper-slide">
+                                    <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ $loop->index }}" role="button" tabindex="0">
+                                        <img src="{{ $__imgUrl($gallery->image) }}" alt="img">
+                                    </div>
                                 </div>
                             @endforeach
 
                             @if($car->video_id)
-                                <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ is_countable($galleries) ? count($galleries) : 0 }}" role="button" tabindex="0">
-                                    <span class="inventory-details-vedio">
-                                        <img src="{{ getImageOrPlaceholder($car->video_image, '920x636') }}" alt="img">
-                                        <span class="overlay">
-                                            <a class="my-video-links" data-autoplay="true" data-vbtype="video"
-                                                href="https://youtu.be/{{ $car->video_id }}">
-                                                <span>
-                                                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                            d="M40 76.0001C59.8822 76.0001 76.0001 59.8827 76.0001 40C76.0001 20.1178 59.8827 3.99992 40 3.99992C20.1178 3.99992 3.99992 20.1178 3.99992 40C3.99992 59.8822 20.1178 76.0001 40 76.0001ZM40 80C62.0911 80 80 62.0911 80 40C80 17.9084 62.0911 0 40 0C17.9084 0 0 17.9084 0 40C0 62.0911 17.9084 80 40 80Z" />
-                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                            d="M50.3927 40.0003L31.9984 27.7375V52.2634L50.3927 40.0003ZM54.1089 37.6706C55.7716 38.7791 55.7716 41.2219 54.1089 42.3303L32.3513 56.8357C30.4906 58.0763 27.998 56.742 27.998 54.5057V25.4953C27.998 23.259 30.4906 21.9251 32.3513 23.1657L54.1089 37.6706Z" />
-                                                    </svg>
-                                                </span>
-                                            </a>
-                                        </span>
-                                    </span>
+                                <div class="swiper-slide">
+                                    <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ is_countable($galleries) ? count($galleries) : 0 }}" role="button" tabindex="0">
+                                        <img src="{{ $__videoThumbSmallUrl }}" alt="img">
+                                    </div>
                                 </div>
                             @endif
-                    </div>
-
-                    <div class="inventory-details-slick-nav">
-                        @foreach ($galleries as $gallery)
-                            <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ $loop->index }}" role="button" tabindex="0">
-                                <img src="{{ getImageOrPlaceholder($gallery->image, '216x148') }}" alt="img">
-                            </div>
-                        @endforeach
-
-                        @if($car->video_id)
-                            <div class="inventory-details-slick-img js-cd-open-lightbox" data-cd-index="{{ is_countable($galleries) ? count($galleries) : 0 }}" role="button" tabindex="0">
-                                <img src="{{ getImageOrPlaceholder($car->video_image, '216x148') }}" alt="img">
-                            </div>
-                        @endif
+                        </div>
                     </div>
 
                     <div class="cd-lightbox" id="cdLightbox" aria-hidden="true">
@@ -1032,13 +1542,11 @@ font-weight: 300;
                                     <div class="swiper-wrapper">
                                         @foreach ($galleries as $gallery)
                                             <div class="swiper-slide" data-cd-type="image">
-                                                <div class="swiper-zoom-container">
-                                                    <img loading="lazy" src="{{ getImageOrPlaceholder($gallery->image, '1905x1080') }}" alt="img">
-                                                </div>
+                                                <img src="{{ getImageOrPlaceholder($gallery->image, '1905x1080') }}" alt="img" loading="eager" decoding="async" fetchpriority="high">
                                             </div>
                                         @endforeach
-                                        @if($car->video_id)
-                                            <div class="swiper-slide" data-cd-type="youtube" data-cd-youtube="{{ $car->video_id }}">
+                                        @if($__youtubeId)
+                                            <div class="swiper-slide" data-cd-type="youtube" data-cd-youtube="{{ $__youtubeId }}">
                                                 <iframe loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="video"></iframe>
                                             </div>
                                         @endif
@@ -1047,17 +1555,37 @@ font-weight: 300;
                                     <div class="swiper-button-next"></div>
                                 </div>
                             </div>
+                            <div class="cd-lightbox__infobar" aria-label="Details">
+                                <div class="cd-lightbox__meta">
+                                    @if(!empty($car?->year))
+                                        <span>{{ $car->year }}</span>
+                                    @endif
+                                    @if(!empty($car?->mileage))
+                                        <span>{{ $car->mileage }}{{ !empty($car?->mileage_unit) ? ' '.$car->mileage_unit : '' }}</span>
+                                    @endif
+                                    @if(!empty($car?->fuel_type))
+                                        <span>{{ $car->fuel_type }}</span>
+                                    @endif
+                                    @if(!empty($car?->transmission))
+                                        <span>{{ $car->transmission }}</span>
+                                    @endif
+                                    @if(!empty($car?->engine_size))
+                                        <span>{{ $car->engine_size }}</span>
+                                    @endif
+                                </div>
+                                <div class="cd-lightbox__price">{{ currency($car->regular_price) }}</div>
+                            </div>
                             <div class="cd-lightbox__thumbs">
                                 <div class="swiper" id="cdLightboxThumbs">
                                     <div class="swiper-wrapper">
                                         @foreach ($galleries as $gallery)
                                             <div class="swiper-slide">
-                                                <img loading="lazy" src="{{ getImageOrPlaceholder($gallery->image, '216x148') }}" alt="thumb">
+                                                <img src="{{ getImageOrPlaceholder($gallery->image, '216x148') }}" alt="thumb">
                                             </div>
                                         @endforeach
                                         @if($car->video_id)
                                             <div class="swiper-slide cd-lightbox__thumb--video">
-                                                <img loading="lazy" src="{{ getImageOrPlaceholder($car->video_image, '216x148') }}" alt="video">
+                                                <img src="{{ $__videoThumbSmallUrl }}" alt="video">
                                             </div>
                                         @endif
                                     </div>
@@ -1068,7 +1596,18 @@ font-weight: 300;
 
                     <div class="listing-detail-hero__left-info">
                         <h2 class="listing-detail-hero__left-title">
-                            {{ html_decode($car->title) }}
+                            @php
+                                $__titleText = trim((string) html_decode($car->title));
+                                if ($__titleText === '') {
+                                    $__mcTitleParts = array_filter([
+                                        trim((string) ($car->motorcheck_make ?? '')),
+                                        trim((string) ($car->motorcheck_model ?? '')),
+                                        trim((string) ($car->motorcheck_version ?? '')),
+                                    ]);
+                                    $__titleText = trim((string) implode(' ', $__mcTitleParts));
+                                }
+                            @endphp
+                            {{ $__titleText !== '' ? html_decode($__titleText) : 'Car' }}
                             @php
                                 $cityOnly = null;
                                 if (!empty($car?->city_id)) {
@@ -1084,7 +1623,10 @@ font-weight: 300;
                                 }
                             @endphp
                         </h2>
-                        <div class="listing-detail-hero__left-subtitle">{{ __('Go to motorcheck for history check') }}</div>
+                        <div class="listing-detail-hero__left-subtitle">
+    {!! __('For history check <a style="color: #867b85 !important;" href="https://www.motorcheck.ie">www.motorcheck.ie</a>') !!}
+</div>
+                        
 
                         <div class="listing-detail-hero__meta">
                             @php
@@ -1103,7 +1645,7 @@ font-weight: 300;
                                     <span class="listing-detail-hero__meta-type {{ $__isDealerAd ? 'listing-detail-hero__meta-type--dealer' : 'listing-detail-hero__meta-type--private' }}">
                                         {{ $__isDealerAd ? 'DEALER' : 'PRIVATE' }}
                                     </span>
-                                    <span class="listing-detail-hero__meta-sep">|</span>
+                                    <span class="separatorss"></span>
                                     <span class="listing-detail-hero__meta-name">{{ $__sellerDisplayName }}</span>
                                 </a>
                             @else
@@ -1115,10 +1657,32 @@ font-weight: 300;
                             @endif
                         </div>
 
+                        @php
+                            $fullLocation = '';
+                            if (!empty($dealer?->is_vehicle_seller) && !empty($dealer?->vehicle_company_address)) {
+                                $fullLocation = trim((string) html_decode($dealer->vehicle_company_address));
+                            }
+                            if ($fullLocation === '' && !empty($dealer?->address)) {
+                                $fullLocation = trim((string) html_decode($dealer->address));
+                            }
+                            if ($fullLocation === '' && !empty($car->address)) {
+                                $fullLocation = trim((string) html_decode($car->address));
+                            }
+                            if ($fullLocation !== '' && $cityOnly) {
+                                $lowerLoc = strtolower($fullLocation);
+                                $lowerCity = strtolower((string) $cityOnly);
+                                if (!str_contains($lowerLoc, $lowerCity)) {
+                                    $fullLocation = rtrim($fullLocation, ', ') . ', ' . (string) $cityOnly;
+                                }
+                            }
+                        @endphp
                         <div class="location-mobile" style="margin-top: 160px;">
-                            <div class="listing-detail-description__title">{{ __('translate.Locations') }}</div>
+                            <div class="listing-detail-description__title">{{ __('translate.Description') }}</div>
                             <div class="listing-detail-description__body">
-                                {{ html_decode($car->address) }}
+                                {!! clean(html_decode($car->description)) !!}
+                                @if(!$__isDealerAd && ($car->vehicle_source ?? '') === 'unregistered')
+                                    <p style="margin-top:14px;font-weight:600;color:#b60304;">{{ __('Buyers must verify all UK logbooks and customs paperwork directly with the seller') }}</p>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -1130,76 +1694,128 @@ font-weight: 300;
                             <span class="listing-detail-hero__actions-city">{{ strtoupper($cityOnly) }}</span>
                         @endif
                         @auth('web')
-                            <a class="action-email" href="mailto:{{ html_decode($dealer?->email) }}">{{ __('Email') }}</a>
-                            <a class="action-call" href="tel:{{ html_decode($dealer?->phone) }}">{{ __('Call') }}</a>
-                            @if(!empty($dealer?->id))
-                                <a class="action-chat" href="{{ route('user.messages.start', $dealer->id) }}">Chat</a>
+                            @if($__chatUserId > 0)
+                                <a class="action-chat js-chat-coming-soon" href="javascript:;">Chat</a>
                             @endif
+                            
                         @else
-                            <a class="action-email" href="{{ route('login') }}">{{ __('Email') }}</a>
-                            <a class="action-call" href="{{ route('login') }}">{{ __('Call') }}</a>
                             <a class="action-chat" href="{{ route('login') }}">Chat</a>
+                            
                         @endauth
+                        
+                        @if(!empty($dealer?->email))
+                            <a class="action-email" href="mailto:{{ html_decode($dealer?->email) }}">{{ __('Email') }}</a>
+                        @endif
+                        @if(!empty($dealer?->phone))
+                            <a class="action-call" style="background: #d2cdcd00;" href="tel:{{ html_decode($dealer?->phone) }}">Call</a>
+                        @endif
+                        
+                    </div>
+
+                    <div class="modal fade" id="callSellerModal" tabindex="-1" aria-labelledby="callSellerModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="callSellerModalLabel">Call Seller</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    @if(!empty($dealer?->phone))
+                                        <div class="text-center fw-bold fs-5">{{ html_decode($dealer?->phone) }}</div>
+                                    @else
+                                        <div class="text-center text-muted">Phone number not provided</div>
+                                    @endif
+                                </div>
+                                <div class="modal-footer">
+                                    @if(!empty($dealer?->phone))
+                                        <a class="btn btn-primary" href="tel:{{ html_decode($dealer?->phone) }}">Call</a>
+                                    @endif
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="listing-detail-hero__keyinfo">
-                        @if($car->year)
-                            <div><span>year</span>{{ html_decode($car->year) }}</div>
-                        @endif
-                        @if($car->engine_size)
-                            <div><span>engine</span>{{ html_decode($car->engine_size) }}</div>
-                        @endif
-                        @if($car->transmission)
-                            <div><span>transmission</span>{{ html_decode($car->transmission) }}</div>
-                        @endif
-                        @if($car->mileage)
-                            <div><span>mileage</span>{{ html_decode($car->mileage) }}</div>
-                        @endif
-                        @if($car->body_type)
-                            <div><span>body type</span>{{ html_decode($car->body_type) }}</div>
-                        @endif
-                        @if($car->drive)
-                            <div><span>drive</span>{{ html_decode($car->drive) }}</div>
-                        @endif
-                        @if($car->interior_color)
-                            <div><span>color</span>{{ html_decode($car->interior_color) }}</div>
-                        @endif
-                        @if($car->exterior_color)
-                            <div><span>exterior color</span>{{ html_decode($car->exterior_color) }}</div>
-                        @endif
-                        @if($car->fuel_type)
-                            <div><span>fuel type</span>{{ html_decode($car->fuel_type) }}</div>
-                        @endif
-                        @if($car->condition)
-                            <div>
-                                <span>condition</span>
-                                @if($car->condition == 'Used')
-                                    {{ __('translate.Used') }}
-                                @else
-                                    {{ __('translate.New') }}
-                                @endif
-                            </div>
-                        @endif
-                        @if($car->seller_type)
-                            <div><span>seller type</span>{{ html_decode($car->seller_type) }}</div>
-                        @endif
+                        @php
+                            $__keyinfo = [];
+                            if (!empty($car->mileage)) $__keyinfo[] = ['mileage', html_decode($car->mileage) . ($car->mileage_unit ? ' ' . strtoupper((string) $car->mileage_unit) : '')];
+
+                            $__transText = trim((string) ($car->motorcheck_transmission ?? ''));
+                            if ($__transText === '') $__transText = trim((string) ($car->transmission ?? ''));
+
+                            $__fuelText = trim((string) ($car->motorcheck_fuel ?? ''));
+                            if ($__fuelText === '') $__fuelText = trim((string) ($car->fuel_type ?? ''));
+
+                            $__engineText = trim((string) ($car->engine_size ?? ''));
+                            if ($__engineText === '' && !empty($car->motorcheck_engine_cc)) $__engineText = (string) $car->motorcheck_engine_cc . 'cc';
+
+                            $__bodyText = trim((string) ($car->motorcheck_body ?? ''));
+                            if ($__bodyText === '') $__bodyText = trim((string) ($car->body_type ?? ''));
+
+                            $__colorText = trim((string) ($car->motorcheck_colour ?? ''));
+                            if ($__colorText === '') $__colorText = trim((string) ($car->interior_color ?? ''));
+
+                            if (!empty($car->year)) $__keyinfo[] = ['year', html_decode($car->year)];
+                            if (!empty($car->motorcheck_make)) $__keyinfo[] = ['make', html_decode($car->motorcheck_make)];
+                            if (!empty($car->motorcheck_model)) $__keyinfo[] = ['model', html_decode($car->motorcheck_model)];
+                            if (!empty($car->motorcheck_version)) $__keyinfo[] = ['version', html_decode($car->motorcheck_version)];
+                            if ($__engineText !== '') $__keyinfo[] = ['engine', html_decode($__engineText)];
+                            if ($__fuelText !== '') $__keyinfo[] = ['fuel type', html_decode($__fuelText)];
+                            if ($__transText !== '') $__keyinfo[] = ['transmission', html_decode($__transText)];
+                            
+                            if ($__bodyText !== '') $__keyinfo[] = ['body type', html_decode($__bodyText)];
+                            if (!empty($car->motorcheck_doors)) $__keyinfo[] = ['doors', html_decode($car->motorcheck_doors)];
+                            if (!empty($car->drive)) $__keyinfo[] = ['drive', html_decode($car->drive)];
+                            if ($__colorText !== '') $__keyinfo[] = ['colour', html_decode($__colorText)];
+                            if (!empty($car->exterior_color)) $__keyinfo[] = ['exterior color', html_decode($car->exterior_color)];
+                            if (!empty($car->motorcheck_no_of_owners)) $__keyinfo[] = ['owners', html_decode($car->motorcheck_no_of_owners)];
+                            if (!empty($car->motorcheck_tax_expiry_date)) $__keyinfo[] = ['tax expiry', html_decode($car->motorcheck_tax_expiry_date)];
+                            if (!empty($car->motorcheck_nct_expiry_date)) $__keyinfo[] = ['nct expiry', html_decode($car->motorcheck_nct_expiry_date)];
+                            if (!empty($car->condition)) $__keyinfo[] = ['condition', html_decode($car->condition)];
+                            
+                        @endphp
+                        @foreach($__keyinfo as $__i)
+                            <div><span>{{ $__i[0] }}</span>{{ $__i[1] }}</div>
+                        @endforeach
                     </div>
 
                     <div class="listing-detail-hero__price">
                         @if ($car->offer_price)
-                            @php
-                                $__priceText = currency($car->offer_price);
-                                $__priceText = preg_replace('/^[^0-9]+/u', '', (string) $__priceText);
-                            @endphp
-                            €{{ $__priceText }}
+                            €{{ number_format((float) $car->offer_price, 0, '.', ',') }}
                         @else
-                            @php
-                                $__priceText = currency($car->regular_price);
-                                $__priceText = preg_replace('/^[^0-9]+/u', '', (string) $__priceText);
-                            @endphp
-                            €{{ $__priceText }}
+                            €{{ number_format((float) $car->regular_price, 0, '.', ',') }}
                         @endif
                     </div>
+
+                    @php
+                        $__dealerFlagRaw = $car?->dealer?->is_dealer ?? null;
+                        $__dealerFlagNorm = strtolower(trim((string) $__dealerFlagRaw));
+                        $__sellerTypeNorm = strtolower(trim((string) ($car->seller_type ?? '')));
+                        $__isDealerSeller = in_array($__dealerFlagNorm, ['1', 'true', 'yes'], true) || str_contains($__sellerTypeNorm, 'dealer');
+                    @endphp
+                    @if($__isDealerSeller && !empty($car->warranty_months))
+                        @php
+                            $__wm = (int) $car->warranty_months;
+                            $__wLabel = '';
+                            if ($__wm > 0 && $__wm % 12 === 0) {
+                                $__years = (int) ($__wm / 12);
+                                $__wLabel = $__years . ' ' . ($__years === 1 ? 'Year' : 'Years') . ' Warranty';
+                            } else {
+                                $__wLabel = $__wm . ' ' . ($__wm === 1 ? 'Month' : 'Months') . ' Warranty';
+                            }
+                        @endphp
+                        <div style="margin-top: -6px;
+    /* border: 1px solid #c9c9c9; */
+    /* padding: 8px 12px; */
+    font-size: 16px;
+    line-height: 1;
+    color: #867b8b;
+    display: inline-block;
+    text-align: center;
+        margin-left: 80px;
+">{{ $__wLabel }}</div>
+                    @endif
                 </div>
 
 
@@ -1209,27 +1825,25 @@ font-weight: 300;
 
     <section class="listing-detail-description">
         <div class="container">
-            <div class="listing-detail-description__title">{{ __('translate.Description') }}</div>
+            <div class="listing-detail-description__title">{{ __('translate.Locations') }}</div>
             <div class="listing-detail-description__body">
-                {!! clean(html_decode($car->description)) !!}
+                {{ $fullLocation }}
             </div>
 
-            <div style="margin-top: 24px;">
-                <div class="listing-detail-description__title">{{ __('translate.Features') }}</div>
-                <div class="listing-detail-description__body">
-                    <div class="feature-list">
-                        <ul>
-                            @foreach ($car_features as $index => $car_feature)
-                                <li>
-                                    <span>
-                                        <i class="fa-solid fa-check"></i>
-                                    </span>
-                                    {{ $car_feature->name }}
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
+            <div class="lp-detail__divider"></div>
+
+            <div class="lp-detail__report-wrap">
+                @auth('web')
+                    <a class="lp-detail__report-link" href="#" data-bs-toggle="modal" data-bs-target="#reportCarAdModal">
+                        <span aria-hidden="true">⚑</span>
+                        <span>Report Ad</span>
+                    </a>
+                @else
+                    <a class="lp-detail__report-link" href="{{ route('login') }}">
+                        <span aria-hidden="true">⚑</span>
+                        <span>Report Ad</span>
+                    </a>
+                @endauth
             </div>
         </div>
     </section>
@@ -1424,7 +2038,7 @@ font-weight: 300;
                                                         </svg>
                                                         {{ __('translate.Mileage') }}
                                                     </span>
-                                                    {{ html_decode($car->mileage) }}
+                                                    {{ html_decode($car->mileage) }}{{ $car->mileage_unit ? ' ' . strtoupper((string) $car->mileage_unit) : '' }}
                                                 </li>
                                                 <li>
                                                     <span>
@@ -1597,33 +2211,6 @@ font-weight: 300;
                     </div>
 
 
-                    <div class="accordion aos-init aos-animate" id="accordionPanelsStayOpenExample2" data-aos="fade-up"
-                    data-aos-delay="200">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="panelsStayOpen-headingthree">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapsethree" aria-expanded="true" aria-controls="panelsStayOpen-collapsethree">
-                                    {{ __('translate.Features') }}
-                                </button>
-                            </h2>
-
-                            <div id="panelsStayOpen-collapsethree" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingthree">
-                                <div class="accordion-body">
-                                    <div class="feature-list">
-                                        <ul>
-                                            @foreach ($car_features as $index => $car_feature)
-                                                <li>
-                                                    <span>
-                                                        <i class="fa-solid fa-check"></i>
-                                                    </span>
-                                                    {{ $car_feature->name }}
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     @endif
 
 
@@ -1797,208 +2384,44 @@ font-weight: 300;
 
     <!-- Cars Listing-part-start -->
     @if ($related_listings->count() > 0)
-        <section class="cars-listing feature-two">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="row feature-taitel align-items-end">
-                            <div class="col-lg-6 col-sm-6 col-md-6">
-                                <div class="taitel two" >
-                                    <div class="taitel-img">
-                                        <span>
-                                        <svg width="100" height="8" viewBox="0 0 100 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1 6.5C14.3957 2.77999 52.7496 -2.53808 99 6.38995" stroke="#405FF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-
-                                        </span>
-                                    </div>
-                                    <span>{{ __('translate.Cars Listing') }}</span>
-                                </div>
-                                <h2 >{{ __('translate.Related Car Listings') }}</h2>
-                            </div>
-                        </div>
-
-                        <div class="row mt-56px">
-                            @foreach ($related_listings as $related_car)
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="brand-car-item">
-                                        <div class="brand-car-item-img">
-                                            <img src="{{ getImageOrPlaceholder($related_car->thumb_image, '304x217') }}" alt="thumb">
-
-                                            <div class="brand-car-item-img-text">
-
-                                                <div class="text-df">
-                                                    @if ($related_car->offer_price)
-                                                        <p class="text">{{ calculate_percentage($related_car->regular_price, $related_car->offer_price) }}% {{ __('translate.Off') }}</p>
-                                                    @endif
-
-                                                    @if ($related_car->condition == 'New')
-                                                        <p class="text text-two ">{{ __('translate.New') }}</p>
-                                                    @else
-                                                        <p class="text text-two ">{{ __('translate.Used') }}</p>
-                                                    @endif
-                                                </div>
-
-                                                <div class="icon-main">
-
-                                                    @guest('web')
-                                                        <a  href="javascript:;" class="icon before_auth_wishlist">
-                                                            <span>
-                                                                <svg width="18" height="16" viewBox="0 0 18 16" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path
-                                                                    d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z"
-                                                                    stroke-width="1.3" stroke-linejoin="round"></path>
-                                                            </svg>
-
-                                                            </span>
-                                                        </a>
-                                                    @else
-                                                    @php
-                                                        $isInWishlist = false;
-                                                        if (\Illuminate\Support\Facades\Schema::hasTable('wishlists')) {
-                                                            $isInWishlist = App\Models\Wishlist::where('car_id',$car->id)
-                                                                ->where('user_id',Auth::user()->id)
-                                                                ->first();
-                                                        }
-                                                    @endphp
-                                                    <a href="{{ route('user.add-to-wishlist', $car->id) }}" 
-                                                    class="icon {{ $isInWishlist ? 'active' : '' }}">
-                                                        <span>
-                                                            <svg width="18" height="16" viewBox="0 0 18 16" fill="{{ $isInWishlist ? 'currentColor' : 'none' }}" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M9.61204 2.324L9 2.96329L8.38796 2.324C6.69786 0.558667 3.95767 0.558666 2.26757 2.324C0.577476 4.08933 0.577475 6.95151 2.26757 8.71684L7.77592 14.4704C8.45196 15.1765 9.54804 15.1765 10.2241 14.4704L15.7324 8.71684C17.4225 6.95151 17.4225 4.08934 15.7324 2.324C14.0423 0.558667 11.3021 0.558666 9.61204 2.324Z"
-                                                                    stroke-width="1.3" stroke-linejoin="round"/>
-                                                            </svg>
-                                                        </span>
-                                                    </a>
-
-                                                    @endif
-
-
-                                                    <a href="{{ route('add-to-compare', $related_car->id) }}" class="icon">
-                                                        <span>
-                                                            <svg width="18" height="20" viewBox="0 0 18 20" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M1 10V9C1 6.23858 3.23858 4 6 4H17L14 1"
-                                                                    stroke-width="1.3" stroke-linecap="round"
-                                                                    stroke-linejoin="round"></path>
-                                                                <path d="M17 10V11C17 13.7614 14.7614 16 12 16H1L4 19"
-                                                                    stroke-width="1.3" stroke-linecap="round"
-                                                                    stroke-linejoin="round"></path>
-                                                            </svg>
-                                                        </span>
-                                                    </a>
-                                                </div>
-
-
-                                            </div>
-                                        </div>
-
-                                        <div class="brand-car-inner">
-                                            <div class="brand-car-inner-item">
-                                                <span>{{ $related_car?->brand?->name }}</span>
-                                                <p>
-                                                    @if ($related_car->offer_price)
-                                                        @php
-                                                            $__priceText = currency($related_car->offer_price);
-                                                            $__priceText = preg_replace('/^[^0-9]+/u', '', (string) $__priceText);
-                                                        @endphp
-                                                        €{{ $__priceText }}
-                                                    @else
-                                                        @php
-                                                            $__priceText = currency($related_car->regular_price);
-                                                            $__priceText = preg_replace('/^[^0-9]+/u', '', (string) $__priceText);
-                                                        @endphp
-                                                        €{{ $__priceText }}
-                                                    @endif
-                                                </p>
-                                            </div>
-
-                                            <a href="{{ route('listing', $related_car->slug) }}">
-                                                <h3>{{ html_decode($related_car->title) }}</h3>
-                                            </a>
-
-                                            <div class="brand-car-inner-item-main">
-                                                <div class="brand-car-inner-item-two">
-                                                    <div class="brand-car-inner-item-thumb">
-                                                        <span>
-                                                            <svg width="21" height="18" viewBox="0 0 21 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M20 10.2935C20 7.75456 18.9535 5.45057 17.2608 3.77159C17.2476 3.7544 17.2335 3.73758 17.2175 3.72192C17.2015 3.70626 17.1843 3.69249 17.1668 3.67963C15.4505 2.02368 13.0953 1 10.5 1C7.90472 1 5.54953 2.02374 3.83318 3.67963C3.81561 3.69255 3.79848 3.70632 3.78247 3.72192C3.76646 3.73758 3.75238 3.75434 3.73918 3.77159C2.0465 5.45057 1 7.75456 1 10.2935C1 12.7755 1.98794 15.1089 3.78179 16.8642C3.78204 16.8644 3.78229 16.8647 3.78253 16.865C3.78272 16.8651 3.78285 16.8653 3.78303 16.8654C3.78328 16.8656 3.78353 16.8659 3.78378 16.8661C3.87498 16.9553 3.99452 16.9999 4.11407 16.9999C4.23368 16.9999 4.35328 16.9553 4.44448 16.866C4.45227 16.8584 4.45931 16.8503 4.46641 16.8422L5.90617 15.4337C6.08864 15.2552 6.08864 14.9658 5.90617 14.7873C5.72371 14.6089 5.42787 14.6089 5.24547 14.7873L4.12192 15.8864C2.81179 14.4602 2.05173 12.6653 1.9472 10.7505H3.53616C3.79418 10.7505 4.00337 10.546 4.00337 10.2935C4.00337 10.041 3.79418 9.83642 3.53616 9.83642H1.94732C2.05596 7.86974 2.86107 6.08137 4.12497 4.70343L5.24547 5.79958C5.33667 5.88879 5.45628 5.9334 5.57582 5.9334C5.69537 5.9334 5.81497 5.88879 5.90617 5.79958C6.08864 5.62102 6.08864 5.33167 5.90617 5.15318L4.78573 4.05697C6.19435 2.82055 8.0224 2.03295 10.0328 1.92673V3.48108C10.0328 3.73356 10.242 3.93814 10.5 3.93814C10.758 3.93814 10.9672 3.73356 10.9672 3.48108V1.92673C12.9776 2.03295 14.8056 2.82061 16.2143 4.05703L15.0938 5.15318C14.9113 5.33173 14.9113 5.62108 15.0938 5.79958C15.185 5.88879 15.3046 5.9334 15.4241 5.9334C15.5437 5.9334 15.6633 5.88879 15.7545 5.79958L16.875 4.70343C18.1389 6.08143 18.944 7.86974 19.0526 9.83642H17.4637C17.2057 9.83642 16.9965 10.041 16.9965 10.2935C16.9965 10.546 17.2057 10.7505 17.4637 10.7505H19.0527C18.9481 12.6653 18.1881 14.4603 16.878 15.8865L15.7545 14.7873C15.5721 14.6089 15.2762 14.6089 15.0938 14.7873C14.9113 14.9659 14.9113 15.2552 15.0938 15.4337L16.5568 16.8649C16.648 16.9541 16.7676 16.9987 16.8871 16.9987C16.9469 16.9987 17.0067 16.9876 17.0629 16.9653C17.1192 16.943 17.1719 16.9095 17.2175 16.8649C19.0118 15.1096 20 12.7758 20 10.2935Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
-                                                                <path d="M12.6465 5.05246C12.4068 4.95855 12.135 5.07238 12.039 5.30676L10.6889 8.60366C10.626 8.59708 10.5631 8.59257 10.5001 8.59257C9.8425 8.59257 9.24852 8.94889 8.94981 9.52246C8.63759 10.1221 8.71758 10.8385 9.16361 11.4387C9.20921 11.5001 9.26652 11.5562 9.32969 11.6012C9.69206 11.8589 10.0968 11.9951 10.5001 11.9951C11.1577 11.9951 11.7517 11.6388 12.0504 11.0652C12.3626 10.4656 12.2826 9.74922 11.8369 9.14938C11.7913 9.08783 11.7338 9.03152 11.6705 8.98643C11.6364 8.96217 11.6016 8.94005 11.5668 8.91799L12.9064 5.64663C13.0024 5.41237 12.886 5.1463 12.6465 5.05246ZM11.2177 10.6502C11.0793 10.9159 10.8043 11.0809 10.5 11.0809C10.3004 11.0809 10.0995 11.0127 9.90268 10.8782C9.67842 10.5631 9.63437 10.2216 9.78245 9.93735C9.92075 9.67171 10.1957 9.50668 10.5001 9.50668C10.5971 9.50668 10.6944 9.52313 10.7915 9.55513C10.7947 9.55641 10.7976 9.55805 10.8008 9.55933C10.8111 9.56329 10.8213 9.56652 10.8316 9.56975C10.9207 9.60321 11.0094 9.64928 11.0974 9.70937C11.3216 10.0244 11.3657 10.3659 11.2177 10.6502Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
-                                                                </svg>
-
-                                                        </span>
-                                                    </div>
-
-                                                    <span>
-                                                        {{ html_decode($related_car->mileage) }}
-                                                    </span>
-                                                </div>
-                                                <div class="brand-car-inner-item-two">
-                                                    <div class="brand-car-inner-item-thumb">
-                                                        <span>
-                                                            <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M15.8901 3.09765L14.3901 1.76431C14.2436 1.63409 14.0063 1.63409 13.8598 1.76431C13.7133 1.89453 13.7133 2.10547 13.8598 2.23565L15.0947 3.33331L13.8598 4.43096C13.7895 4.49346 13.75 4.57809 13.75 4.66665V5.66665C13.75 6.40202 14.4227 6.99999 15.25 6.99999V12.6666C15.25 12.8505 15.0819 13 14.875 13C14.6681 13 14.5 12.8506 14.5 12.6666V12C14.5 11.4485 13.9953 11 13.375 11H13V2.33334C13 1.59797 12.3273 1 11.5 1H4.00001C3.17275 1 2.50001 1.59797 2.50001 2.33334V14.3333C1.67275 14.3333 1 14.9313 1 15.6667V16.6667C1 16.8509 1.16773 17 1.37501 17H14.125C14.3323 17 14.5 16.8509 14.5 16.6667V15.6667C14.5 14.9313 13.8273 14.3333 13 14.3333V11.6667H13.375C13.5819 11.6667 13.75 11.8161 13.75 12V12.6667C13.75 13.2181 14.2546 13.6667 14.875 13.6667C15.4954 13.6667 16 13.2181 16 12.6667V3.33334C16 3.24478 15.9604 3.16015 15.8901 3.09765ZM3.25003 2.33334C3.25003 1.96584 3.58658 1.66669 4.00001 1.66669H11.5C11.9134 1.66669 12.25 1.96584 12.25 2.33334V14.3333H3.24999L3.25003 2.33334ZM13.75 15.6666V16.3333H1.75002V15.6666C1.75002 15.2991 2.08657 15 2.50001 15H13C13.4134 15 13.75 15.2991 13.75 15.6666ZM15.25 6.33333C14.8365 6.33333 14.5 6.03418 14.5 5.66668V4.80468L15.25 4.13803V6.33333Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
-                                                                <path d="M11.041 2.52344H4.29103C4.08375 2.52344 3.91602 2.66929 3.91602 2.84954V6.76876C3.91602 6.94901 4.08375 7.09487 4.29103 7.09487H11.041C11.2483 7.09487 11.416 6.94901 11.416 6.76876V2.84951C11.416 2.66929 11.2483 2.52344 11.041 2.52344ZM10.666 6.44265H4.666V3.17562H10.666V6.44265Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
-                                                                </svg>
-
-                                                        </span>
-                                                    </div>
-
-                                                    <span>
-                                                        {{ html_decode($related_car->fuel_type) }}
-                                                    </span>
-                                                </div>
-                                                <div class="brand-car-inner-item-two">
-                                                    <div class="brand-car-inner-item-thumb">
-                                                        <span>
-                                                            <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M17.9167 8.23819H17.2833C17.0314 8.23819 16.7897 8.3586 16.6116 8.57293C16.4334 8.78726 16.3333 9.07795 16.3333 9.38106V9.76202H15.7V7.85723C15.7 7.55412 15.5999 7.26343 15.4218 7.0491C15.2436 6.83477 15.002 6.71436 14.75 6.71436H13.8C13.716 6.71436 13.6355 6.67422 13.5761 6.60278C13.5167 6.53134 13.4833 6.43444 13.4833 6.3334V5.57149C13.4833 5.26838 13.3832 4.97769 13.2051 4.76336C13.0269 4.54903 12.7853 4.42862 12.5333 4.42862H11.2667V3.28574H12.85C13.102 3.28574 13.3436 3.16533 13.5218 2.951C13.6999 2.73667 13.8 2.44598 13.8 2.14287C13.8 1.83976 13.6999 1.54907 13.5218 1.33474C13.3436 1.12041 13.102 1 12.85 1H6.51667C6.26471 1 6.02307 1.12041 5.84491 1.33474C5.66676 1.54907 5.56667 1.83976 5.56667 2.14287C5.56667 2.44598 5.66676 2.73667 5.84491 2.951C6.02307 3.16533 6.26471 3.28574 6.51667 3.28574H8.1V4.42862H6.51667C6.26471 4.42862 6.02307 4.54903 5.84491 4.76336C5.66676 4.97769 5.56667 5.26838 5.56667 5.57149C5.56667 5.67252 5.5333 5.76942 5.47392 5.84087C5.41453 5.91231 5.33399 5.95245 5.25 5.95245H4.3C4.04804 5.95245 3.80641 6.07285 3.62825 6.28719C3.45009 6.50152 3.35 6.79221 3.35 7.09532V8.61915H2.4V7.09532C2.4 6.79221 2.29991 6.50152 2.12175 6.28719C1.94359 6.07285 1.70196 5.95245 1.45 5.95245C1.19804 5.95245 0.956408 6.07285 0.778249 6.28719C0.600089 6.50152 0.5 6.79221 0.5 7.09532L0.5 13.1906C0.5 13.4937 0.600089 13.7844 0.778249 13.9988C0.956408 14.2131 1.19804 14.3335 1.45 14.3335C1.70196 14.3335 1.94359 14.2131 2.12175 13.9988C2.29991 13.7844 2.4 13.4937 2.4 13.1906V11.6668H3.35V13.5716C3.35 13.8747 3.45009 14.1654 3.62825 14.3797C3.80641 14.5941 4.04804 14.7145 4.3 14.7145H5.62113C5.70511 14.7145 5.78564 14.7546 5.84502 14.8261L7.37388 16.6653C7.46185 16.7719 7.56651 16.8563 7.68181 16.9138C7.7971 16.9713 7.92073 17.0006 8.04553 17.0002H14.75C15.002 17.0002 15.2436 16.8798 15.4218 16.6655C15.5999 16.4511 15.7 16.1604 15.7 15.8573V14.3335H16.3333V14.7145C16.3333 15.0176 16.4334 15.3083 16.6116 15.5226C16.7897 15.7369 17.0314 15.8573 17.2833 15.8573H17.9167C18.3364 15.8567 18.7389 15.6559 19.0357 15.2988C19.3325 14.9417 19.4995 14.4575 19.5 13.9526V10.143C19.4995 9.63798 19.3325 9.15384 19.0357 8.79676C18.7389 8.43967 18.3364 8.23879 17.9167 8.23819ZM6.2 2.14287C6.2 2.04184 6.23336 1.94494 6.29275 1.87349C6.35214 1.80205 6.43268 1.76191 6.51667 1.76191H12.85C12.934 1.76191 13.0145 1.80205 13.0739 1.87349C13.1333 1.94494 13.1667 2.04184 13.1667 2.14287C13.1667 2.24391 13.1333 2.34081 13.0739 2.41225C13.0145 2.48369 12.934 2.52383 12.85 2.52383H6.51667C6.43268 2.52383 6.35214 2.48369 6.29275 2.41225C6.23336 2.34081 6.2 2.24391 6.2 2.14287ZM8.73333 3.28574H10.6333V4.42862H8.73333V3.28574ZM1.76667 13.1906C1.76667 13.2917 1.7333 13.3886 1.67392 13.46C1.61453 13.5315 1.53399 13.5716 1.45 13.5716C1.36601 13.5716 1.28547 13.5315 1.22608 13.46C1.1667 13.3886 1.13333 13.2917 1.13333 13.1906V7.09532C1.13333 6.99428 1.1667 6.89738 1.22608 6.82594C1.28547 6.7545 1.36601 6.71436 1.45 6.71436C1.53399 6.71436 1.61453 6.7545 1.67392 6.82594C1.7333 6.89738 1.76667 6.99428 1.76667 7.09532V13.1906ZM2.4 10.9049V9.38106H3.35V10.9049H2.4ZM15.0667 15.8573C15.0667 15.9584 15.0333 16.0553 14.9739 16.1267C14.9145 16.1982 14.834 16.2383 14.75 16.2383H8.04553C7.96155 16.2383 7.88102 16.1981 7.82165 16.1267L6.29278 14.2874C6.20478 14.181 6.1001 14.0966 5.98482 14.0391C5.86954 13.9816 5.74593 13.9522 5.62113 13.9526H4.3C4.21601 13.9526 4.13547 13.9124 4.07608 13.841C4.0167 13.7695 3.98333 13.6726 3.98333 13.5716V7.09532C3.98333 6.99428 4.0167 6.89738 4.07608 6.82594C4.13547 6.7545 4.21601 6.71436 4.3 6.71436H5.25C5.50196 6.71436 5.74359 6.59395 5.92175 6.37962C6.09991 6.16529 6.2 5.8746 6.2 5.57149C6.2 5.47045 6.23336 5.37355 6.29275 5.30211C6.35214 5.23067 6.43268 5.19053 6.51667 5.19053H12.5333C12.6173 5.19053 12.6979 5.23067 12.7573 5.30211C12.8166 5.37355 12.85 5.47045 12.85 5.57149V6.3334C12.85 6.63651 12.9501 6.92721 13.1282 7.14154C13.3064 7.35587 13.548 7.47627 13.8 7.47628H14.75C14.834 7.47628 14.9145 7.51641 14.9739 7.58785C15.0333 7.6593 15.0667 7.7562 15.0667 7.85723V15.8573ZM15.7 13.5716V10.5239H16.3333V13.5716H15.7ZM18.8667 13.9526C18.8667 14.2557 18.7666 14.5464 18.5884 14.7607C18.4103 14.975 18.1686 15.0954 17.9167 15.0954H17.2833C17.1993 15.0954 17.1188 15.0553 17.0594 14.9838C17 14.9124 16.9667 14.8155 16.9667 14.7145V9.38106C16.9667 9.28003 17 9.18313 17.0594 9.11168C17.1188 9.04024 17.1993 9.0001 17.2833 9.0001H17.9167C18.1686 9.0001 18.4103 9.12051 18.5884 9.33484C18.7666 9.54917 18.8667 9.83987 18.8667 10.143V13.9526Z" fill="#0D274E" stroke="#0D274E" stroke-width="0.2"/>
-                                                                </svg>
-
-                                                        </span>
-                                                    </div>
-
-                                                    <span>
-                                                        {{ html_decode($related_car->engine_size) }}
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div class="brand-car-btm-txt-btm">
-                                                <h6 class="brand-car-btm-txt"><span>{{ __('translate.Listed by') }} :</span>{{ html_decode($related_car?->dealer?->name) }}
-                                                </h6>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            @endforeach
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="inventory-details" style="padding: 0 0 60px; background:#fff;">
-            <div class="container" style="max-width: 980px;">
-                <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-                    @auth('web')
-                        @if(!empty($dealer?->id))
-                            <a href="{{ route('user.messages.start', $dealer->id) }}" class="thm-btn-two" style="min-width:220px;text-align:center;">Chat with seller</a>
-                        @endif
-                    @else
-                        <a href="{{ route('login') }}" class="thm-btn-two" style="min-width:220px;text-align:center;">{{ __('translate.Login') }}</a>
-                        <a href="{{ route('login') }}" class="thm-btn-two" style="min-width:220px;text-align:center;">Chat with seller</a>
-                    @endauth
-                </div>
-            </div>
-        </section>
+        
     @endif
 
     <!--Cars Listing-part-end -->
+
+    <div class="modal fade" id="reportCarAdModal" tabindex="-1" aria-labelledby="reportCarAdModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('report.car', $car->id) }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reportCarAdModalLabel">Report Ad</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Reason</label>
+                            <select class="form-select" name="reason" required>
+                                <option value="Inappropriate">Inappropriate</option>
+                                <option value="Spam">Spam</option>
+                                <option value="Scam">Scam</option>
+                                <option value="Duplicate">Duplicate</option>
+                                <option value="Wrong information">Wrong information</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Details (optional)</label>
+                            <textarea class="form-control" name="details" rows="4" maxlength="5000"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </main>
 	</div>
@@ -2013,8 +2436,130 @@ font-weight: 300;
 
     <script>
         (function(){
+            if (window.__adShareHandlerBound) return;
+            window.__adShareHandlerBound = true;
+            document.addEventListener('click', function(e){
+                var btn = e.target && e.target.closest ? e.target.closest('.js-ad-share-btn') : null;
+                if (!btn) return;
+                e.preventDefault();
+                e.stopPropagation();
+                var shareUrl = btn.getAttribute('data-share-url') || window.location.href;
+                var shareTitle = btn.getAttribute('data-share-title') || document.title || 'Ad';
+                function copied(){
+                    var oldText = btn.textContent;
+                    btn.classList.add('is-copied');
+                    btn.textContent = 'Copied';
+                    window.setTimeout(function(){
+                        btn.classList.remove('is-copied');
+                        btn.textContent = oldText || 'Share';
+                    }, 1500);
+                }
+                if (navigator.share) {
+                    navigator.share({ title: shareTitle, url: shareUrl }).catch(function(){});
+                    return;
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(shareUrl).then(copied).catch(function(){ window.prompt('Copy this link', shareUrl); });
+                    return;
+                }
+                window.prompt('Copy this link', shareUrl);
+            }, true);
+        })();
+
+        (function(){
+            window.addEventListener('load', function(){
+                try {
+                    var reportModal = document.getElementById('reportCarAdModal');
+                    if (reportModal && reportModal.parentElement !== document.body) {
+                        document.body.appendChild(reportModal);
+                    }
+                } catch (e) {
+                }
+
+                try {
+                    if (typeof Swiper === 'undefined') return;
+
+                    var navEl = document.getElementById('car_gallery_nav');
+                    var forEl = document.getElementById('car_gallery_for');
+                    if (!navEl || !forEl) return;
+
+                    function swiperSlideClick(swiper, event){
+                        var t = event && event.target ? (event.target.closest ? event.target.closest('.js-cd-open-lightbox') : null) : null;
+                        if (!t) return;
+                        var idx = parseInt(t.getAttribute('data-cd-index') || '0', 10);
+                        if (typeof window.__cdListingOpenAt === 'function') {
+                            window.__cdListingOpenAt(Number.isFinite(idx) ? idx : 0);
+                        }
+                    }
+
+                    var thumbsSwiper = new Swiper('#car_gallery_nav', {
+                        slidesPerView: 'auto',
+                        spaceBetween: 12,
+                        freeMode: true,
+                        watchSlidesProgress: true,
+                        observer: true,
+                        observeParents: true,
+                        on: { click: swiperSlideClick }
+                    });
+
+                    var mainSwiper = new Swiper('#car_gallery_for', {
+                        slidesPerView: 1,
+                        spaceBetween: 0,
+                        loop: false,
+                        navigation: {
+                            nextEl: '#car_gallery_for .inventory-details-slick-next',
+                            prevEl: '#car_gallery_for .inventory-details-slick-prev'
+                        },
+                        thumbs: { swiper: thumbsSwiper },
+                        on: { click: swiperSlideClick }
+                    });
+
+                    function refreshSwipers(){
+                        try {
+                            if (thumbsSwiper) thumbsSwiper.update();
+                            if (mainSwiper) mainSwiper.update();
+                        } catch (e) {
+                        }
+                    }
+
+                    window.setTimeout(function(){ refreshSwipers(); }, 0);
+                    window.setTimeout(function(){ refreshSwipers(); }, 250);
+
+                    window.addEventListener('pageshow', function(){ refreshSwipers(); });
+                    window.addEventListener('resize', function(){ refreshSwipers(); });
+                } catch (e) {
+                }
+            });
+        })();
+
+        (function(){
+            function openChatComingSoon(){
+                try {
+                    if (window.bootstrap && bootstrap.Modal) {
+                        var el = document.getElementById('chatComingSoonModal');
+                        if (!el) return;
+                        var modal = bootstrap.Modal.getOrCreateInstance(el);
+                        modal.show();
+                    } else {
+                        alert('This feature will be available soon.');
+                    }
+                } catch (e) {
+                    alert('This feature will be available soon.');
+                }
+            }
+
+            document.addEventListener('click', function(e){
+                var t = e.target && (e.target.closest ? e.target.closest('.js-chat-coming-soon') : null);
+                if (!t) return;
+                e.preventDefault();
+                e.stopPropagation();
+                openChatComingSoon();
+            }, true);
+        })();
+
+        (function(){
             const modal = document.getElementById('cdLightbox');
-            if (!modal || typeof Swiper === 'undefined') return;
+            if (!modal) return;
 
             modal.classList.remove('is-open');
             modal.setAttribute('aria-hidden', 'true');
@@ -2024,7 +2569,6 @@ font-weight: 300;
 
             const counterEl = document.getElementById('cdLightboxCounter');
             const closeEls = modal.querySelectorAll('[data-cd-close]');
-            const openEls = document.querySelectorAll('.js-cd-open-lightbox');
             const closeBtn = modal.querySelector('[data-cd-close].cd-lightbox__close');
 
             let thumbsSwiper = null;
@@ -2033,11 +2577,15 @@ font-weight: 300;
             let lastFocusedEl = null;
 
             function setBodyLock(locked){
-                if (locked) {
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    document.body.style.overflow = '';
-                }
+                try {
+                    var isIOS = /iP(ad|hone|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                    if (isIOS) return;
+                    if (locked) {
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        document.body.style.overflow = '';
+                    }
+                } catch(e){}
             }
 
             function stopAllVideos(){
@@ -2068,27 +2616,49 @@ font-weight: 300;
                 counterEl.textContent = current + ' / ' + total;
             }
 
-            function openAt(index){
-                lastActiveIndex = index || 0;
+            const __isIOS = /iP(ad|hone|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            function repaintActiveImage(){
+                if (!__isIOS || !mainSwiper) return;
+                try {
+                    const slide = mainSwiper.slides[mainSwiper.activeIndex];
+                    if (!slide) return;
+                    const img = slide.querySelector('img');
+                    if (!img) return;
+                    const d = img.style.display;
+                    img.style.display = 'none';
+                    void img.offsetHeight;
+                    img.style.display = d || '';
+                } catch(e){}
+            }
 
-                if (modal.parentElement !== document.body) {
-                    document.body.appendChild(modal);
-                }
+            function calcMainHeight(){
+                var topbar = modal.querySelector('.cd-lightbox__topbar');
+                var infobar = modal.querySelector('.cd-lightbox__infobar');
+                var thumbs = modal.querySelector('.cd-lightbox__thumbs');
+                var mainEl = modal.querySelector('.cd-lightbox__main');
+                var swiperEl = mainEl ? mainEl.querySelector('.cd-lightbox__swiper') : null;
+                if (!mainEl) return 0;
+                var vh = window.innerHeight || document.documentElement.clientHeight;
+                var topH = topbar ? topbar.offsetHeight : 0;
+                var infoH = infobar ? infobar.offsetHeight : 0;
+                var thumbH = thumbs ? thumbs.offsetHeight : 0;
+                var available = vh - topH - infoH - thumbH;
+                if (available < 120) available = 120;
+                mainEl.style.height = available + 'px';
+                if (swiperEl) swiperEl.style.height = available + 'px';
+                // Force synchronous reflow
+                void mainEl.offsetHeight;
+                return available;
+            }
 
-                lastFocusedEl = document.activeElement;
-                if (lastFocusedEl && typeof lastFocusedEl.blur === 'function') {
-                    lastFocusedEl.blur();
-                }
-
-                modal.classList.add('is-open');
-                modal.setAttribute('aria-hidden', 'false');
-                setBodyLock(true);
-
+            function initOrUpdateSwipers(idx){
                 if (!thumbsSwiper) {
                     thumbsSwiper = new Swiper('#cdLightboxThumbs', {
                         slidesPerView: 5,
                         spaceBetween: 10,
                         watchSlidesProgress: true,
+                        observer: true,
+                        observeParents: true,
                         breakpoints: {
                             0: { slidesPerView: 4 },
                             768: { slidesPerView: 6 }
@@ -2098,10 +2668,11 @@ font-weight: 300;
 
                 if (!mainSwiper) {
                     mainSwiper = new Swiper('#cdLightboxMain', {
-                        initialSlide: lastActiveIndex,
+                        initialSlide: idx,
                         loop: false,
-                        zoom: { maxRatio: 3 },
                         keyboard: { enabled: true },
+                        observer: true,
+                        observeParents: true,
                         navigation: {
                             nextEl: '#cdLightboxMain .swiper-button-next',
                             prevEl: '#cdLightboxMain .swiper-button-prev'
@@ -2112,53 +2683,162 @@ font-weight: 300;
                                 stopAllVideos();
                                 updateCounter();
                                 ensureYoutubeForActiveSlide();
+                                repaintActiveImage();
                             },
                             afterInit: function(){
                                 updateCounter();
                                 ensureYoutubeForActiveSlide();
+                                repaintActiveImage();
                             }
                         }
                     });
                 } else {
-                    mainSwiper.slideTo(lastActiveIndex, 0);
+                    mainSwiper.slideTo(idx, 0);
                     stopAllVideos();
-                    updateCounter();
                     ensureYoutubeForActiveSlide();
+                    repaintActiveImage();
                 }
+                updateCounter();
+            }
+
+            function openAt(index){
+                lastActiveIndex = index || 0;
+
+                lastFocusedEl = document.activeElement;
+                if (lastFocusedEl && typeof lastFocusedEl.blur === 'function') {
+                    lastFocusedEl.blur();
+                }
+
+                calcMainHeight();
+
+                modal.classList.add('is-open');
+                modal.setAttribute('aria-hidden', 'false');
+                setBodyLock(true);
+
+                // Make sure Swipers exist (pre-init may have failed on some pages)
+                initOrUpdateSwipers(lastActiveIndex);
+
+                requestAnimationFrame(function(){
+                    calcMainHeight();
+                    try {
+                        if (thumbsSwiper) thumbsSwiper.update();
+                        if (mainSwiper) {
+                            mainSwiper.update();
+                            mainSwiper.slideTo(lastActiveIndex, 0);
+                        }
+                        updateCounter();
+                        ensureYoutubeForActiveSlide();
+                        try {
+                            if (__isIOS && mainSwiper) {
+                                const slide = mainSwiper.slides[mainSwiper.activeIndex];
+                                const img = slide ? slide.querySelector('img') : null;
+                                if (img && img.decode) {
+                                    img.decode().catch(function(){}).finally(repaintActiveImage);
+                                } else {
+                                    repaintActiveImage();
+                                }
+                            } else {
+                                repaintActiveImage();
+                            }
+                        } catch(e){}
+                    } catch(e){}
+
+                    setTimeout(function(){
+                        calcMainHeight();
+                        try {
+                            if (thumbsSwiper) thumbsSwiper.update();
+                            if (mainSwiper) {
+                                mainSwiper.update();
+                                mainSwiper.slideTo(lastActiveIndex, 0);
+                            }
+                            try {
+                                if (__isIOS && mainSwiper) {
+                                    const slide = mainSwiper.slides[mainSwiper.activeIndex];
+                                    const img = slide ? slide.querySelector('img') : null;
+                                    if (img && img.decode) {
+                                        img.decode().catch(function(){}).finally(repaintActiveImage);
+                                    } else {
+                                        repaintActiveImage();
+                                    }
+                                } else {
+                                    repaintActiveImage();
+                                }
+                            } catch(e){}
+                        } catch(e){}
+                    }, 150);
+                });
 
                 if (closeBtn && typeof closeBtn.focus === 'function') {
                     closeBtn.focus();
                 }
             }
 
+            // Pre-init lightbox Swipers on page load.
+            // The lightbox is visibility:hidden (not display:none) so it has dimensions.
+            function preInit(){
+                if (modal.parentElement !== document.body) {
+                    document.body.appendChild(modal);
+                }
+                calcMainHeight();
+                initOrUpdateSwipers(0);
+                setTimeout(function(){
+                    calcMainHeight();
+                    try {
+                        if (thumbsSwiper) thumbsSwiper.update();
+                        if (mainSwiper) mainSwiper.update();
+                    } catch(e){}
+                }, 200);
+            }
+            if (document.readyState === 'complete') {
+                preInit();
+            } else {
+                window.addEventListener('load', preInit);
+            }
+
+            window.addEventListener('resize', function(){
+                if (!modal.classList.contains('is-open')) return;
+                calcMainHeight();
+                try {
+                    if (thumbsSwiper) thumbsSwiper.update();
+                    if (mainSwiper) mainSwiper.update();
+                } catch(e){}
+            });
+
             function close(){
                 modal.classList.remove('is-open');
                 modal.setAttribute('aria-hidden', 'true');
                 setBodyLock(false);
                 stopAllVideos();
-                if (mainSwiper) mainSwiper.zoom && mainSwiper.zoom.out();
+                // zoom removed for iOS compatibility
 
                 if (lastFocusedEl && document.contains(lastFocusedEl) && typeof lastFocusedEl.focus === 'function') {
                     lastFocusedEl.focus();
                 }
             }
 
-            openEls.forEach((el) => {
-                const open = (e) => {
-                    if (e && e.target && e.target.closest && e.target.closest('a')) return;
-                    if (e && e.preventDefault) e.preventDefault();
-                    if (e && e.stopPropagation) e.stopPropagation();
-                    if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
-                    const idx = parseInt(el.getAttribute('data-cd-index') || '0', 10);
-                    openAt(Number.isFinite(idx) ? idx : 0);
-                };
-                el.addEventListener('click', open);
-                el.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        open(e);
-                    }
-                });
+            // Expose for Swiper native click handler (Swiper blocks propagation on iOS)
+            window.__cdListingOpenAt = openAt;
+
+            // Event delegation for lightbox open – fallback for non-Swiper elements (mobile cards)
+            document.addEventListener('click', function(e){
+                if (modal.classList.contains('is-open')) return;
+                var t = e.target && e.target.closest ? e.target.closest('.js-cd-open-lightbox') : null;
+                if (!t) return;
+                if (e.target.closest && e.target.closest('a')) return;
+                e.preventDefault();
+                e.stopPropagation();
+                var idx = parseInt(t.getAttribute('data-cd-index') || '0', 10);
+                openAt(Number.isFinite(idx) ? idx : 0);
+            });
+
+            document.addEventListener('keydown', function(e){
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                if (modal.classList.contains('is-open')) return;
+                var t = e.target && e.target.closest ? e.target.closest('.js-cd-open-lightbox') : null;
+                if (!t) return;
+                e.preventDefault();
+                var idx = parseInt(t.getAttribute('data-cd-index') || '0', 10);
+                openAt(Number.isFinite(idx) ? idx : 0);
             });
 
             closeEls.forEach((el) => el.addEventListener('click', close));
@@ -2168,6 +2848,34 @@ font-weight: 300;
                 if (e.key === 'Escape') close();
             });
         })();
+    </script>
+
+    <script>
+    (function(){
+        try {
+            document.addEventListener('click', function(e){
+                var btn = e.target && e.target.closest
+                    ? (e.target.closest('.listing-detail-hero__actions .action-call') || e.target.closest('.lp-detail__actions .lp-detail__action[href^="tel:"]'))
+                    : null;
+                if (!btn) return;
+                if (window.matchMedia && window.matchMedia('(min-width: 768px)').matches) {
+                    var modalEl = document.getElementById('callSellerModal');
+                    if (!modalEl) return;
+                    if (window.bootstrap && bootstrap.Modal) {
+                        e.preventDefault();
+                        // Move modal to body to avoid stacking context issues under backdrop
+                        try {
+                            if (modalEl.parentElement !== document.body) {
+                                document.body.appendChild(modalEl);
+                            }
+                        } catch(e){}
+                        var inst = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        inst.show();
+                    }
+                }
+            }, true);
+        } catch(e){}
+    })();
     </script>
 
 @endpush

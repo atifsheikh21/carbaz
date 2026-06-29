@@ -4,11 +4,14 @@ namespace Modules\Car\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Car\Entities\CarTranslation;
 use Modules\Brand\Entities\Brand;
 use App\Models\User;
 use Modules\Car\Entities\CarGallery;
+use Modules\City\Entities\City;
 
 class Car extends Model
 {
@@ -46,72 +49,70 @@ class Car extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
     public function galleries(): HasMany
     {
         return $this->hasMany(CarGallery::class, 'car_id');
     }
 
-    public function translate(){
-        return $this->belongsTo(CarTranslation::class, 'id', 'car_id')->where('lang_code', admin_lang());
+    public function translate(): HasOne
+    {
+        return $this->hasOne(CarTranslation::class, 'car_id', 'id')
+            ->where('lang_code', admin_lang())
+            ->orderByDesc('id');
     }
 
-    public function front_translate(){
-        return $this->belongsTo(CarTranslation::class, 'id', 'car_id')->where('lang_code', front_lang());
+    public function front_translate(): HasOne
+    {
+        return $this->hasOne(CarTranslation::class, 'car_id', 'id')
+            ->where('lang_code', front_lang())
+            ->orderByDesc('id');
+    }
+
+    protected function translationValue(string $field)
+    {
+        if ($this->front_translate && !is_null($this->front_translate->{$field})) {
+            return $this->front_translate->{$field};
+        }
+
+        if ($this->translate && !is_null($this->translate->{$field})) {
+            return $this->translate->{$field};
+        }
+
+        return $this->attributes[$field] ?? null;
     }
 
     public function getTitleAttribute()
     {
-        if($this->front_translate){
-            return $this->front_translate?->title;
-       }else{
-           return $this->translate->title;
-       }
-
+        return $this->translationValue('title');
     }
 
     public function getDescriptionAttribute()
     {
-        if($this->front_translate){
-            return $this->front_translate?->description;
-       }else{
-           return $this->translate->description;
-       }
+        return $this->translationValue('description');
     }
 
     public function getVideoDescriptionAttribute()
     {
-        if($this->front_translate){
-            return $this->front_translate?->video_description;
-       }else{
-           return $this->translate->video_description;
-       }
+        return $this->translationValue('video_description');
     }
 
     public function getAddressAttribute()
     {
-        if($this->front_translate){
-            return $this->front_translate?->address;
-       }else{
-           return $this->translate->address;
-       }
+        return $this->translationValue('address');
     }
 
     public function getSeoTitleAttribute()
     {
-        if($this->front_translate){
-            return $this->front_translate?->seo_title;
-       }else{
-           return $this->translate->seo_title;
-       }
+        return $this->translationValue('seo_title');
     }
 
     public function getSeoDescriptionAttribute()
     {
-        if($this->front_translate){
-            return $this->front_translate?->seo_description;
-       }else{
-           return $this->translate->seo_description;
-       }
+        return $this->translationValue('seo_description');
     }
-
 }
