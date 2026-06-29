@@ -25,6 +25,26 @@
             min-height: 100vh;
         }
 
+        html{
+            overflow-x:hidden;
+        }
+
+        @media (min-width: 769px){
+            body{
+                zoom:.75;
+            }
+        }
+
+        @supports not (zoom: 1){
+            @media (min-width: 769px){
+                body > *{
+                    transform:scale(.75);
+                    transform-origin:top left;
+                    width:133.333333%;
+                }
+            }
+        }
+
         .navbar-brand {
             font-size: 32px;
             font-weight: bold;

@@ -15,6 +15,23 @@
 
 html{
     font-size:16px;
+    overflow-x:hidden;
+}
+
+@media (min-width: 769px){
+    body{
+        zoom:.75;
+    }
+}
+
+@supports not (zoom: 1){
+    @media (min-width: 769px){
+        body > *{
+            transform:scale(.75);
+            transform-origin:top left;
+            width:133.333333%;
+        }
+    }
 }
 
 @media (max-width: 1440px){
