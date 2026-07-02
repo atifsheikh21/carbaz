@@ -345,10 +345,21 @@
         }
 
         input.addEventListener('change', function (event) {
-            currentFiles = Array.from(event.target.files || []);
-            if (currentFiles.length > maxImages) {
+            const newFiles = Array.from(event.target.files || []);
+            let skipped = false;
+            newFiles.forEach((file) => {
+                const exists = currentFiles.some((currentFile) => currentFile.name === file.name && currentFile.size === file.size && currentFile.lastModified === file.lastModified);
+                if (exists) {
+                    return;
+                }
+                if (currentFiles.length < maxImages) {
+                    currentFiles.push(file);
+                } else {
+                    skipped = true;
+                }
+            });
+            if (skipped) {
                 alert('Maximum 8 images allowed');
-                currentFiles = currentFiles.slice(0, maxImages);
             }
             syncFiles();
             renderPreview();
