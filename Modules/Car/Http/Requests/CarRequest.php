@@ -156,6 +156,12 @@ class CarRequest extends FormRequest
             'transmission.required' => trans('translate.Transmission is required'),
             'seller_type.required' => trans('translate.Seller type is required'),
             'purpose.required' => trans('translate.Purpose is required'),
+            'gallery_images.required' => __('Please upload at least one image.'),
+            'gallery_images.max' => __('You can upload maximum 8 images only.'),
+            'gallery_images.*.uploaded' => __('One of the selected images could not be uploaded. Please remove it, choose a smaller photo, and try again.'),
+            'gallery_images.*.image' => __('Only image files are allowed.'),
+            'gallery_images.*.mimes' => __('Images must be JPG, PNG, or WEBP files.'),
+            'gallery_images.*.max' => __('Each image must be 8MB or smaller.'),
         ];
     }
 }

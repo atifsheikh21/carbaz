@@ -51,4 +51,15 @@ class CarPartRequest extends FormRequest
     {
         return true;
     }
+
+    public function messages(): array
+    {
+        return [
+            'images.max' => __('You can upload maximum 8 images only.'),
+            'images.*.uploaded' => __('One of the selected images could not be uploaded. Please remove it, choose a smaller photo, and try again.'),
+            'images.*.image' => __('Only image files are allowed.'),
+            'images.*.mimes' => __('Images must be JPG, PNG, or WEBP files.'),
+            'images.*.max' => __('Each image must be 8MB or smaller.'),
+        ];
+    }
 }

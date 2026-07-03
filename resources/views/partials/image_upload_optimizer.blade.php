@@ -1,10 +1,10 @@
 <script>
     window.optimizeImageFilesForUpload = window.optimizeImageFilesForUpload || async function(files, options) {
         const settings = Object.assign({
-            maxWidth: 1905,
-            maxHeight: 1080,
-            quality: 0.82,
-            maxBytes: 2.5 * 1024 * 1024
+            maxWidth: 1600,
+            maxHeight: 1200,
+            quality: 0.72,
+            maxBytes: 900 * 1024
         }, options || {});
 
         async function optimizeFile(file) {
@@ -13,10 +13,6 @@
             }
 
             if (file.type === 'image/gif' || file.type === 'image/svg+xml') {
-                return file;
-            }
-
-            if (file.size <= settings.maxBytes) {
                 return file;
             }
 
@@ -44,18 +40,38 @@
                     }
 
                     context.drawImage(image, 0, 0, width, height);
-                    canvas.toBlob(function(blob) {
-                        if (!blob) {
-                            resolve(file);
-                            return;
-                        }
+                    function buildBlob(targetCanvas, quality, attemptsLeft) {
+                        targetCanvas.toBlob(function(blob) {
+                            if (!blob) {
+                                resolve(file);
+                                return;
+                            }
 
-                        const optimizedName = (file.name || 'image').replace(/\.[^.]+$/, '') + '.jpg';
-                        resolve(new File([blob], optimizedName, {
-                            type: 'image/jpeg',
-                            lastModified: Date.now()
-                        }));
-                    }, 'image/jpeg', settings.quality);
+                            if (blob.size <= settings.maxBytes || attemptsLeft <= 0) {
+                                const optimizedName = (file.name || 'image').replace(/\.[^.]+$/, '') + '.jpg';
+                                resolve(new File([blob], optimizedName, {
+                                    type: 'image/jpeg',
+                                    lastModified: Date.now()
+                                }));
+                                return;
+                            }
+
+                            const smallerCanvas = document.createElement('canvas');
+                            smallerCanvas.width = Math.max(1, Math.round(targetCanvas.width * 0.85));
+                            smallerCanvas.height = Math.max(1, Math.round(targetCanvas.height * 0.85));
+
+                            const smallerContext = smallerCanvas.getContext('2d');
+                            if (!smallerContext) {
+                                resolve(file);
+                                return;
+                            }
+
+                            smallerContext.drawImage(targetCanvas, 0, 0, smallerCanvas.width, smallerCanvas.height);
+                            buildBlob(smallerCanvas, Math.max(0.58, quality - 0.06), attemptsLeft - 1);
+                        }, 'image/jpeg', quality);
+                    }
+
+                    buildBlob(canvas, settings.quality, 4);
                 };
 
                 image.onerror = function() {
