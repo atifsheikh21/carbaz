@@ -22,7 +22,7 @@ class CarPartRequest extends FormRequest
                 'regular_price' => 'required|numeric',
                 'part_number' => 'nullable|string|max:255',
                 'images' => 'nullable|array|max:8',
-                'images.*' => 'nullable|mimes:jpg,png,jpeg,webp|max:5120',
+                'images.*' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:8192',
             ];
         }
 
@@ -40,7 +40,7 @@ class CarPartRequest extends FormRequest
                 'part_number' => 'nullable|string|max:255',
                 'description' => 'required|string',
                 'images' => 'nullable|array|max:8',
-                'images.*' => 'nullable|mimes:jpg,png,jpeg,webp|max:5120',
+                'images.*' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:8192',
             ];
         }
 

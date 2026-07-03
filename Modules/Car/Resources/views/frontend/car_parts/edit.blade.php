@@ -268,6 +268,7 @@
     </div>
 </div>
 
+@include('partials.image_upload_optimizer')
 <script>
     (function () {
         const brandModelsMap = @json($brandModelsMap ?? []);
@@ -359,8 +360,8 @@
             });
         }
 
-        input.addEventListener('change', function (event) {
-            currentFiles = Array.from(event.target.files || []);
+        input.addEventListener('change', async function (event) {
+            currentFiles = await window.optimizeImageFilesForUpload(event.target.files || []);
             const remainingSlots = Math.max(maxImages - existingImages, 0);
             if (currentFiles.length > remainingSlots) {
                 alert('Maximum 8 images allowed');

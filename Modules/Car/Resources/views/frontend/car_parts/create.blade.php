@@ -251,6 +251,7 @@
     </div>
 </div>
 
+@include('partials.image_upload_optimizer')
 <script>
     (function () {
         const brandModelsMap = @json($brandModelsMap ?? []);
@@ -344,8 +345,8 @@
             });
         }
 
-        input.addEventListener('change', function (event) {
-            const newFiles = Array.from(event.target.files || []);
+        input.addEventListener('change', async function (event) {
+            const newFiles = await window.optimizeImageFilesForUpload(event.target.files || []);
             let skipped = false;
             newFiles.forEach((file) => {
                 const exists = currentFiles.some((currentFile) => currentFile.name === file.name && currentFile.size === file.size && currentFile.lastModified === file.lastModified);

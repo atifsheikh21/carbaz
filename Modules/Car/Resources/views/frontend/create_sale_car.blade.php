@@ -709,6 +709,7 @@
 
     <script src="{{ asset('global/tinymce/js/tinymce/tinymce.min.js') }}"></script>
 
+    @include('partials.image_upload_optimizer')
     <script>
         (function($) {
             "use strict"
@@ -872,8 +873,8 @@
                 }
 
                 if (galleryInput) {
-                    galleryInput.addEventListener('change', function(event) {
-                        const incomingFiles = Array.from(event.target.files || []);
+                    galleryInput.addEventListener('change', async function(event) {
+                        const incomingFiles = await window.optimizeImageFilesForUpload(event.target.files || []);
                         const mergedFiles = selectedGalleryFiles.concat(incomingFiles);
 
                         if (mergedFiles.length > 8) {
