@@ -108,9 +108,9 @@
                                     @if(Auth::guard('web')->user()?->is_dealer)
                                         <a href="{{ route('user.car.create', ['purpose' => 'Sale']) }}" class="thm-btn-two">{{ __('Place Vehicle Ad') }}</a>
                                     @elseif($__feeFreeModeEnabled)
-                                        <a href="javascript:;" class="thm-btn-two" data-bs-toggle="modal" data-bs-target="#individualAdFreeInfoModal">{{ __('Place Car Ad') }}</a>
+                                        <a href="javascript:;" class="thm-btn-two" data-bs-toggle="modal" data-bs-target="#individualAdFreeInfoModal">{{ __('Place Vehicle Ad') }}</a>
                                     @else
-                                        <a href="javascript:;" class="thm-btn-two" data-bs-toggle="modal" data-bs-target="#individualAdPaidModal">{{ __('Place Car Ad') }}</a>
+                                        <a href="javascript:;" class="thm-btn-two" data-bs-toggle="modal" data-bs-target="#individualAdPaidModal">{{ __('Place Vehicle Ad') }}</a>
                                     @endif
                                 </div>
                             </div>

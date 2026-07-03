@@ -147,6 +147,29 @@
                                     width:100%;
                                     text-align:center;
                                 }
+                                #registration_lookup_section .input-group{
+                                    max-width:100% !important;
+                                    width:100%;
+                                    display:flex;
+                                    flex-direction:column;
+                                    gap:10px;
+                                }
+                                #registration_lookup_section .form-control,
+                                #registration_lookup_section .btn{
+                                    width:100%;
+                                    max-width:100%;
+                                    display:block;
+                                    border-radius:6px;
+                                }
+                                .mileage-mobile-row{
+                                    display:grid !important;
+                                    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+                                    gap:12px;
+                                }
+                                .mileage-mobile-row .description-item-inner{
+                                    width:100% !important;
+                                    min-width:0;
+                                }
                             }
                         </style>
                         @endif
@@ -169,11 +192,11 @@
                                             <div class="description-item-inner">
                                                 <label class="form-label">{{ __('Vehicle Type') }} <span>*</span></label>
                                                 <div class="vehicle-source-options" id="vehicle_source">
-                                                    <div class="vehicle-source-option">
+                                                    <div class="vehicle-source-option" style="margin-bottom: 15px;">
                                                         <input type="radio" id="vehicle_source_registered" name="vehicle_source" value="registered" {{ $__vehicleSource === 'registered' ? 'checked' : '' }}>
                                                         <label for="vehicle_source_registered">{{ __('Registered Vehicle') }}</label>
                                                     </div>
-                                                    <div class="vehicle-source-option">
+                                                    <div class="vehicle-source-option" style="margin-bottom: 15px;">
                                                         <input type="radio" id="vehicle_source_unregistered" name="vehicle_source" value="unregistered" {{ $__vehicleSource === 'unregistered' ? 'checked' : '' }}>
                                                         <label for="vehicle_source_unregistered">{{ $__isDealer ? __('New / Unregistered Vehicle') . ' / ' . __('manual entry') : __('Manual Entry') }}</label>
                                                     </div>
@@ -200,70 +223,70 @@
                                             <div class="vehicle-details-grid">
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Make') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_make">—</div>
+                                                    <div class="vehicle-details-value" id="vd_make">â€”</div>
                                                 </div>
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Model') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_model">—</div>
+                                                    <div class="vehicle-details-value" id="vd_model">â€”</div>
                                                 </div>
 
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Version') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_version">—</div>
+                                                    <div class="vehicle-details-value" id="vd_version">â€”</div>
                                                 </div>
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Car Model') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_car_model">—</div>
+                                                    <div class="vehicle-details-value" id="vd_car_model">â€”</div>
                                                 </div>
 
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Body Type') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_body">—</div>
+                                                    <div class="vehicle-details-value" id="vd_body">â€”</div>
                                                 </div>
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Fuel Type') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_fuel">—</div>
+                                                    <div class="vehicle-details-value" id="vd_fuel">â€”</div>
                                                 </div>
 
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Colour') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_colour">—</div>
+                                                    <div class="vehicle-details-value" id="vd_colour">â€”</div>
                                                 </div>
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Year') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_year">—</div>
+                                                    <div class="vehicle-details-value" id="vd_year">â€”</div>
                                                 </div>
 
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Transmission') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_transmission">—</div>
+                                                    <div class="vehicle-details-value" id="vd_transmission">â€”</div>
                                                 </div>
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Engine Size') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_engine_size">—</div>
+                                                    <div class="vehicle-details-value" id="vd_engine_size">â€”</div>
                                                 </div>
 
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Number of Doors') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_doors">—</div>
+                                                    <div class="vehicle-details-value" id="vd_doors">â€”</div>
                                                 </div>
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('NCT Expiry') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_nct">—</div>
+                                                    <div class="vehicle-details-value" id="vd_nct">â€”</div>
                                                 </div>
 
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Owners') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_owners">—</div>
+                                                    <div class="vehicle-details-value" id="vd_owners">â€”</div>
                                                 </div>
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('Tax Expiry Date') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_tax_expiry">—</div>
+                                                    <div class="vehicle-details-value" id="vd_tax_expiry">â€”</div>
                                                 </div>
 
                                                 <div class="vehicle-details-item">
                                                     <div class="vehicle-details-label">{{ __('CO2 Emissions') }}</div>
-                                                    <div class="vehicle-details-value" id="vd_co2">—</div>
+                                                    <div class="vehicle-details-value" id="vd_co2">â€”</div>
                                                 </div>
                                             </div>
 
@@ -319,7 +342,7 @@
 
                                         </div>
 
-                                        <div class="description-item two">
+                                        <div class="description-item two mileage-mobile-row">
                                             <div class="description-item-inner">
                                                 <label for="mileage" class="form-label">{{ __('Mileage') }}
                                                 </label>
@@ -1101,21 +1124,21 @@
 
                             $('#wrap_brand').hide();
 
-                            $("#vd_make").text(vehicleDetails.make || '—');
-                            $("#vd_model").text(vehicleDetails.model || '—');
-                            $("#vd_version").text(vehicleDetails.version || '—');
-                            $("#vd_car_model").text(vehicleDetails.car_model || '—');
-                            $("#vd_body").text(vehicleDetails.body_type || '—');
-                            $("#vd_fuel").text(vehicleDetails.fuel_type || '—');
-                            $("#vd_colour").text(vehicleDetails.colour || '—');
-                            $("#vd_year").text(vehicleDetails.year || '—');
-                            $("#vd_transmission").text(vehicleDetails.transmission || '—');
-                            $("#vd_engine_size").text(vehicleDetails.engine_size || '—');
-                            $("#vd_doors").text(vehicleDetails.doors || '—');
-                            $("#vd_nct").text(vehicleDetails.nct || '—');
-                            $("#vd_owners").text(vehicleDetails.owners || '—');
-                            $("#vd_tax_expiry").text(vehicleDetails.tax_expiry || '—');
-                            $("#vd_co2").text(vehicleDetails.co2 || '—');
+                            $("#vd_make").text(vehicleDetails.make || 'â€”');
+                            $("#vd_model").text(vehicleDetails.model || 'â€”');
+                            $("#vd_version").text(vehicleDetails.version || 'â€”');
+                            $("#vd_car_model").text(vehicleDetails.car_model || 'â€”');
+                            $("#vd_body").text(vehicleDetails.body_type || 'â€”');
+                            $("#vd_fuel").text(vehicleDetails.fuel_type || 'â€”');
+                            $("#vd_colour").text(vehicleDetails.colour || 'â€”');
+                            $("#vd_year").text(vehicleDetails.year || 'â€”');
+                            $("#vd_transmission").text(vehicleDetails.transmission || 'â€”');
+                            $("#vd_engine_size").text(vehicleDetails.engine_size || 'â€”');
+                            $("#vd_doors").text(vehicleDetails.doors || 'â€”');
+                            $("#vd_nct").text(vehicleDetails.nct || 'â€”');
+                            $("#vd_owners").text(vehicleDetails.owners || 'â€”');
+                            $("#vd_tax_expiry").text(vehicleDetails.tax_expiry || 'â€”');
+                            $("#vd_co2").text(vehicleDetails.co2 || 'â€”');
 
                             $("#btn_apply_vehicle_details").off('click').on('click', function() {
                                 vehicleEditMode = !vehicleEditMode;

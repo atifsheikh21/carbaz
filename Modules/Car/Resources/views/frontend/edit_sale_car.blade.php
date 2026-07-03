@@ -250,7 +250,7 @@
                                             <input type="hidden" name="motorcheck_raw" id="motorcheck_raw" value="{{ old('motorcheck_raw', $car->motorcheck_raw) }}">
                                             <input type="hidden" name="year" id="year" value="{{ old('year', $car->year) }}">
 
-                                            <div class="description-item two">
+                                            <div class="description-item two mileage-mobile-row">
                                                 <div class="description-item-inner">
                                                     <label for="mileage" class="form-label">{{ __('translate.Mileage') }}
                                                     </label>
@@ -592,6 +592,17 @@
         .modern-upload-selected{
             font-size: 13px;
             color: #333;
+        }
+        @media(max-width:575.98px){
+            .mileage-mobile-row{
+                display:grid !important;
+                grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+                gap:12px;
+            }
+            .mileage-mobile-row .description-item-inner{
+                width:100% !important;
+                min-width:0;
+            }
         }
     </style>
 @endpush
