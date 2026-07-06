@@ -593,23 +593,39 @@
             font-size: 13px;
             color: #333;
         }
+        .mileage-mobile-row{
+            display:grid !important;
+            grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+            gap:16px !important;
+            align-items:start;
+        }
+        .mileage-mobile-row .description-item-inner{
+            width:100% !important;
+            max-width:100% !important;
+            min-width:0;
+            flex:0 0 auto !important;
+        }
+        .mileage-mobile-row .form-control,
+        .mileage-mobile-row .form-select{
+            width:100% !important;
+            max-width:100% !important;
+        }
+        .vehicle-source-options{
+            display:flex;
+            align-items:center;
+            gap:18px;
+            flex-wrap:wrap;
+        }
+        .vehicle-source-option{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            margin-bottom:0 !important;
+            white-space:nowrap;
+        }
         @media(max-width:575.98px){
             .mileage-mobile-row{
-                display:grid !important;
-                grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
                 gap:12px !important;
-                align-items:start;
-            }
-            .mileage-mobile-row .description-item-inner{
-                width:100% !important;
-                max-width:100% !important;
-                min-width:0;
-                flex:0 0 auto !important;
-            }
-            .mileage-mobile-row .form-control,
-            .mileage-mobile-row .form-select{
-                width:100% !important;
-                max-width:100% !important;
             }
         }
     </style>
