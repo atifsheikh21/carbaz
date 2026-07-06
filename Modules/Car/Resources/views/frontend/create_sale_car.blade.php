@@ -183,7 +183,7 @@
 
                                         <div class="description-item" id="registration_lookup_section">
                                             <div class="description-item-inner">
-                                                <label for="registration_number" class="form-label">{{ __('Registration Number') }}</label>
+                                                <label for="registration_number" style="margin-top: 20px;" class="form-label">{{ __('Registration Number') }}</label>
                                                 <div class="input-group" style="max-width:50%;">
                                                     <input type="text" class="form-control" id="registration_number" name="registration_number" value="{{ old('registration_number') }}" placeholder="{{ __('Registration Number') }}">
                                                     <button type="button" class="btn btn-primary" id="btn_motorcheck_lookup">{{ __('Get Vehicle Details') }}</button>
