@@ -151,8 +151,10 @@ class AccountDeletionController extends Controller
         $request->session()->regenerateToken();
 
         $notification = 'Your account has been deleted successfully.';
-        $notification = ['messege' => $notification, 'alert-type' => 'success'];
+        $request->session()->flash('messege', $notification);
+        $request->session()->flash('alert-type', 'success');
+        $request->session()->save();
 
-        return redirect()->route('home')->with($notification);
+        return redirect()->route('home');
     }
 }
