@@ -854,20 +854,20 @@
         <div class="footer-links">
             <a href="{{ route('contact-us') }}">contact</a>
             <span class="separators"></span>
-            <a href="https://staging.carnpart.ie/page/terms-of-use">website terms of use</a>
+            <a href="https://carnpart.ie/page/terms-of-use">website terms of use</a>
             <span class="separators"></span>
                 <a href="{{ route('terms-conditions') }}">terms and condition</a>
                 <span class="separators"></span>
                 <a href="{{ route('privacy-policy') }}">privacy policy</a>
                 <span class="separators"></span>
-            <a href="https://staging.carnpart.ie/page/cookie-policy">cookie policy</a>
+            <a href="https://carnpart.ie/page/cookie-policy">cookie policy</a>
 
                 <span class="separators"></span>
-                <a href="https://staging.carnpart.ie/page/legal">legal</a>
+                <a href="https://carnpart.ie/page/legal">legal</a>
 
 
             <span class="separators"></span>
-            <a href="https://staging.carnpart.ie/free-ad-offer">pricing</a>
+            <a href="https://carnpart.ie/free-ad-offer">pricing</a>
             </div>
         </div>
 

@@ -846,17 +846,17 @@
             <div class="ls-mobile__footer">
                 <a href="{{ route('contact-us') }}">contact</a>
                 <span class="ls-mobile__footer-sep"></span>
-            <a href="https://staging.carnpart.ie/page/terms-of-use">website terms of use</a>
+            <a href="https://carnpart.ie/page/terms-of-use">website terms of use</a>
                 <span class="ls-mobile__footer-sep"></span>
             <a href="{{ route('terms-conditions') }}">terms and condition</a>
                 <span class="ls-mobile__footer-sep"></span>
                 <a href="{{ route('privacy-policy') }}">privacy policy</a>
                 <span class="ls-mobile__footer-sep"></span>
-            <a href="https://staging.carnpart.ie/page/cookie-policy">cookie policy</a>
+            <a href="https://carnpart.ie/page/cookie-policy">cookie policy</a>
                 <span class="ls-mobile__footer-sep"></span>
-                <a href="https://staging.carnpart.ie/page/legal">legal</a>
+                <a href="https://carnpart.ie/page/legal">legal</a>
                 <span class="ls-mobile__footer-sep"></span>
-            <a href="https://staging.carnpart.ie/free-ad-offer">pricing</a>
+            <a href="https://carnpart.ie/free-ad-offer">pricing</a>
             
                 
             </div>
@@ -883,7 +883,7 @@
         <div class="main-container">
             <div class="logo-section">
                 <a href="{{ route('home') }}" style="text-decoration:none;">
-                    <img src="https://staging.carnpart.ie/frontend/assets/images/logo/car-n-part.png" style="max-width: 300px;" alt="logo">
+                    <img src="https://carnpart.ie/frontend/assets/images/logo/car-n-part.png" style="max-width: 300px;" alt="logo">
                 </a>
             </div>
 
@@ -992,17 +992,17 @@
         <div class="footer-links">
             <a href="{{ route('contact-us') }}">contact</a>
             <span class="separators"></span>
-            <a href="https://staging.carnpart.ie/page/terms-of-use">website terms of use</a>
+            <a href="https://carnpart.ie/page/terms-of-use">website terms of use</a>
             <span class="separators"></span>
             <a href="{{ route('terms-conditions') }}">terms and condition</a>
             <span class="separators"></span>
             <a href="{{ route('privacy-policy') }}">privacy policy</a>
             <span class="separators"></span>
-            <a href="https://staging.carnpart.ie/page/cookie-policy">cookie policy</a>
+            <a href="https://carnpart.ie/page/cookie-policy">cookie policy</a>
             <span class="separators"></span>
-            <a href="https://staging.carnpart.ie/page/legal">legal</a>
+            <a href="https://carnpart.ie/page/legal">legal</a>
             <span class="separators"></span>
-            <a href="https://staging.carnpart.ie/free-ad-offer">pricing</a>
+            <a href="https://carnpart.ie/free-ad-offer">pricing</a>
         </div>
     </div>
 
