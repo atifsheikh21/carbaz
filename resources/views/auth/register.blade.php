@@ -59,7 +59,7 @@
                                     <span>*</span> </label>
                                 <select class="form-control @error('user_type') is-invalid @enderror" id="user_type" name="user_type">
                                     <option value="individual" {{ old('user_type', 'individual') == 'individual' ? 'selected' : '' }}>{{ __("PRIVATE") }} - {{ __("vehicle / vehicle part or accessories seller") }}</option>
-                                    <option value="dealer" {{ old('user_type', 'individual') == 'dealer' ? 'selected' : '' }}>{{ __("Dealer / Trader") }}- {{ __("vehicle / vehicle part or accessories seller") }} </option>
+                                    <option value="dealer" {{ old('user_type', 'individual') == 'dealer' ? 'selected' : '' }}>{{ __("DEALER / TRADER") }}- {{ __("vehicle / vehicle part or accessories seller") }} </option>
                                 </select>
                                 @error('user_type')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
