@@ -117,7 +117,7 @@ class RegisteredUserController extends Controller
             $user->verification_token = null;
             $user->save();
 
-            $notification = trans('translate.Verification Successfully');
+            $notification = 'Email verified successfully.';
             $notification = array('messege'=>$notification,'alert-type'=>'success');
             return redirect()->route('login')->with($notification);
         }else{

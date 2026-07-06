@@ -322,6 +322,13 @@
 
                     </form>
 
+                    <div class="register-submit-overlay" aria-live="polite" aria-hidden="true">
+                        <div class="register-submit-overlay__content">
+                            <div class="register-submit-overlay__spinner"></div>
+                            <p>{{ __('Please wait') }}</p>
+                        </div>
+                    </div>
+
 
 
                     @if (optional($social_login)->is_gmail == 1 || optional($social_login)->is_facebook == 1)
@@ -464,6 +471,45 @@
         color: #2563EB;
         box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
+    .register-submit-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(17, 24, 39, 0.55);
+    }
+    .register-submit-overlay.is-visible {
+        display: flex;
+    }
+    .register-submit-overlay__content {
+        min-width: 180px;
+        padding: 24px;
+        border-radius: 8px;
+        background: #fff;
+        text-align: center;
+        box-shadow: 0 18px 45px rgba(0,0,0,0.2);
+    }
+    .register-submit-overlay__content p {
+        margin: 12px 0 0;
+        color: #111827;
+        font-weight: 600;
+    }
+    .register-submit-overlay__spinner {
+        width: 36px;
+        height: 36px;
+        margin: 0 auto;
+        border: 4px solid #E5E7EB;
+        border-top-color: #2563EB;
+        border-radius: 50%;
+        animation: register-submit-spin .8s linear infinite;
+    }
+    @keyframes register-submit-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
    
    
 </style>
@@ -569,6 +615,17 @@
             if (registerForm) {
                 registerForm.addEventListener('submit', function () {
                     syncPhoneToHidden();
+                    const overlay = document.querySelector('.register-submit-overlay');
+                    const submitButton = getSubmitButton();
+
+                    if (overlay) {
+                        overlay.classList.add('is-visible');
+                        overlay.setAttribute('aria-hidden', 'false');
+                    }
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.textContent = @json(__('Please wait'));
+                    }
                 });
             }
 
