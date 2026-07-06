@@ -147,29 +147,6 @@
                                     width:100%;
                                     text-align:center;
                                 }
-                                #registration_lookup_section .input-group{
-                                    max-width:100% !important;
-                                    width:100%;
-                                    display:flex;
-                                    flex-direction:column;
-                                    gap:10px;
-                                }
-                                #registration_lookup_section .form-control,
-                                #registration_lookup_section .btn{
-                                    width:100%;
-                                    max-width:100%;
-                                    display:block;
-                                    border-radius:6px;
-                                }
-                                .mileage-mobile-row{
-                                    display:grid !important;
-                                    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-                                    gap:12px;
-                                }
-                                .mileage-mobile-row .description-item-inner{
-                                    width:100% !important;
-                                    min-width:0;
-                                }
                             }
                         </style>
                         @endif
@@ -724,6 +701,54 @@
         .modern-upload-selected{
             font-size: 13px;
             color: #333;
+        }
+        @media(max-width:575.98px){
+            #registration_lookup_section .description-item-inner{
+                width:100% !important;
+                max-width:100% !important;
+                min-width:0;
+            }
+            #registration_lookup_section .input-group{
+                max-width:100% !important;
+                width:100% !important;
+                display:flex !important;
+                flex-direction:column !important;
+                align-items:stretch !important;
+                gap:10px;
+            }
+            #registration_lookup_section .form-control,
+            #registration_lookup_section .btn{
+                width:100% !important;
+                max-width:100% !important;
+                flex:0 0 auto !important;
+                display:block;
+                border-radius:6px !important;
+            }
+            #registration_lookup_section .form-control{
+                min-height:56px;
+            }
+            #registration_lookup_section .btn{
+                min-height:54px;
+                padding:14px 16px;
+                font-weight:700;
+            }
+            .mileage-mobile-row{
+                display:grid !important;
+                grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+                gap:12px !important;
+                align-items:start;
+            }
+            .mileage-mobile-row .description-item-inner{
+                width:100% !important;
+                max-width:100% !important;
+                min-width:0;
+                flex:0 0 auto !important;
+            }
+            .mileage-mobile-row .form-control,
+            .mileage-mobile-row .form-select{
+                width:100% !important;
+                max-width:100% !important;
+            }
         }
     </style>
 @endpush
