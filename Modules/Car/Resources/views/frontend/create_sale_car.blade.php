@@ -5,7 +5,7 @@
 @section('body-content')
 @php
     $authUser = Auth::guard('web')->user();
-    $sellerTypeLabel = ($authUser && $authUser->is_dealer) ? 'Dealer/Company' : 'Private';
+    $sellerTypeLabel = ($authUser && $authUser->is_dealer) ? 'Dealer/Trader' : 'Private';
 @endphp
 
 <main>
