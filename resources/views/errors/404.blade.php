@@ -10,7 +10,7 @@
 	<title>{{ __('translate.404') }}</title>
 
     <!-- Fav Icon -->
-	<link rel="icon" href="{{ asset($setting->favicon) }}">
+	<link rel="icon" href="{{ asset('favicon.ico') }}">
 
     <link rel="stylesheet" href="{{ asset('frontend/assets/fontawesome/css/all.css') }}">
     <!--bootstrap.min.css  -->

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" href="{{ asset($setting ? $setting->favicon : 'frontend/assets/img/default-favicon.ico') }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
 
     <!-- Google Fonts for Arabic -->
     @if(Session::get('lang_dir') == 'right_to_left')

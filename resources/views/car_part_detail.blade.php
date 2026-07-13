@@ -255,7 +255,7 @@
             color: #6c6c6c;
             border-radius: 0;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 10px;
             text-decoration: none;
             line-height: 1;
             gap: 8px;
@@ -353,6 +353,11 @@
             color: rgba(17,17,17,.75);
             line-height: 1.65;
             font-size: 16px;
+        }
+
+        .listing-detail-description__body p {
+            font-size: 18px !important;
+    font-weight: 300;
         }
         .listing-detail-hero__right{
             display: flex;

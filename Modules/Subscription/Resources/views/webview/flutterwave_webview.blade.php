@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{__('Flutterwave Payment')}}</title>
-    <link rel="icon" type="image/png" href="{{ asset($setting->favicon) }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
 
     <script src="{{ asset('global/jquery-3.7.1.min.js') }}"></script>
     <script src="https://checkout.flutterwave.com/v3.js"></script>
