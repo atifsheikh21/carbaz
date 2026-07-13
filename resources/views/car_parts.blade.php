@@ -253,7 +253,7 @@
                     </div>
                 </div>
             @empty
-                <div class="lp-mobile__empty">{{ __('translate.No Item Found') }}</div>
+                <div class="lp-mobile__empty">{{ __('No Item Found') }}</div>
             @endforelse
         </div>
     </div>
@@ -549,7 +549,7 @@
                                     </div>
                                 @empty
                                     <div class="col-12">
-                                        <p>{{ __('translate.No Item Found') }}</p>
+                                        <p>{{ __('No Item Found') }}</p>
                                     </div>
                                 @endforelse
                             </div>

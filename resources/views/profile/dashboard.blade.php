@@ -284,7 +284,7 @@
                             <h5 class="dashbord-taitle">{{ __('translate.Recently Added Cars') }}</h5>
 
                             <div class="dashbord-tabel">
-                                <div style="display:grid;grid-template-columns:120px 1fr 260px 140px;gap:16px;align-items:center;padding:10px 12px;border:0px solid #eee;border-radius:10px;background:#f7f7f7;font-weight:700;color:#2b2b2b;">
+                                <div style="display:grid;grid-template-columns:120px 1fr 220px 140px;gap:16px;align-items:center;padding:10px 12px;border:0px solid #eee;border-radius:10px;background:#f7f7f7;font-weight:700;color:#2b2b2b;">
                                     <div>{{ __('translate.Image') }}</div>
                                     <div>{{ __('translate.Title') }}</div>
                                     <div>{{ __('translate.Actions') }}</div>
@@ -293,7 +293,7 @@
 
                                 <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
                                     @foreach ($cars as $index => $car)
-                                        <div style="display:grid;grid-template-columns:120px 1fr 260px 140px;gap:16px;align-items:center;padding:12px;border:1px solid #eee;border-radius:10px;background:#dddada;">
+                                        <div style="display:grid;grid-template-columns:120px 1fr 220px 140px;gap:16px;align-items:center;padding:12px;border:1px solid #eee;border-radius:10px;background:#dddada;">
                                             <div>
                                                 <a href="{{ route('listing', $car->slug) }}" aria-label="{{ __('View listing') }}">
                                                     <img src="{{ getImageOrPlaceholder($car->thumb_image, '120x90') }}" alt="thumb" style="width:120px;height:90px;object-fit:cover;border-radius:8px;">
@@ -307,7 +307,6 @@
                                             <div style="display:flex;gap:14px;align-items:center;">
                                                 <a href="{{ route('listing', $car->slug) }}" style="text-decoration:none;color:inherit;">view</a>
                                                 <a href="{{ route('user.car.edit', ['car' => $car->id, 'lang_code' => admin_lang()] ) }}" style="text-decoration:none;color:inherit;">edit</a>
-                                                <a href="{{ route('user.car-gallery', $car->id) }}" style="text-decoration:none;color:inherit;">gallery</a>
                                                 <button type="button" onclick="deleteCar({{ $car->id }})" style="background:transparent;border:0;padding:0;color:inherit;font:inherit;line-height:inherit;cursor:pointer;">remove</button>
 
                                                 <form action="{{ route('user.car.destroy', $car->id) }}" id="remove_car_dashboard_{{ $car->id }}" class="d-none" method="POST">

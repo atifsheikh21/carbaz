@@ -736,6 +736,12 @@
                         if ((selectedGalleryFiles.length + getExistingGalleryCount()) > 8) {
                             event.preventDefault();
                             toastr.error('{{ __('You can upload maximum 8 images only.') }}');
+                            return;
+                        }
+
+                        const overlay = document.getElementById('adSubmittingOverlay');
+                        if (overlay) {
+                            overlay.style.display = 'flex';
                         }
                     });
                 }
@@ -1049,15 +1055,6 @@
 
             });
         })(jQuery);
-
-        (function(){
-            var f = document.getElementById('carEditForm');
-            if (!f) return;
-            f.addEventListener('submit', function(){
-                var ov = document.getElementById('adSubmittingOverlay');
-                if (ov){ ov.style.display = 'flex'; }
-            });
-        })();
 
         function previewVideoImage(event) {
             var reader = new FileReader();

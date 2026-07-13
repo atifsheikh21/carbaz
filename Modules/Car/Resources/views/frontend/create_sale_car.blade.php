@@ -566,17 +566,6 @@
     </div>
 </div>
 
-<script>
-    (function(){
-        var f = document.getElementById('carCreateForm');
-        if (!f) return;
-        f.addEventListener('submit', function(){
-            var ov = document.getElementById('adSubmittingOverlay');
-            if (ov){ ov.style.display = 'flex'; }
-        });
-    })();
-    </script>
-
 </main>
 
 @endsection
@@ -966,8 +955,12 @@
                         }
 
                         if (selectedGalleryFiles.length === 0) {
-                            event.preventDefault();
-                            toastr.error('{{ __('Please upload at least one image.') }}');
+                            return;
+                        }
+
+                        const overlay = document.getElementById('adSubmittingOverlay');
+                        if (overlay) {
+                            overlay.style.display = 'flex';
                         }
                     });
                 }
