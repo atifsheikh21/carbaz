@@ -943,13 +943,32 @@
 
                         if (mergedFiles.length > 8) {
                             toastr.error('{{ __('You can upload maximum 8 images only.') }}');
-                            event.target.value = '';
+                            syncGalleryInputFiles();
+                            renderGalleryPreview();
                             return;
                         }
 
                         selectedGalleryFiles = mergedFiles;
                         syncGalleryInputFiles();
                         renderGalleryPreview();
+                    });
+                }
+
+                const carCreateForm = document.getElementById('carCreateForm');
+                if (carCreateForm) {
+                    carCreateForm.addEventListener('submit', function(event) {
+                        syncGalleryInputFiles();
+
+                        if (selectedGalleryFiles.length > 8) {
+                            event.preventDefault();
+                            toastr.error('{{ __('You can upload maximum 8 images only.') }}');
+                            return;
+                        }
+
+                        if (selectedGalleryFiles.length === 0) {
+                            event.preventDefault();
+                            toastr.error('{{ __('Please upload at least one image.') }}');
+                        }
                     });
                 }
 

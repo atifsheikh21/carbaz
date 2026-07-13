@@ -717,13 +717,26 @@
 
                         if ((mergedFiles.length + getExistingGalleryCount()) > 8) {
                             toastr.error('{{ __('You can upload maximum 8 images only.') }}');
-                            event.target.value = '';
+                            syncGalleryInputFiles();
+                            renderGalleryPreview();
                             return;
                         }
 
                         selectedGalleryFiles = mergedFiles;
                         syncGalleryInputFiles();
                         renderGalleryPreview();
+                    });
+                }
+
+                const carEditForm = document.getElementById('carEditForm');
+                if (carEditForm) {
+                    carEditForm.addEventListener('submit', function(event) {
+                        syncGalleryInputFiles();
+
+                        if ((selectedGalleryFiles.length + getExistingGalleryCount()) > 8) {
+                            event.preventDefault();
+                            toastr.error('{{ __('You can upload maximum 8 images only.') }}');
+                        }
                     });
                 }
 

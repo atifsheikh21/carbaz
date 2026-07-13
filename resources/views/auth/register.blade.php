@@ -322,10 +322,10 @@
 
                     </form>
 
-                    <div class="register-submit-overlay" aria-live="polite" aria-hidden="true">
+                    <div class="register-submit-overlay" aria-live="polite" aria-hidden="true" hidden>
                         <div class="register-submit-overlay__content">
                             <div class="register-submit-overlay__spinner"></div>
-                            <p>{{ __('Please wait') }}</p>
+                            <p>{{ __('Please wait, your verification link is being generated.') }}</p>
                         </div>
                     </div>
 
@@ -412,7 +412,7 @@
 
 @endsection
 
-@push('css_section')
+@push('js_section')
 <style>
     .register-form .login-form-item {
         margin-top: 20px;
@@ -479,6 +479,9 @@
         align-items: center;
         justify-content: center;
         background: rgba(17, 24, 39, 0.55);
+    }
+    .register-submit-overlay[hidden] {
+        display: none;
     }
     .register-submit-overlay.is-visible {
         display: flex;
@@ -619,12 +622,13 @@
                     const submitButton = getSubmitButton();
 
                     if (overlay) {
+                        overlay.hidden = false;
                         overlay.classList.add('is-visible');
                         overlay.setAttribute('aria-hidden', 'false');
                     }
                     if (submitButton) {
                         submitButton.disabled = true;
-                        submitButton.textContent = @json(__('Please wait'));
+                        submitButton.textContent = @json(__('Continue'));
                     }
                 });
             }

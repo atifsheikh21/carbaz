@@ -488,7 +488,24 @@
                                 $lpMobileMyAdsCarPartCount = \App\Models\CarPart::where('agent_id', auth('web')->id())->count();
                                 $lpMobileMyAdsSavedCount = 0;
                                 if (\Illuminate\Support\Facades\Schema::hasTable('wishlists')) {
-                                    $lpMobileMyAdsSavedCount = \App\Models\Wishlist::where('user_id', auth('web')->id())->count();
+                                    $lpMobileMyAdsWishlists = \App\Models\Wishlist::where('user_id', auth('web')->id())->get();
+                                    $lpMobileMyAdsCarIds = $lpMobileMyAdsWishlists->where('car_id', '>', 0)->pluck('car_id');
+                                    $lpMobileMyAdsPartIds = $lpMobileMyAdsWishlists->where('car_part_id', '>', 0)->pluck('car_part_id');
+                                    $lpMobileMyAdsSavedCars = \Modules\Car\Entities\Car::where(function ($query) {
+                                            $query->whereNull('expired_date')
+                                                ->orWhere('expired_date', '>=', date('Y-m-d'));
+                                        })
+                                        ->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+                                        ->whereIn('id', $lpMobileMyAdsCarIds)
+                                        ->count();
+                                    $lpMobileMyAdsSavedParts = \App\Models\CarPart::where(function ($query) {
+                                            $query->whereNull('expired_date')
+                                                ->orWhere('expired_date', '>=', date('Y-m-d'));
+                                        })
+                                        ->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+                                        ->whereIn('id', $lpMobileMyAdsPartIds)
+                                        ->count();
+                                    $lpMobileMyAdsSavedCount = $lpMobileMyAdsSavedCars + $lpMobileMyAdsSavedParts;
                                 }
                             @endphp
                             <div class="d-grid gap-2">

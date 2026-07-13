@@ -716,7 +716,24 @@
                             $lsMobileMyAdsCarPartCount = \App\Models\CarPart::where('agent_id', auth('web')->id())->count();
                             $lsMobileMyAdsSavedCount = 0;
                             if (\Illuminate\Support\Facades\Schema::hasTable('wishlists')) {
-                                $lsMobileMyAdsSavedCount = \App\Models\Wishlist::where('user_id', auth('web')->id())->count();
+                                $lsMobileMyAdsWishlists = \App\Models\Wishlist::where('user_id', auth('web')->id())->get();
+                                $lsMobileMyAdsCarIds = $lsMobileMyAdsWishlists->where('car_id', '>', 0)->pluck('car_id');
+                                $lsMobileMyAdsPartIds = $lsMobileMyAdsWishlists->where('car_part_id', '>', 0)->pluck('car_part_id');
+                                $lsMobileMyAdsSavedCars = \Modules\Car\Entities\Car::where(function ($query) {
+                                        $query->whereNull('expired_date')
+                                            ->orWhere('expired_date', '>=', date('Y-m-d'));
+                                    })
+                                    ->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+                                    ->whereIn('id', $lsMobileMyAdsCarIds)
+                                    ->count();
+                                $lsMobileMyAdsSavedParts = \App\Models\CarPart::where(function ($query) {
+                                        $query->whereNull('expired_date')
+                                            ->orWhere('expired_date', '>=', date('Y-m-d'));
+                                    })
+                                    ->where(['status' => 'enable', 'approved_by_admin' => 'approved'])
+                                    ->whereIn('id', $lsMobileMyAdsPartIds)
+                                    ->count();
+                                $lsMobileMyAdsSavedCount = $lsMobileMyAdsSavedCars + $lsMobileMyAdsSavedParts;
                             }
                         @endphp
                         <div class="d-grid gap-2">
