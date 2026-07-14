@@ -41,7 +41,7 @@
                     <div class="d-block d-md-none">
                         <div class="sw-mobile">
                             <div class="sw-mobile__bar">
-                                saved ads {{ $totalWishlistCount }}
+                                favourite ad {{ $totalWishlistCount }}
                             </div>
 
                             <div class="mc-mobile__list" style="margin-top:0;">
@@ -492,8 +492,8 @@
                                         </div>
                                     </div>
                                     <div class="not-found-txt-main">
-                                        <h4 class="not-found-txt">{{ __('translate.Wishlist Not Found!') }}</h4>
-                                    <p class="not-found-sub-txt"> {{ __('translate.Your wishlist is empty, to add new item click the button below') }} </p>
+                                        <h4 class="not-found-txt">{{ __('translate.Favourite Ad Not Found!') }}</h4>
+                                    <p class="not-found-sub-txt"> {{ __('translate.Your favourite ad list is empty, to add new item click the button below') }} </p>
                                     <div class="car-not-fount-btn">
                                     <a href="{{ route('listings') }}" class="thm-btn-two">{{ __('translate.Go to Car Listing') }}</a>
                                     </div>

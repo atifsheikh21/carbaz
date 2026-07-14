@@ -179,7 +179,7 @@
                                                                         stroke-linejoin="round" />
                                                                 </svg>
                     </span>
-                    {{ __('Wishlist') }}
+                    {{ __('Favourite') }}
                 </a>
             </li>
 

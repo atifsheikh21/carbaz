@@ -262,7 +262,7 @@
                                                     <li><a href="{{ route('user.car.index') }}">Manage Vehicle Ad</a></li>
                                                     <li><a href="{{ route('user.car-part.index') }}">Manage Vehicle Part Ad</a></li>
                                                     <li><a href="{{ route('user.orders') }}">Purchase History</a></li>
-                                                    <li><a href="{{ route('user.wishlists') }}">Wishlist</a></li>
+                                                    <li><a href="{{ route('user.wishlists') }}">Favourite</a></li>
                                                     <li><a href="{{ route('user.change-password') }}">Change Password</a></li>
                                                     <li><a href="#" onclick="event.preventDefault(); return confirmAccountDelete('nav-delete-account-form');">Delete Account</a>
                                                         <form id="nav-delete-account-form" action="{{ route('user.account.delete.request') }}" method="POST" class="d-none">@csrf</form>
@@ -529,7 +529,7 @@
                                 @endif
                                 <a class="btn btn-light text-start" href="{{ route('user.orders') }}">purchase history</a>
                                 <a class="btn btn-light text-start d-flex justify-content-between align-items-center" href="{{ route('user.wishlists') }}">
-                                    <span>saved ads</span>
+                                    <span>favourite ad</span>
                                     <span>{{ $lpMobileMyAdsSavedCount }}</span>
                                 </a>
                             </div>

@@ -248,7 +248,9 @@
                                             <input type="hidden" name="motorcheck_co2_emissions" id="motorcheck_co2_emissions" value="{{ old('motorcheck_co2_emissions', $car->motorcheck_co2_emissions) }}">
                                             <input type="hidden" name="motorcheck_last_date_of_sale" id="motorcheck_last_date_of_sale" value="{{ old('motorcheck_last_date_of_sale', $car->motorcheck_last_date_of_sale) }}">
                                             <input type="hidden" name="motorcheck_raw" id="motorcheck_raw" value="{{ old('motorcheck_raw', $car->motorcheck_raw) }}">
-                                            <input type="hidden" name="year" id="year" value="{{ old('year', $car->year) }}">
+                                            @if($__vehicleSource === 'registered')
+                                                <input type="hidden" name="year" id="year" value="{{ old('year', $car->year) }}">
+                                            @endif
 
                                             <div class="description-item two mileage-mobile-row">
                                                 <div class="description-item-inner">
@@ -265,8 +267,66 @@
                                                             $__mileageUnit = old('mileage_unit', $car->mileage_unit ?: 'km');
                                                         @endphp
                                                         <option value="km" {{ $__mileageUnit === 'km' ? 'selected' : '' }}>{{ __('KM') }}</option>
-                                                        <option value="miles" {{ $__mileageUnit === 'miles' ? 'selected' : '' }}{{ __('Miles') }}</option>
+                                                        <option value="miles" {{ $__mileageUnit === 'miles' ? 'selected' : '' }}>{{ __('Miles') }}</option>
                                                     </select>
+                                                </div>
+                                            </div>
+
+                                            <div id="vehicle_details_fields" style="{{ $__vehicleSource === 'unregistered' ? '' : 'display:none;' }}">
+                                                <div class="description-item two">
+                                                    <div class="description-item-inner" id="wrap_body_type">
+                                                        <label for="body_type" class="form-label">{{ __('Body Type') }}</label>
+                                                        <input type="text" class="form-control" id="body_type" placeholder="{{ __('Body Type') }}" name="body_type" value="{{ old('body_type', $car->body_type) }}">
+                                                    </div>
+
+                                                    <div class="description-item-inner" id="wrap_engine_size">
+                                                        <label for="engine_size" class="form-label">{{ __('Engine Size') }}</label>
+                                                        <input type="text" class="form-control" placeholder="{{ __('Engine Size') }}" name="engine_size" id="engine_size" value="{{ old('engine_size', $car->engine_size) }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="description-item two">
+                                                    <div class="description-item-inner" id="wrap_interior_color">
+                                                        <label for="interior_color" class="form-label">{{ __('Interior Color') }}</label>
+                                                        <input type="text" class="form-control" placeholder="{{ __('Interior Color') }}" name="interior_color" id="interior_color" value="{{ old('interior_color', $car->interior_color) }}">
+                                                    </div>
+
+                                                    <div class="description-item-inner" id="wrap_exterior_color">
+                                                        <label for="exterior_color" class="form-label">{{ __('Exterior Color') }}</label>
+                                                        <input type="text" class="form-control" placeholder="{{ __('Exterior Color') }}" name="exterior_color" id="exterior_color" value="{{ old('exterior_color', $car->exterior_color) }}">
+                                                    </div>
+
+                                                    <div class="description-item-inner" id="wrap_year">
+                                                        <label for="year" class="form-label">{{ __('Year') }}</label>
+                                                        <input class="form-control" type="text" name="year" id="year" value="{{ old('year', $car->year) }}" placeholder="{{ __('Year') }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="description-item two">
+                                                    <div class="description-item-inner" id="wrap_drive">
+                                                        <label for="drive" class="form-label">{{ __('Drive') }}</label>
+                                                        <input type="text" class="form-control" placeholder="{{ __('Drive') }}" name="drive" id="drive" value="{{ old('drive', $car->drive) }}">
+                                                    </div>
+
+                                                    <div class="description-item-inner" id="wrap_number_of_owner">
+                                                        <label for="number_of_owner" class="form-label">{{ __('Number of Owner') }}</label>
+                                                        <input type="text" class="form-control" placeholder="{{ __('Number of Owner') }}" name="number_of_owner" id="number_of_owner" value="{{ old('number_of_owner', $car->number_of_owner) }}">
+                                                    </div>
+
+                                                    <div class="description-item-inner" id="wrap_fuel_type">
+                                                        <label for="fuel_type" class="form-label">{{ __('Fuel Type') }}</label>
+                                                        <input type="text" class="form-control" placeholder="{{ __('Fuel Type') }}" name="fuel_type" id="fuel_type" value="{{ old('fuel_type', $car->fuel_type) }}">
+                                                    </div>
+
+                                                    <div class="description-item-inner" id="wrap_transmission">
+                                                        <label for="transmission" class="form-label">{{ __('Transmission') }}</label>
+                                                        <input type="text" class="form-control" placeholder="{{ __('Transmission') }}" name="transmission" id="transmission" value="{{ old('transmission', $car->transmission) }}">
+                                                    </div>
+
+                                                    <div class="description-item-inner" id="wrap_car_model">
+                                                        <label for="car_model" class="form-label">{{ __('Car Model') }}</label>
+                                                        <input type="text" class="form-control" placeholder="{{ __('Car Model') }}" name="car_model" id="car_model" value="{{ old('car_model', $car->car_model) }}">
+                                                    </div>
                                                 </div>
                                             </div>
 

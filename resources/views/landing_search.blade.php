@@ -760,7 +760,7 @@
                                 <span></span>
                             </a>
                             <a class="btn btn-light text-start d-flex justify-content-between align-items-center" href="{{ route('user.wishlists') }}">
-                                <span>saved ads</span>
+                                <span>favourite ad</span>
                                 <span>{{ $lsMobileMyAdsSavedCount }}</span>
                             </a>
                         </div>

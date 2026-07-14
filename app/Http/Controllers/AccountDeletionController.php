@@ -35,11 +35,13 @@ class AccountDeletionController extends Controller
         }
 
         $hash = sha1(strtolower((string) $user->email));
-        $signedUrl = URL::temporarySignedRoute(
+        $signedPath = URL::temporarySignedRoute(
             'user.account.delete.confirm',
             now()->addMinutes(60),
-            ['user' => $user->id, 'hash' => $hash]
+            ['user' => $user->id, 'hash' => $hash],
+            false
         );
+        $signedUrl = $request->getSchemeAndHttpHost().$signedPath;
 
         try {
             MailHelper::setMailConfig();

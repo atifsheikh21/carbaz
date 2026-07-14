@@ -105,7 +105,7 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
             Route::post('/user/account/delete-request', [AccountDeletionController::class, 'request'])->name('user.account.delete.request');
         });
 
-        Route::middleware(['signed'])->group(function () {
+        Route::middleware(['signed:relative'])->group(function () {
             Route::get('/user/account/delete-confirm/{user}/{hash}', [AccountDeletionController::class, 'confirm'])->name('user.account.delete.confirm');
         });
 

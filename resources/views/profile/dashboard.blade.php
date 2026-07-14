@@ -213,7 +213,7 @@
                             <div class="dashboard-item three">
                                 <div class="dashboard-inner">
                                     <div class="dashboard-inner-text">
-                                        <h5>{{ __('translate.Wishlist') }}</h5>
+                                        <h5>{{ __('translate.Favourite') }}</h5>
 
                                         @if ($setting && $setting->add_listing == 'disable') 
                                         <h3 class="counter">{{ 0 }}</h3>
