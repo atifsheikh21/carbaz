@@ -95,11 +95,7 @@
                                                     <td class="crancy-table__column-2 crancy-table__data-2">
                                                         <a href="{{ route('admin.show-message', $contact_message->id) }}" class="crancy-btn"><i class="fas fa-eye"></i> {{ __('translate.Show') }}</a>
 
-                                                        <form action="{{ route('admin.delete-contact-message', $contact_message->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('translate.Are you realy want to delete this item?') }}');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="crancy-btn delete_danger_btn border-0"><i class="fas fa-trash"></i> {{ __('translate.Delete') }}</button>
-                                                        </form>
+                                                        <a onclick="itemDeleteConfrimation({{ (int) $contact_message->id }})" href="javascript:;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="crancy-btn delete_danger_btn"><i class="fas fa-trash"></i> {{ __('translate.Delete') }}</a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -119,4 +115,43 @@
         </div>
     </section>
     <!-- End crancy Dashboard -->
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ __('translate.Delete Confirmation') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>{{ __('translate.Are you realy want to delete this item?') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="" id="item_delect_confirmation" class="delet_modal_form" method="POST">
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('translate.Close') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('translate.Yes, Delete') }}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('js_section')
+    <script>
+        "use strict"
+        function itemDeleteConfrimation(id){
+            id = parseInt(id, 10);
+
+            if (!id || id < 1) {
+                return;
+            }
+
+            $("#item_delect_confirmation").attr("action",'{{ url("admin/delete-contact-message/") }}'+"/"+id)
+        }
+    </script>
+@endpush

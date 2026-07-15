@@ -32,17 +32,28 @@ class ContactMessageController extends Controller
         $messageId = filter_var($id, FILTER_VALIDATE_INT);
 
         if (!$messageId) {
-            abort(404);
+            $notification = trans('translate.Something went wrong');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('admin.contact-message')->with($notification);
         }
 
         $deleted = ContactMessage::whereKey($messageId)->delete();
 
         if ($deleted !== 1) {
-            abort(404);
+            $notification = trans('translate.Something went wrong');
+            $notification = array('messege'=>$notification,'alert-type'=>'error');
+            return redirect()->route('admin.contact-message')->with($notification);
         }
 
         $notification = trans('translate.Delete Successfully');
         $notification = array('messege'=>$notification,'alert-type'=>'success');
+        return redirect()->route('admin.contact-message')->with($notification);
+    }
+
+    public function delete_message_redirect($id = null){
+
+        $notification = trans('translate.Something went wrong');
+        $notification = array('messege'=>$notification,'alert-type'=>'error');
         return redirect()->route('admin.contact-message')->with($notification);
     }
 

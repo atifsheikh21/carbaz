@@ -8,6 +8,7 @@ Route::group(['as'=> 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admin
     Route::controller(ContactMessageController::class)->group(function () {
         Route::get('contact-message', 'contact_message')->name('contact-message');
         Route::get('show-message/{id}', 'show_message')->name('show-message');
+        Route::get('delete-contact-message/{id}', 'delete_message_redirect')->name('delete-contact-message-redirect');
         Route::delete('delete-contact-message/{id}', 'delete_message')->name('delete-contact-message');
         Route::put('contact-message-setting', 'contact_message_setting')->name('contact-message-setting');
     });
