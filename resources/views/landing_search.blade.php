@@ -207,11 +207,11 @@
         }
         .separatorss {
             display: inline-block;
-            width: 4px;
-            height: 25px;
-            background: #a8aeae;
-            vertical-align: middle;
-            margin: 0 6px;
+    width: 3px;
+    height: 25px;
+    background: #938b8b;
+    vertical-align: middle;
+    margin: 0 6px;
         }
 
         .subtitle-bottom {
