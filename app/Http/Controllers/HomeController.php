@@ -1318,7 +1318,7 @@ class HomeController extends Controller
 
         $dealer_city = null;
         if (!empty($dealer->city_id)) {
-            $dealer_city = City::select('id')->where('id', $dealer->city_id)->first();
+            $dealer_city = City::with(['front_translate', 'translate'])->where('id', $dealer->city_id)->first();
         }
 
         $total_dealer_rating = Review::where('agent_id', $dealer->id)->where('status', 'enable')->count();

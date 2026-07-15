@@ -78,6 +78,11 @@
                                 @endif
                             </ul>
                         @endif
+                        @php
+                            $__isDealerProfile = in_array(strtolower(trim((string) ($dealer->is_dealer ?? ''))), ['1', 'true', 'yes'], true);
+                            $__dealerCityName = trim((string) ($dealer_city?->name ?? ''));
+                        @endphp
+
                         <ul>
                             <li>
                                 <a href="javascript:;">
@@ -115,6 +120,18 @@
                                     Total Car Part Ads {{ $car_parts->total() }}
                                 </a>
                             </li>
+                            @if(!$__isDealerProfile && $__dealerCityName !== '')
+                                <li>
+                                    <a href="javascript:;">
+                                        <span>
+                                            <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8 0C3.88 0 0.5 3.31 0.5 7.35C0.5 12.66 7.19 17.55 7.47 17.75C7.79 17.98 8.21 17.98 8.53 17.75C8.81 17.55 15.5 12.66 15.5 7.35C15.5 3.31 12.12 0 8 0ZM8 10.5C6.24 10.5 4.81 9.09 4.81 7.35C4.81 5.62 6.24 4.2 8 4.2C9.76 4.2 11.19 5.62 11.19 7.35C11.19 9.09 9.76 10.5 8 10.5Z" fill="#405FF2"/>
+                                            </svg>
+                                        </span>
+                                        Location : {{ $__dealerCityName }}
+                                    </a>
+                                </li>
+                            @endif
                             
                         </ul>
                     </div>
