@@ -60,11 +60,11 @@
         <div class="container">
         <div class="col-lg-12">
             <div class="inner-banner-df">
-                <h1 class="inner-banner-taitel">{{ __('translate.Car List') }}</h1>
+                <h1 class="inner-banner-taitel">{{ __('Vehicle Ad') }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('translate.Home') }}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ __('translate.Car List') }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ __('Vehicle Ad') }}</li>
                     </ol>
                 </nav>
             </div>
