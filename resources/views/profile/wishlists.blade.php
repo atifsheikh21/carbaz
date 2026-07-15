@@ -2,6 +2,37 @@
 @section('title')
     <title>{{ __('translate.Dashboard') }}</title>
 @endsection
+@push('style_section')
+    <style>
+        .brand-car-two .listing-list-top-actions{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-car-two .listing-remove-btn{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 30px;
+            padding: 6px 12px;
+            border: 1px solid #b60304;
+            border-radius: 999px;
+            background: #fff;
+            color: #b60304;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1;
+            text-transform: lowercase;
+            cursor: pointer;
+        }
+
+        .brand-car-two .listing-remove-btn:hover{
+            background: #b60304;
+            color: #fff;
+        }
+    </style>
+@endpush
 @section('body-content')
 
 <main>
@@ -190,6 +221,7 @@
                                             @if ($sellerPhone)
                                                 <a class="listing-call-btn" href="tel:{{ $sellerPhone }}">{{ __('CALL') }}</a>
                                             @endif
+                                            <button type="button" class="listing-remove-btn" onclick="event.preventDefault(); event.stopPropagation(); deleteCar('{{ $car->id }}')">remove</button>
                                         </div>
 
                                         <div class="listing-list-inner">
@@ -323,6 +355,7 @@
                                             @if ($partAgentPhone)
                                                 <a class="listing-call-btn" href="tel:{{ $partAgentPhone }}" data-phone="{{ $partAgentPhone }}">{{ __('CALL') }}</a>
                                             @endif
+                                            <button type="button" class="listing-remove-btn" onclick="event.preventDefault(); event.stopPropagation(); deleteCarPart('{{ $part->id }}')">remove</button>
                                         </div>
 
                                         <div class="listing-list-inner">

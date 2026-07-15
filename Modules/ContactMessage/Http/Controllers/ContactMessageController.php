@@ -29,12 +29,21 @@ class ContactMessageController extends Controller
 
     public function delete_message($id){
 
-        $contact_message = ContactMessage::findOrFail($id);
-        $contact_message->delete();
+        $messageId = filter_var($id, FILTER_VALIDATE_INT);
+
+        if (!$messageId) {
+            abort(404);
+        }
+
+        $deleted = ContactMessage::whereKey($messageId)->delete();
+
+        if ($deleted !== 1) {
+            abort(404);
+        }
 
         $notification = trans('translate.Delete Successfully');
         $notification = array('messege'=>$notification,'alert-type'=>'success');
-        return redirect()->back()->with($notification);
+        return redirect()->route('admin.contact-message')->with($notification);
     }
 
     public function contact_message_setting(Request $request){

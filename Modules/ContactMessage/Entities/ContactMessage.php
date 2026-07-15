@@ -9,6 +9,14 @@ class ContactMessage extends Model
 {
     use HasFactory;
 
+    protected $table = 'contact_messages';
+
+    protected $primaryKey = 'id';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+
     protected $fillable = [];
     
     protected static function newFactory()
