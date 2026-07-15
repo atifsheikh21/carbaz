@@ -29,9 +29,9 @@ class ContactMessageController extends Controller
 
     public function delete_message($id){
 
-        $messageId = filter_var($id, FILTER_VALIDATE_INT);
+        $messageId = trim((string) $id);
 
-        if (!$messageId) {
+        if ($messageId === '' || $messageId === '0') {
             $notification = trans('translate.Something went wrong');
             $notification = array('messege'=>$notification,'alert-type'=>'error');
             return redirect()->route('admin.contact-message')->with($notification);

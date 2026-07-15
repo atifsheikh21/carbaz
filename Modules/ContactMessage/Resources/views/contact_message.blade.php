@@ -93,9 +93,9 @@
 
 
                                                     <td class="crancy-table__column-2 crancy-table__data-2">
-                                                        <a href="{{ route('admin.show-message', $contact_message->id) }}" class="crancy-btn"><i class="fas fa-eye"></i> {{ __('translate.Show') }}</a>
+                                                        <a href="{{ route('admin.show-message', $contact_message->getKey()) }}" class="crancy-btn"><i class="fas fa-eye"></i> {{ __('translate.Show') }}</a>
 
-                                                        <a onclick="itemDeleteConfrimation({{ (int) $contact_message->id }})" href="javascript:;" data-bs-toggle="modal" data-bs-target="#exampleModal" class="crancy-btn delete_danger_btn"><i class="fas fa-trash"></i> {{ __('translate.Delete') }}</a>
+                                                        <a onclick="itemDeleteConfrimation(this)" href="javascript:;" data-delete-url="{{ route('admin.delete-contact-message', $contact_message->getKey()) }}" data-bs-toggle="modal" data-bs-target="#exampleModal" class="crancy-btn delete_danger_btn"><i class="fas fa-trash"></i> {{ __('translate.Delete') }}</a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -128,7 +128,7 @@
                     <p>{{ __('translate.Are you realy want to delete this item?') }}</p>
                 </div>
                 <div class="modal-footer">
-                    <form action="" id="item_delect_confirmation" class="delet_modal_form" method="POST">
+                    <form action="{{ url('admin/delete-contact-message/0') }}" id="item_delect_confirmation" class="delet_modal_form" method="POST">
                         @csrf
                         @method('DELETE')
 
@@ -144,14 +144,14 @@
 @push('js_section')
     <script>
         "use strict"
-        function itemDeleteConfrimation(id){
-            id = parseInt(id, 10);
+        function itemDeleteConfrimation(element){
+            var action = element.getAttribute('data-delete-url');
 
-            if (!id || id < 1) {
+            if (!action) {
                 return;
             }
 
-            $("#item_delect_confirmation").attr("action",'{{ url("admin/delete-contact-message/") }}'+"/"+id)
+            $("#item_delect_confirmation").attr("action", action)
         }
     </script>
 @endpush
