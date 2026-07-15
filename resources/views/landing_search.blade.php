@@ -209,7 +209,7 @@
             display: inline-block;
             width: 4px;
             height: 25px;
-            background: #b4b7b7;
+            background: #a8aeae;
             vertical-align: middle;
             margin: 0 6px;
         }
