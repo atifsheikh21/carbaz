@@ -188,6 +188,7 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
         Route::controller(CarPartRequestForumController::class)->group(function () {
             Route::get('/forum/car-part-requests', 'index')->name('car-part-requests.index');
             Route::get('/forum/car-part-requests/{id}', 'show')->whereNumber('id')->name('car-part-requests.show');
+            Route::get('/forum/helper-unsubscribe/{id}', 'unsubscribeHelper')->whereNumber('id')->middleware('signed')->name('forum-helper.unsubscribe');
         });
 
         Route::middleware(['auth:web'])->group(function () {

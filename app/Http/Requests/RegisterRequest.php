@@ -52,6 +52,7 @@ class RegisterRequest extends FormRequest
             ],
             'is_vehicle_seller' => $isDealer ? ['required', 'in:0,1'] : ['nullable', 'in:0,1'],
             'is_part_seller' => $isDealer ? ['required', 'in:0,1'] : ['nullable', 'in:0,1'],
+            'is_forum_helper' => ['nullable', 'in:0,1'],
 
             'vehicle_company_name' => ($isDealer && $isVehicleSeller) ? ['required', 'string', 'max:255'] : ['nullable', 'string', 'max:255'],
             'vehicle_company_address' => ($isDealer && $isVehicleSeller) ? ['required', 'string', 'max:220'] : ['nullable', 'string', 'max:220'],

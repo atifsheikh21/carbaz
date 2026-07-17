@@ -76,6 +76,7 @@ class RegisteredUserController extends Controller
             'city_id' => $request->city_id,
             'address' => null,
             'postal_code' => null,
+            'is_forum_helper' => (string) $request->input('is_forum_helper') === '1',
             'password' => Hash::make($request->password),
             'verification_token' => Str::random(100),
         ]);

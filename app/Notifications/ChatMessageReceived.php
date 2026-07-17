@@ -15,13 +15,14 @@ class ChatMessageReceived extends Notification
         public int $conversationId,
         public int $senderId,
         public string $senderName,
-        public string $body
+        public string $body,
+        public bool $sendEmail = false
     ) {
     }
 
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return $this->sendEmail ? ['database', 'mail'] : ['database'];
     }
 
     public function toMail(object $notifiable): MailMessage

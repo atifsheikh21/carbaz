@@ -32,7 +32,7 @@
                     <div class="dashboard-item">
                         <div class="dashboard-inner-text" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
                             <h5>{{ html_decode($otherUser?->name) }}</h5>
-                            <a href="{{ route('user.messages.index') }}" class="thm-btn-two">{{ __('translate.Back') }}</a>
+                            <a href="{{ route('user.messages.index') }}" class="thm-btn-two">{{ __('Back') }}</a>
                         </div>
 
                         <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;max-height:420px;overflow:auto;background:#fff;">
@@ -56,7 +56,7 @@
                                     <textarea name="body" class="form-control" rows="3" placeholder="{{ __('translate.Message') }}" required>{{ old('body') }}</textarea>
                                 </div>
                                 <div class="col-12 text-end">
-                                    <button type="submit" class="thm-btn-two">{{ __('translate.Send') }}</button>
+                                    <button type="submit" class="thm-btn-two">{{ __('Send') }}</button>
                                 </div>
                             </div>
                         </form>

@@ -6,8 +6,11 @@ use App\Models\CarPartRequest;
 use App\Models\CarPartRequestReply;
 use App\Models\CarPartRequestVote;
 use App\Models\CarPartRequestReplyVote;
+use App\Models\User;
+use App\Jobs\SendForumHelperNotificationJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CarPartRequestForumController extends Controller
 {
@@ -73,6 +76,12 @@ class CarPartRequestForumController extends Controller
         }
 
         $requestModel = CarPartRequest::create($validated);
+
+        try {
+            SendForumHelperNotificationJob::dispatchSync($requestModel->id);
+        } catch (\Throwable $e) {
+            Log::error('Forum helper notification dispatch failed: ' . $e->getMessage());
+        }
 
         $notification = trans('translate.Request submitted successfully');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
@@ -251,6 +260,15 @@ class CarPartRequestForumController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function unsubscribeHelper(Request $request, int $id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_forum_helper = false;
+        $user->save();
+
+        return view('car_part_requests.helper_unsubscribed');
     }
 
     private function authorizeOwner($ownerId)

@@ -122,7 +122,7 @@ class ChatController extends Controller
                 $conversation->last_message_at = now();
                 $conversation->save();
 
-                $this->notifyChatRecipient($seller, $conversation, $user, $message);
+                $this->notifyChatRecipient($seller, $conversation, $user, $message, true);
             }
 
             Log::info('Chat start: redirecting to conversation', [
@@ -212,14 +212,15 @@ class ChatController extends Controller
         return redirect()->route('user.messages.show', $conversation->id);
     }
 
-    private function notifyChatRecipient(User $recipient, Conversation $conversation, User $sender, ChatMessage $message): void
+    private function notifyChatRecipient(User $recipient, Conversation $conversation, User $sender, ChatMessage $message, bool $sendEmail = false): void
     {
         try {
             $recipient->notify(new ChatMessageReceived(
                 $conversation->id,
                 $sender->id,
                 (string) $sender->name,
-                Str::limit($message->body, 160)
+                Str::limit($message->body, 160),
+                $sendEmail
             ));
         } catch (\Throwable $e) {
             Log::error('Chat notification failed', [
