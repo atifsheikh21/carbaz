@@ -13,12 +13,12 @@ class CarPartRequest extends Model
     protected $fillable = [
         'user_id',
         'title',
+        'category',
         'part_description',
         'car_make',
         'car_model',
         'car_year',
         'additional_notes',
-        'image',
         'status',
         'image',
     ];

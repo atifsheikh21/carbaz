@@ -36,6 +36,16 @@
                         </div>
 
                         <div style="margin-bottom:16px;">
+                            <label style="display:block;font-weight:700;margin-bottom:6px;">Category</label>
+                            <select name="category" class="forum-offer-input" style="min-height:44px;" required>
+                                <option value="">Select category</option>
+                                @foreach(['Engine', 'Electrical', 'Body', 'Radiator', 'Suspension', 'Transmission', 'Interior', 'Exterior', 'Wheels', 'Other'] as $category)
+                                    <option value="{{ $category }}" {{ old('category', $requestModel->category) === $category ? 'selected' : '' }}>{{ $category }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom:16px;">
                             <label style="display:block;font-weight:700;margin-bottom:6px;">Description</label>
                             <textarea name="part_description" class="forum-rich-editor" rows="5" required>{{ old('part_description', $requestModel->part_description) }}</textarea>
                         </div>

@@ -14,17 +14,24 @@ use Illuminate\Support\Facades\Log;
 
 class CarPartRequestForumController extends Controller
 {
+    private array $categories = ['Engine', 'Electrical', 'Body', 'Radiator', 'Suspension', 'Transmission', 'Interior', 'Exterior', 'Wheels', 'Other'];
+
     public function index(Request $request)
     {
         $sort = (string) $request->query('sort', 'latest');
         $search = trim((string) $request->query('q', ''));
+        $category = trim((string) $request->query('category', ''));
 
         $requests = CarPartRequest::with('user')
             ->withCount('replies')
             ->withMax('replies', 'created_at')
+            ->when($category !== '', function ($query) use ($category) {
+                $query->where('category', $category);
+            })
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('category', 'like', "%{$search}%")
                         ->orWhere('part_description', 'like', "%{$search}%")
                         ->orWhere('car_make', 'like', "%{$search}%")
                         ->orWhere('car_model', 'like', "%{$search}%")
@@ -46,18 +53,23 @@ class CarPartRequestForumController extends Controller
             'requests' => $requests,
             'sort' => $sort,
             'search' => $search,
+            'category' => $category,
+            'categories' => $this->categories,
         ]);
     }
 
     public function create()
     {
-        return view('car_part_requests.create');
+        return view('car_part_requests.create', [
+            'categories' => $this->categories,
+        ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'category' => ['required', 'string', 'max:255'],
             'part_description' => ['required', 'string'],
             'car_make' => ['nullable', 'string', 'max:255'],
             'car_model' => ['nullable', 'string', 'max:255'],
@@ -153,6 +165,7 @@ class CarPartRequestForumController extends Controller
 
         $validated = $request->validate([
             'title'            => ['required', 'string', 'max:255'],
+            'category'         => ['required', 'string', 'max:255'],
             'part_description' => ['required', 'string'],
             'car_make'         => ['nullable', 'string', 'max:255'],
             'car_model'        => ['nullable', 'string', 'max:255'],

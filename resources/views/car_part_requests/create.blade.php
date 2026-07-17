@@ -50,6 +50,18 @@
                                 @error('title')<div class="forum-error">{{ $message }}</div>@enderror
                             </div>
 
+                            {{-- Category --}}
+                            <div class="forum-field">
+                                <label class="forum-label">Category <span>*</span></label>
+                                <select name="category" class="forum-input @error('category') is-invalid @enderror">
+                                    <option value="">Select category</option>
+                                    @foreach(($categories ?? []) as $category)
+                                        <option value="{{ $category }}" {{ old('category') === $category ? 'selected' : '' }}>{{ $category }}</option>
+                                    @endforeach
+                                </select>
+                                @error('category')<div class="forum-error">{{ $message }}</div>@enderror
+                            </div>
+
                             {{-- Description --}}
                             <div class="forum-field">
                                 <label class="forum-label">Describe what you need <span>*</span></label>
