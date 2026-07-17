@@ -122,12 +122,7 @@ class ChatController extends Controller
                 $conversation->last_message_at = now();
                 $conversation->save();
 
-                $seller->notify(new ChatMessageReceived(
-                    $conversation->id,
-                    $user->id,
-                    (string) $user->name,
-                    Str::limit($message->body, 160)
-                ));
+                $this->notifyChatRecipient($seller, $conversation, $user, $message);
             }
 
             Log::info('Chat start: redirecting to conversation', [
@@ -211,14 +206,28 @@ class ChatController extends Controller
 
         $recipient = User::find($recipientId);
         if ($recipient) {
-            $recipient->notify(new ChatMessageReceived(
-                $conversation->id,
-                $user->id,
-                (string) $user->name,
-                Str::limit($message->body, 160)
-            ));
+            $this->notifyChatRecipient($recipient, $conversation, $user, $message);
         }
 
         return redirect()->route('user.messages.show', $conversation->id);
+    }
+
+    private function notifyChatRecipient(User $recipient, Conversation $conversation, User $sender, ChatMessage $message): void
+    {
+        try {
+            $recipient->notify(new ChatMessageReceived(
+                $conversation->id,
+                $sender->id,
+                (string) $sender->name,
+                Str::limit($message->body, 160)
+            ));
+        } catch (\Throwable $e) {
+            Log::error('Chat notification failed', [
+                'conversation_id' => $conversation->id,
+                'sender_id' => $sender->id,
+                'recipient_id' => $recipient->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }
