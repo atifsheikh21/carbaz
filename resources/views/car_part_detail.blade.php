@@ -871,7 +871,7 @@
                     <a class="lp-detail__action" href="{{ $__whatsAppPhone ? 'https://wa.me/'.$__whatsAppPhone.'?text='.$__waText : '#' }}" target="_blank">whatsapp chat</a>
                     @auth('web')
                         @if($__chatUserId > 0)
-                            <a class="lp-detail__action js-chat-coming-soon" href="javascript:;">chat</a>
+                            <a class="lp-detail__action" href="{{ route('user.messages.start', ['sellerId' => $__chatUserId, 'message' => 'Hi, I am interested in your car part ad: ' . (string) $partTitle]) }}">chat</a>
                         @endif
                     @else
                         <a class="lp-detail__action" href="{{ route('login') }}">chat</a>
@@ -1009,7 +1009,7 @@
                             @endif
                             @auth('web')
                                 @if($__chatUserId > 0)
-                                    <a class="action-chat js-chat-coming-soon" style="background: #b9bcc3;" href="javascript:;">Chat</a>
+                                    <a class="action-chat" style="background: #b9bcc3;" href="{{ route('user.messages.start', ['sellerId' => $__chatUserId, 'message' => 'Hi, I am interested in your car part ad: ' . (string) $partTitle]) }}">Chat</a>
                                 @endif
 
                             @else
@@ -1167,23 +1167,6 @@
 </main>
 @endsection
 
-<div class="modal fade" id="chatComingSoonModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Chat</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                This feature will be available soon.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="modal fade" id="callSellerModalPart" tabindex="-1" aria-labelledby="callSellerModalPartLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -1226,31 +1209,6 @@
                     gallery.__cdOpenLightbox(idx);
                 }
             });
-        })();
-
-        (function(){
-            function openChatComingSoon(){
-                try {
-                    if (window.bootstrap && bootstrap.Modal) {
-                        var el = document.getElementById('chatComingSoonModal');
-                        if (!el) return;
-                        var modal = bootstrap.Modal.getOrCreateInstance(el);
-                        modal.show();
-                    } else {
-                        alert('This feature will be available soon.');
-                    }
-                } catch (e) {
-                    alert('This feature will be available soon.');
-                }
-            }
-
-            document.addEventListener('click', function(e){
-                var t = e.target && (e.target.closest ? e.target.closest('.js-chat-coming-soon') : null);
-                if (!t) return;
-                e.preventDefault();
-                e.stopPropagation();
-                openChatComingSoon();
-            }, true);
         })();
 
         (function(){

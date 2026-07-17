@@ -21,7 +21,17 @@ class ChatMessageReceived extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject('New chat message from ' . $this->senderName)
+            ->greeting('Hello ' . ($notifiable->name ?? 'there') . ',')
+            ->line($this->senderName . ' sent you a chat message.')
+            ->line($this->body)
+            ->action('Open Messages', route('user.messages.show', $this->conversationId));
     }
 
     public function toDatabase(object $notifiable): array

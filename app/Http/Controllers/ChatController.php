@@ -56,7 +56,7 @@ class ChatController extends Controller
         ]);
     }
 
-    public function start(int $sellerId): RedirectResponse
+    public function start(Request $request, int $sellerId): RedirectResponse
     {
         $user = Auth::guard('web')->user();
 
@@ -102,6 +102,32 @@ class ChatController extends Controller
                 $notification = trans('translate.Invalid request');
                 $notification = ['messege' => $notification, 'alert-type' => 'error'];
                 return redirect()->route('user.messages.index')->with($notification);
+            }
+
+            $shouldCreateStarterMessage = $conversation->wasRecentlyCreated || ! $conversation->messages()->exists();
+
+            if ($shouldCreateStarterMessage) {
+                $body = trim((string) $request->query('message', ''));
+                if ($body === '') {
+                    $body = trans('translate.Hi, I am interested in your ad.');
+                }
+                $body = Str::limit($body, 500, '');
+
+                $message = ChatMessage::create([
+                    'conversation_id' => $conversation->id,
+                    'sender_id' => $user->id,
+                    'body' => $body,
+                ]);
+
+                $conversation->last_message_at = now();
+                $conversation->save();
+
+                $seller->notify(new ChatMessageReceived(
+                    $conversation->id,
+                    $user->id,
+                    (string) $user->name,
+                    Str::limit($message->body, 160)
+                ));
             }
 
             Log::info('Chat start: redirecting to conversation', [
