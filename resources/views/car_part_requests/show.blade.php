@@ -29,6 +29,11 @@
                             <div class="forum-card-category">{{ $request->category }}</div>
                         @endif
                         <h1>{{ $request->title }}</h1>
+                        @if($request->image)
+                            <div class="forum-request-image">
+                                <img src="{{ getImageOrPlaceholder($request->image, '960x540') }}" alt="{{ $request->title }}">
+                            </div>
+                        @endif
                         <div class="forum-author forum-detail-author">
                             <span>@if($request->user?->image)<img src="{{ getImageOrPlaceholder($request->user->image,'40x40') }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">@else{{ strtoupper(substr($request->user?->name ?? 'U', 0, 1)) }}@endif</span>
                             <strong>{{ $request->user?->name ?? 'Community member' }}</strong>
@@ -177,6 +182,8 @@
     .forum-widget a{min-height:44px;display:flex;align-items:center;color:#374151;text-decoration:none;border-radius:8px;padding:0 10px}
     .forum-card-tag{display:inline-flex;color:#b60304;background:#fff1f1;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;margin-bottom:10px}
     .forum-card-category{display:inline-flex;align-items:center;min-height:24px;padding:0 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:800;margin:0 0 10px}
+    .forum-request-image{margin:14px 0 18px;border-radius:8px;overflow:hidden;background:#F3F4F6;border:1px solid #E5E7EB}
+    .forum-request-image img{display:block;width:100%;max-height:520px;object-fit:contain;background:#fff}
     .forum-question-card,.forum-answer-card{padding:24px;margin-bottom:16px}
     .forum-question-card h1{font-size:24px;line-height:1.35;margin:0 0 14px}
     .forum-question-card p,.forum-answer-card p{color:#4B5563;line-height:1.7}

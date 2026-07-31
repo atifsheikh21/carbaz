@@ -171,7 +171,12 @@ class CarPartRequestForumController extends Controller
             'car_model'        => ['nullable', 'string', 'max:255'],
             'car_year'         => ['nullable', 'string', 'max:255'],
             'additional_notes' => ['nullable', 'string'],
+            'image'            => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
         ]);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = uploadFile($request->file('image'), 'uploads/car-part-requests', $requestModel->image);
+        }
 
         $requestModel->update($validated);
 
@@ -183,6 +188,10 @@ class CarPartRequestForumController extends Controller
     {
         $requestModel = CarPartRequest::findOrFail($id);
         $this->authorizeOwner($requestModel->user_id);
+
+        if ($requestModel->image) {
+            deleteFile($requestModel->image);
+        }
 
         $requestModel->replies()->delete();
         $requestModel->votes()->delete();
