@@ -21,7 +21,7 @@
                     <input type="text" name="q" value="{{ $search }}" placeholder="Search questions, parts, models...">
                     <input type="hidden" name="sort" value="{{ $sort }}">
                 </form>
-                <a href="{{ route('car-part-requests.create') }}" class="forum-ask">Ask a Question</a>
+                <a href="{{ route('car-part-requests.create') }}" class="forum-ask">Send Part Request / Question</a>
                 <div class="forum-avatar">@if(auth('web')->user()?->image)<img src="{{ getImageOrPlaceholder(auth('web')->user()->image,'40x40') }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">@else{{ strtoupper(substr(auth('web')->user()?->name ?? 'G', 0, 1)) }}@endif</div>
             </div>
             <div class="forum-grid">

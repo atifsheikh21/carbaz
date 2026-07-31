@@ -9,7 +9,7 @@
         <div class="container">
 
             {{-- Topbar --}}
-            <div class="forum-topbar" id="top">
+            <div class="forum-topbar" id="top" style="display: none;">
                 <a href="{{ route('car-part-requests.index') }}" class="forum-logo">Part Help Forum</a>
                 <form action="{{ route('car-part-requests.index') }}" method="GET" class="forum-search">
                     <input type="text" name="q" placeholder="Search questions, parts, models...">
@@ -112,7 +112,7 @@
                             {{-- Footer actions --}}
                             <div class="forum-composer-footer">
                                 <a href="{{ route('car-part-requests.index') }}" class="forum-btn-cancel">Cancel</a>
-                                <button type="submit" class="forum-btn-submit">Post Question</button>
+                                <button type="submit" class="forum-btn-submit">Send to forum</button>
                             </div>
 
                         </form>
