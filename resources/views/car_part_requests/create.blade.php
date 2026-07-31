@@ -38,7 +38,7 @@
                             </div>
                         </div>
 
-                        <form method="POST" action="{{ route('car-part-requests.store') }}" enctype="multipart/form-data" novalidate>
+                        <form method="POST" action="{{ route('car-part-requests.store') }}" enctype="multipart/form-data" novalidate id="forum-create-form">
                             @csrf
 
                             {{-- Title --}}
@@ -106,13 +106,17 @@
                                     <input type="file" name="image" accept="image/*" id="forum-image-input" style="display:none">
                                     <span id="upload-label">📎 Click to attach an image</span>
                                 </label>
+                                <div class="forum-image-preview" id="forum-image-preview" style="display:none;">
+                                    <img src="" alt="Selected image preview" id="forum-preview-img">
+                                    <button type="button" id="forum-remove-image">Remove image</button>
+                                </div>
                                 @error('image')<div class="forum-error">{{ $message }}</div>@enderror
                             </div>
 
                             {{-- Footer actions --}}
                             <div class="forum-composer-footer">
                                 <a href="{{ route('car-part-requests.index') }}" class="forum-btn-cancel">Cancel</a>
-                                <button type="submit" class="forum-btn-submit">Send to forum</button>
+                                <button type="submit" class="forum-btn-submit" id="forum-submit-btn">Send to forum</button>
                             </div>
 
                         </form>
@@ -182,12 +186,16 @@
     .forum-car-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
     .forum-upload-zone{display:flex;align-items:center;justify-content:center;min-height:80px;border:2px dashed #D1D5DB;border-radius:8px;cursor:pointer;color:#6B7280;font-size:14px;background:#F9FAFB;transition:border-color .15s}
     .forum-upload-zone:hover{border-color:#b60304;color:#b60304;background:#fff1f1}
+    .forum-image-preview{margin-top:12px;border:1px solid #E5E7EB;border-radius:8px;background:#fff;padding:10px;max-width:360px}
+    .forum-image-preview img{display:block;width:100%;height:180px;object-fit:contain;background:#F9FAFB;border-radius:6px}
+    .forum-image-preview button{margin-top:10px;min-height:34px;padding:0 12px;border:1px solid #fca5a5;border-radius:999px;background:#fff;color:#dc2626;font-size:13px;font-weight:700;cursor:pointer}
     .forum-error{color:#DC2626;font-size:13px;margin-top:5px}
     .forum-composer-footer{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:28px;padding-top:20px;border-top:1px solid #F3F4F6}
     .forum-btn-cancel{min-height:44px;padding:0 20px;display:inline-flex;align-items:center;border:1px solid #E5E7EB;border-radius:8px;background:#fff;color:#374151;font-weight:600;text-decoration:none;font-size:15px}
     .forum-btn-cancel:hover{background:#F9FAFB;color:#111827}
     .forum-btn-submit{min-height:44px;padding:0 28px;display:inline-flex;align-items:center;border:0;border-radius:8px;background:#b60304;color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:background .15s}
     .forum-btn-submit:hover{background:#8b0202}
+    .forum-btn-submit:disabled{opacity:.7;cursor:wait}
     .forum-widget{background:#fff;border:1px solid #E5E7EB;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:18px;margin-bottom:18px}
     .forum-widget h3{font-size:15px;font-weight:800;margin:0 0 14px;color:#111827}
     .forum-widget a{min-height:40px;display:flex;align-items:center;color:#374151;text-decoration:none;border-radius:6px;padding:0 8px;font-size:14px}
@@ -207,5 +215,41 @@
     document.getElementById('upload-zone').addEventListener('click', function () {
         document.getElementById('forum-image-input').click();
     });
+
+    (function () {
+        const imageInput = document.getElementById('forum-image-input');
+        const imageLabel = document.getElementById('upload-label');
+        const imagePreview = document.getElementById('forum-image-preview');
+        const previewImg = document.getElementById('forum-preview-img');
+        const removeImageBtn = document.getElementById('forum-remove-image');
+        const form = document.getElementById('forum-create-form');
+        const submitBtn = document.getElementById('forum-submit-btn');
+
+        imageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            imageLabel.textContent = file ? 'Selected: ' + file.name : 'Click to attach an image';
+
+            if (!file) {
+                imagePreview.style.display = 'none';
+                previewImg.src = '';
+                return;
+            }
+
+            previewImg.src = URL.createObjectURL(file);
+            imagePreview.style.display = 'block';
+        });
+
+        removeImageBtn.addEventListener('click', function () {
+            imageInput.value = '';
+            imageLabel.textContent = 'Click to attach an image';
+            imagePreview.style.display = 'none';
+            previewImg.src = '';
+        });
+
+        form.addEventListener('submit', function () {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Posting...';
+        });
+    })();
 </script>
 @endpush

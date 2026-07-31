@@ -28,7 +28,7 @@
                         @if($request->category)
                             <div class="forum-card-category">{{ $request->category }}</div>
                         @endif
-                        <h1>{{ $request->title }}</h1>
+                        <h1 class="forum-question-title">{{ $request->title }}</h1>
                         @if($request->image)
                             <div class="forum-request-image">
                                 <img src="{{ getImageOrPlaceholder($request->image, '960x540') }}" alt="{{ $request->title }}">
@@ -39,8 +39,16 @@
                             <strong>{{ $request->user?->name ?? 'Community member' }}</strong>
                             <em>{{ $request->created_at?->format('d M, Y') }}</em>
                         </div>
-                        <p>{{ $request->part_description }}</p>
-                        @if ($request->additional_notes)<p>{{ $request->additional_notes }}</p>@endif
+                        <div class="forum-question-body">
+                            <div class="forum-body-label">Request details</div>
+                            <p>{{ $request->part_description }}</p>
+                        </div>
+                        @if ($request->additional_notes)
+                            <div class="forum-question-body forum-question-body--notes">
+                                <div class="forum-body-label">Additional notes</div>
+                                <p>{{ $request->additional_notes }}</p>
+                            </div>
+                        @endif
                         <div class="forum-spec-grid">
                             <div><small>Car Make</small><strong>{{ $request->car_make ?? '-' }}</strong></div>
                             <div><small>Car Model</small><strong>{{ $request->car_model ?? '-' }}</strong></div>
@@ -182,8 +190,13 @@
     .forum-widget a{min-height:44px;display:flex;align-items:center;color:#374151;text-decoration:none;border-radius:8px;padding:0 10px}
     .forum-card-tag{display:inline-flex;color:#b60304;background:#fff1f1;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;margin-bottom:10px}
     .forum-card-category{display:inline-flex;align-items:center;min-height:24px;padding:0 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:800;margin:0 0 10px}
-    .forum-request-image{margin:14px 0 18px;border-radius:8px;overflow:hidden;background:#F3F4F6;border:1px solid #E5E7EB}
-    .forum-request-image img{display:block;width:100%;max-height:520px;object-fit:contain;background:#fff}
+    .forum-question-title{font-size:28px!important;line-height:1.25!important;font-weight:850!important;color:#111827!important;margin:4px 0 12px!important}
+    .forum-request-image{margin:12px 0 18px;border-radius:8px;overflow:hidden;background:#F3F4F6;border:1px solid #E5E7EB;max-width:560px}
+    .forum-request-image img{display:block;width:100%;height:260px;object-fit:contain;background:#fff}
+    .forum-question-body{border-left:4px solid #b60304;background:#FAFAFA;border-radius:8px;padding:14px 16px;margin:14px 0;color:#374151}
+    .forum-question-body--notes{border-left-color:#6B7280;background:#F9FAFB}
+    .forum-body-label{font-size:11px;font-weight:850;text-transform:uppercase;color:#9CA3AF;letter-spacing:.06em;margin-bottom:6px}
+    .forum-question-body p{margin:0!important;color:#374151!important;font-size:16px;line-height:1.75!important;white-space:pre-line}
     .forum-question-card,.forum-answer-card{padding:24px;margin-bottom:16px}
     .forum-question-card h1{font-size:24px;line-height:1.35;margin:0 0 14px}
     .forum-question-card p,.forum-answer-card p{color:#4B5563;line-height:1.7}

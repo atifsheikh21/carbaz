@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Jobs\SendForumHelperNotificationJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class CarPartRequestForumController extends Controller
 {
@@ -84,16 +83,12 @@ class CarPartRequestForumController extends Controller
         $validated['status'] = 'open';
 
         if ($request->hasFile('image')) {
-            $validated['image'] = uploadFile($request->file('image'), 'uploads/car-part-requests');
+            $validated['image'] = $this->uploadForumRequestImage($request->file('image'));
         }
 
         $requestModel = CarPartRequest::create($validated);
 
-        try {
-            SendForumHelperNotificationJob::dispatchSync($requestModel->id);
-        } catch (\Throwable $e) {
-            Log::error('Forum helper notification dispatch failed: ' . $e->getMessage());
-        }
+        SendForumHelperNotificationJob::dispatchAfterResponse($requestModel->id);
 
         $notification = trans('translate.Request submitted successfully');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
@@ -175,7 +170,7 @@ class CarPartRequestForumController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = uploadFile($request->file('image'), 'uploads/car-part-requests', $requestModel->image);
+            $validated['image'] = $this->uploadForumRequestImage($request->file('image'), $requestModel->image);
         }
 
         $requestModel->update($validated);
@@ -291,6 +286,66 @@ class CarPartRequestForumController extends Controller
         $user->save();
 
         return view('car_part_requests.helper_unsubscribed');
+    }
+
+    private function uploadForumRequestImage($file, ?string $oldFile = null): string
+    {
+        $directory = 'uploads/car-part-requests';
+        $extension = strtolower((string) $file->getClientOriginalExtension());
+        $fileName = 'part-help-' . time() . '-' . random_int(1000, 9999) . '.' . $extension;
+        $filePath = $directory . '/' . $fileName;
+
+        if (env('FILESYSTEM_DISK') === 's3') {
+            $storedPath = \Illuminate\Support\Facades\Storage::disk('s3')->put($directory, $file);
+            if ($oldFile) {
+                \Illuminate\Support\Facades\Storage::disk('s3')->delete($oldFile);
+            }
+
+            return $storedPath;
+        }
+
+        $destinationPath = public_path($directory);
+        if (! is_dir($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        if (! is_dir($destinationPath) || ! is_writable($destinationPath)) {
+            throw new \RuntimeException('Upload directory is not writable: ' . $destinationPath);
+        }
+
+        $file->move($destinationPath, $fileName);
+
+        try {
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+                $absolutePath = public_path($filePath);
+                $manager = new \Intervention\Image\ImageManager(['driver' => 'gd']);
+                $image = $manager->make($absolutePath);
+                if (method_exists($image, 'orientate')) {
+                    $image->orientate();
+                }
+                $image->resize(1200, 900, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+
+                if ($extension === 'webp') {
+                    $jpgName = pathinfo($fileName, PATHINFO_FILENAME) . '.jpg';
+                    $jpgPath = $directory . '/' . $jpgName;
+                    $image->encode('jpg', 84)->save(public_path($jpgPath));
+                    @unlink($absolutePath);
+                    $filePath = $jpgPath;
+                } else {
+                    $image->save($absolutePath, 84);
+                }
+            }
+        } catch (\Throwable $e) {
+        }
+
+        if ($oldFile) {
+            deleteFile($oldFile);
+        }
+
+        return $filePath;
     }
 
     private function authorizeOwner($ownerId)
