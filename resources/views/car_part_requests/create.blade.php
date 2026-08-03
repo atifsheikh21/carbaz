@@ -102,10 +102,10 @@
                             {{-- Image upload --}}
                             <div class="forum-field">
                                 <label class="forum-label">Attach an Image <small>(optional, max 4MB)</small></label>
-                                <label class="forum-upload-zone" id="upload-zone">
-                                    <input type="file" name="image" accept="image/*" id="forum-image-input" style="display:none">
+                                <input type="file" name="image" accept="image/*" id="forum-image-input" style="display:none">
+                                <button type="button" class="forum-upload-zone" id="upload-zone">
                                     <span id="upload-label">📎 Click to attach an image</span>
-                                </label>
+                                </button>
                                 <div class="forum-image-preview" id="forum-image-preview" style="display:none;">
                                     <img src="" alt="Selected image preview" id="forum-preview-img">
                                     <button type="button" id="forum-remove-image">Remove image</button>
@@ -184,7 +184,7 @@
     .forum-textarea:focus{outline:none;border-color:#b60304;box-shadow:0 0 0 3px rgba(182,3,4,.1)}
     .forum-textarea.is-invalid{border-color:#DC2626}
     .forum-car-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-    .forum-upload-zone{display:flex;align-items:center;justify-content:center;min-height:80px;border:2px dashed #D1D5DB;border-radius:8px;cursor:pointer;color:#6B7280;font-size:14px;background:#F9FAFB;transition:border-color .15s}
+    .forum-upload-zone{width:100%;display:flex;align-items:center;justify-content:center;min-height:80px;border:2px dashed #D1D5DB;border-radius:8px;cursor:pointer;color:#6B7280;font-size:14px;background:#F9FAFB;transition:border-color .15s}
     .forum-upload-zone:hover{border-color:#b60304;color:#b60304;background:#fff1f1}
     .forum-image-preview{margin-top:12px;border:1px solid #E5E7EB;border-radius:8px;background:#fff;padding:10px;max-width:360px}
     .forum-image-preview img{display:block;width:100%;height:180px;object-fit:contain;background:#F9FAFB;border-radius:6px}
