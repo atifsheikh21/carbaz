@@ -47,7 +47,7 @@
                             <h3 class="dealers-information">{{ __('translate.Profile Information') }}</h3>
 
                             <div style="margin:-6px 0 14px; font-weight:600;">
-                                <span>{{ __('Dealer / Trader') }}: {{ $user->is_dealer ? __('Dealer') : __('Private') }}</span>
+                                <span>{{ __('Seller Type') }}: {{ $user->is_dealer ? __('Dealer / Trader') : __('Private') }}</span>
                                 <span style="margin:0 10px;">|</span>
                                 <span>{{ __('translate.Country') }}: {{ $ireland?->name ?? 'Ireland' }}</span>
                             </div>
