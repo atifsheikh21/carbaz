@@ -164,7 +164,7 @@
                             <div id="vehicle_company_fields" style="display:none;">
                                 <div class="login-form-item">
                                     <div class="login-form-inner">
-                                        <label for="vehicle_company_name" class="form-label">{{ __('Vehicle Dealer name') }}
+                                        <label for="vehicle_company_name" class="form-label">{{ __('Vehicle dealer name') }}
                                             <span>*</span> </label>
                                         <input type="text" class="form-control @error('vehicle_company_name') is-invalid @enderror" id="vehicle_company_name" name="vehicle_company_name" value="{{ old('vehicle_company_name') }}">
                                         <small class="d-block mt-1">{{ __('This will be shown in your vehicle ads') }}</small>
@@ -176,7 +176,7 @@
 
                                 <div class="login-form-item">
                                     <div class="login-form-inner">
-                                        <label for="vehicle_company_address" class="form-label">{{ __('Vehicle Dealer address') }}
+                                        <label for="vehicle_company_address" class="form-label">{{ __('Vehicle dealer address') }}
                                             <span>*</span> </label>
                                         <input type="text" class="form-control @error('vehicle_company_address') is-invalid @enderror" id="vehicle_company_address" name="vehicle_company_address" value="{{ old('vehicle_company_address') }}">
                                         @error('vehicle_company_address')
@@ -200,7 +200,7 @@
                             <div id="part_company_fields" style="display:none;">
                                 <div class="login-form-item">
                                     <div class="login-form-inner">
-                                        <label for="part_company_name" class="form-label">{{ __('Trading / business name for vehicle part seller') }}
+                                        <label for="part_company_name" class="form-label">{{ __('Vehicle part trader name') }}
                                             <span>*</span> </label>
                                         <input type="text" class="form-control @error('part_company_name') is-invalid @enderror" id="part_company_name" name="part_company_name" value="{{ old('part_company_name') }}">
                                         <small class="d-block mt-1">{{ __('This will be shown in your car part ads') }}</small>
@@ -212,7 +212,7 @@
 
                                 <div class="login-form-item">
                                     <div class="login-form-inner">
-                                        <label for="part_company_address" class="form-label">{{ __('Trading / business address for vehicle part seller') }}
+                                        <label for="part_company_address" class="form-label">{{ __('Vehicle part trader address') }}
                                             <span>*</span> </label>
                                         <input type="text" class="form-control @error('part_company_address') is-invalid @enderror" id="part_company_address" name="part_company_address" value="{{ old('part_company_address') }}">
                                         @error('part_company_address')
