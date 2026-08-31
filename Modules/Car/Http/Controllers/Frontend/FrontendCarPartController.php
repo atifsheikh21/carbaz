@@ -175,7 +175,7 @@ class FrontendCarPartController extends Controller
             $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
 
             if ($feeFreeModeEnabled) {
-                $carPart->expired_date = date('Y-m-d', strtotime('+30 days'));
+                $carPart->expired_date = null;
                 $carPart->status = 'enable';
                 $carPart->save();
 
@@ -221,15 +221,28 @@ class FrontendCarPartController extends Controller
 
             $pendingPayment = $pendingPaymentQuery->orderBy('id', 'asc')->first();
             if (!$pendingPayment) {
-                $notification = trans('translate.Please complete payment to post your ad');
-                $notification = ['messege' => $notification, 'alert-type' => 'error'];
-                return redirect()->back()->with($notification);
+                if ($feeFreeModeEnabled) {
+                    $pendingPayment = IndividualAdPayment::create([
+                        'user_id' => $user->id,
+                        'car_id' => null,
+                        'amount' => 0,
+                        'currency' => 'EUR',
+                        'payment_method' => 'Free',
+                        'status' => 'success',
+                        'transaction_id' => 'fee_free_mode_reactivate',
+                        'consumed_at' => null,
+                    ]);
+                } else {
+                    $notification = trans('translate.Please complete payment to post your ad');
+                    $notification = ['messege' => $notification, 'alert-type' => 'error'];
+                    return redirect()->back()->with($notification);
+                }
             }
 
             $pendingPayment->consumed_at = now();
             $pendingPayment->save();
 
-            $carPart->expired_date = date('Y-m-d', strtotime('+30 days'));
+            $carPart->expired_date = $feeFreeModeEnabled ? null : date('Y-m-d', strtotime('+30 days'));
         }
 
         $carPart->status = 'enable';
@@ -414,7 +427,7 @@ class FrontendCarPartController extends Controller
             $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
 
             if ($feeFreeModeEnabled) {
-                $carPart->expired_date = date('Y-m-d', strtotime('+30 days'));
+                $carPart->expired_date = null;
             } else {
                 $today = date('Y-m-d');
                 $activePlan = SubscriptionHistory::where('user_id', $user->id)
@@ -459,7 +472,7 @@ class FrontendCarPartController extends Controller
                 }
             }
         } else {
-            $carPart->expired_date = date('Y-m-d', strtotime('+30 days'));
+            $carPart->expired_date = $feeFreeModeEnabled ? null : date('Y-m-d', strtotime('+30 days'));
         }
 
         $carPart->save();

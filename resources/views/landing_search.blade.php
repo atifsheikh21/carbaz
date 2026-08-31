@@ -492,6 +492,16 @@
                 text-overflow: ellipsis;
             }
 
+            button.ls-mobile__signin{
+                border:0;
+                background:transparent;
+                padding:0;
+                font-size:12px;
+                font-weight:500;
+                letter-spacing:.2px;
+                text-align:right;
+            }
+
             .ls-mobile__nav-right{
                 display:flex;
                 align-items:center;
@@ -662,7 +672,7 @@
 
                 <div class="ls-mobile__nav-right">
                     @auth('web')
-                        <a class="ls-mobile__signin" href="{{ route('user.edit-profile') }}">{{ auth('web')->user()->name }}</a>
+                        <button class="ls-mobile__signin" type="button" data-bs-toggle="offcanvas" data-bs-target="#lsMobileUserMenu" aria-controls="lsMobileUserMenu">{{ auth('web')->user()->name }}</button>
                     @else
                         <a class="ls-mobile__signin" href="{{ route('login') }}">Sign In</a>
                     @endauth
@@ -676,6 +686,21 @@
                     </button>
                 </div>
             </div>
+
+            @auth('web')
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="lsMobileUserMenu" aria-labelledby="lsMobileUserMenuLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="lsMobileUserMenuLabel">Account</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-light text-start" href="{{ route('user.edit-profile') }}">Edit Profile</a>
+                            <a class="btn btn-light text-start" href="{{ route('user.edit-profile') }}?section=avatar">Edit Profile Image</a>
+                        </div>
+                    </div>
+                </div>
+            @endauth
 
             <div class="offcanvas offcanvas-end" tabindex="-1" id="lsMobileMenu" aria-labelledby="lsMobileMenuLabel">
                 <div class="offcanvas-header">

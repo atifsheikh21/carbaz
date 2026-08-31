@@ -47,7 +47,7 @@
                             <h3 class="dealers-information">{{ __('translate.Profile Information') }}</h3>
 
                             <div style="margin:-6px 0 14px; font-weight:600;">
-                                <span>{{ __('Seller Type') }}: {{ $user->is_dealer ? __('Dealer') : __('Private') }}</span>
+                                <span>{{ __('Dealer / Trader') }}: {{ $user->is_dealer ? __('Dealer') : __('Private') }}</span>
                                 <span style="margin:0 10px;">|</span>
                                 <span>{{ __('translate.Country') }}: {{ $ireland?->name ?? 'Ireland' }}</span>
                             </div>
@@ -120,12 +120,12 @@
                                         @if ($user->is_vehicle_seller)
                                             <div class="join-a-dealer-form-item">
                                                 <div class="join-a-dealer-form-inner">
-                                                    <label for="vehicle_company_name" class="form-label">{{ __('Vehicle company name') }}</label>
+                                                    <label for="vehicle_company_name" class="form-label">{{ __('Vehicle dealer name') }}</label>
                                                     <input type="text" class="form-control" id="vehicle_company_name" name="vehicle_company_name" value="{{ old('vehicle_company_name', html_decode($user->vehicle_company_name)) }}">
                                                 </div>
 
                                                 <div class="join-a-dealer-form-inner">
-                                                    <label for="vehicle_company_address" class="form-label">{{ __('Vehicle company address') }}</label>
+                                                    <label for="vehicle_company_address" class="form-label">{{ __('Vehicle dealer address') }}</label>
                                                     <input type="text" class="form-control" id="vehicle_company_address" name="vehicle_company_address" value="{{ old('vehicle_company_address', html_decode($user->vehicle_company_address)) }}">
                                                 </div>
 
@@ -139,12 +139,12 @@
                                         @if ($user->is_part_seller)
                                             <div class="join-a-dealer-form-item">
                                                 <div class="join-a-dealer-form-inner">
-                                                    <label for="part_company_name" class="form-label">{{ __('Car part company name') }}</label>
+                                                    <label for="part_company_name" class="form-label">{{ __('Vehicle part trader name') }}</label>
                                                     <input type="text" class="form-control" id="part_company_name" name="part_company_name" value="{{ old('part_company_name', html_decode($user->part_company_name)) }}">
                                                 </div>
 
                                                 <div class="join-a-dealer-form-inner">
-                                                    <label for="part_company_address" class="form-label">{{ __('Car part company address') }}</label>
+                                                    <label for="part_company_address" class="form-label">{{ __('Vehicle part trader address') }}</label>
                                                     <input type="text" class="form-control" id="part_company_address" name="part_company_address" value="{{ old('part_company_address', html_decode($user->part_company_address)) }}">
                                                 </div>
 

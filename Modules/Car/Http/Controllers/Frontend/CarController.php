@@ -126,7 +126,7 @@ class CarController extends Controller
             $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
 
             if ($feeFreeModeEnabled) {
-                $car->expired_date = date('Y-m-d', strtotime('+30 days'));
+                $car->expired_date = null;
                 $car->status = 'enable';
                 $car->save();
 
@@ -212,7 +212,7 @@ class CarController extends Controller
             $pendingPayment->save();
 
             $car->is_paid = 1;
-            $car->expired_date = date('Y-m-d', strtotime('+30 days'));
+            $car->expired_date = $feeFreeModeEnabled ? null : date('Y-m-d', strtotime('+30 days'));
         }
 
         $car->status = 'enable';
@@ -701,7 +701,7 @@ class CarController extends Controller
 
         if($user && $user->is_dealer){
             if ($feeFreeModeEnabled) {
-                $car->expired_date = date('Y-m-d', strtotime('+30 days'));
+                $car->expired_date = null;
                 $car->save();
             } else {
                 $active_plan = SubscriptionHistory::where('user_id', $user->id)
@@ -721,7 +721,7 @@ class CarController extends Controller
                 }
             }
         }else{
-            $car->expired_date = date('Y-m-d', strtotime('+30 days'));
+            $car->expired_date = $feeFreeModeEnabled ? null : date('Y-m-d', strtotime('+30 days'));
             $car->save();
         }
 
@@ -935,7 +935,7 @@ class CarController extends Controller
         // Determine draft expiry based on plan / fee-free mode.
         $setting = Setting::first();
         $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
-        $expiredDate = date('Y-m-d', strtotime('+30 days'));
+        $expiredDate = $feeFreeModeEnabled ? null : date('Y-m-d', strtotime('+30 days'));
         if (!$feeFreeModeEnabled) {
             $activePlan = SubscriptionHistory::where('user_id', $authUser->id)
                 ->where('status', 'active')

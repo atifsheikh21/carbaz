@@ -320,7 +320,9 @@ class CarPartRequestForumController extends Controller
                 $absolutePath = public_path($filePath);
                 $manager = new \Intervention\Image\ImageManager(['driver' => 'gd']);
                 $image = $manager->make($absolutePath);
-                if (method_exists($image, 'orientate')) {
+                if (function_exists('fixImageOrientation')) {
+                    $image = fixImageOrientation($image, $absolutePath);
+                } elseif (method_exists($image, 'orientate')) {
                     $image->orientate();
                 }
                 $image->resize(1200, 900, function ($constraint) {
