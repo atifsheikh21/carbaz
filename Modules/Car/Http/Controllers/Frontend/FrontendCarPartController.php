@@ -407,7 +407,8 @@ class FrontendCarPartController extends Controller
 
         $carPart = new CarPart();
         $carPart->agent_id = $user->id;
-        $resolvedBrandId = $this->resolveBrandIdFromSelection($request->brand_id);
+        $brandSelection = $request->filled('manual_brand') ? $request->manual_brand : $request->brand_id;
+        $resolvedBrandId = $this->resolveBrandIdFromSelection($brandSelection);
         $carPart->brand_id = ($resolvedBrandId && $resolvedBrandId > 0) ? $resolvedBrandId : null;
         $carPart->city_id = $request->city_id;
         $carPart->slug = $this->generateUniqueSlug($request->title, $user->id);
@@ -579,7 +580,8 @@ class FrontendCarPartController extends Controller
                 ->withInput();
         }
 
-        $resolvedBrandId = $this->resolveBrandIdFromSelection($request->brand_id);
+        $brandSelection = $request->filled('manual_brand') ? $request->manual_brand : $request->brand_id;
+        $resolvedBrandId = $this->resolveBrandIdFromSelection($brandSelection);
         $carPart->brand_id = ($resolvedBrandId && $resolvedBrandId > 0) ? $resolvedBrandId : null;
         $carPart->city_id = $request->city_id;
         $carPart->slug = $this->generateUniqueSlug($request->title, $user->id, $carPart->id);
@@ -736,6 +738,7 @@ class FrontendCarPartController extends Controller
         if ($selection === '') {
             return null;
         }
+        $selectionSlug = Str::slug($selection);
 
         if (ctype_digit($selection)) {
             $brand = Brand::find((int) $selection);
@@ -746,6 +749,13 @@ class FrontendCarPartController extends Controller
             ->where('status', 'enable')
             ->where('slug', $selection)
             ->first();
+
+        if (!$brand && $selectionSlug !== '') {
+            $brand = Brand::query()
+                ->where('status', 'enable')
+                ->where('slug', $selectionSlug)
+                ->first();
+        }
 
         if (!$brand) {
             $brand = Brand::query()
@@ -760,17 +770,37 @@ class FrontendCarPartController extends Controller
                 });
         }
 
+        if (!$brand) {
+            $translation = BrandTranslation::query()
+                ->whereRaw('LOWER(name) = ?', [strtolower($selection)])
+                ->first();
+            if ($translation) {
+                $brand = Brand::query()
+                    ->where('status', 'enable')
+                    ->find($translation->brand_id);
+            }
+        }
+
         if ($brand) {
             return (int) $brand->id;
         }
 
-        $label = $this->getMakerOptions()[$selection] ?? null;
-        if (!$label) {
+        $label = $this->getMakerOptions()[$selection] ?? $selection;
+        $slug = $selectionSlug !== '' ? $selectionSlug : Str::slug($label);
+        if (!$label || $slug === '') {
             return null;
         }
 
+        $baseSlug = $slug;
+        $counter = 1;
+        while (Brand::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
         $brand = new Brand();
-        $brand->slug = $selection;
+        $brand->slug = $slug;
+        $brand->image = 'uploads/brand/default.png';
         $brand->status = 'enable';
         $brand->save();
 

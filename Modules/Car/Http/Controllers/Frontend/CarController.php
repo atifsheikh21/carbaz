@@ -485,6 +485,7 @@ class CarController extends Controller
         }
 
         $car = new Car();
+        $car->thumb_image = '';
 
         $galleryFiles = $request->file('gallery_images') ?? [];
         if (count($galleryFiles) > 8) {

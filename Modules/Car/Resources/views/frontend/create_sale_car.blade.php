@@ -452,7 +452,7 @@
                                 <div class="car-images">
                                     <h3 class="car-images-taitel">{{ __('Images') }}</h3>
                                     <div class="car-images-inner">
-                                        <h6 class="car-images-inner-txt">{{ __('Upload New Image') }} <span>*</span>
+                                        <h6 class="car-images-inner-txt">{{ __('Upload New Image') }} <small class="text-muted">({{ __('optional') }})</small>
                                           <i 
                                                 class="fas fa-info-circle text-info"
                                                 data-toggle="tooltip"
@@ -466,7 +466,7 @@
                                                 <div class="modern-upload">
                                                     <input type="file" id="gallery_images_input" name="gallery_images[]" class="modern-upload-input" multiple accept="image/jpeg,image/png">
                                                     <label for="gallery_images_input" class="modern-upload-btn">{{ __('Upload photos') }}</label>
-                                                    <div class="modern-upload-sub">{{ __('PNG, JPG. Max 8 images.') }}</div>
+                                                    <div class="modern-upload-sub">{{ __('PNG, JPG. Max 8 images. If no image is uploaded, Image Coming Soon will be shown.') }}</div>
                                                     <div id="gallery_images_selected_text" class="modern-upload-selected">{{ __('No files selected') }}</div>
                                                 </div>
                                             </div>

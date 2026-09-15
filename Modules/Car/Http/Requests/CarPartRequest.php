@@ -13,6 +13,7 @@ class CarPartRequest extends FormRequest
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'brand_id' => 'nullable|string|max:255',
+                'manual_brand' => 'nullable|string|max:255',
                 'car_model' => 'nullable|string|max:255',
                 'from_year' => 'nullable|integer|min:1900|max:2100',
                 'to_year' => 'nullable|integer|min:1900|max:2100',
@@ -30,6 +31,7 @@ class CarPartRequest extends FormRequest
             return [
                 'title' => 'required|string|max:255',
                 'brand_id' => 'nullable|string|max:255',
+                'manual_brand' => 'nullable|string|max:255',
                 'car_model' => 'nullable|string|max:255',
                 'from_year' => 'nullable|integer|min:1900|max:2100',
                 'to_year' => 'nullable|integer|min:1900|max:2100',

@@ -1127,7 +1127,7 @@ font-weight: 300;
                     }
                 @endphp
                 <div class="lp-detail__title">{{ $__titleText !== '' ? $__titleText : 'Car' }}</div>
-               <div class="lp-detail__subtitle">{!! __('For history check <a style="color: #867b85 !important;" href="https://www.motorcheck.ie">www.motorcheck.ie</a>') !!}</div>
+               <div class="lp-detail__subtitle" style="font-size: calc(1em + 2px);">{!! __('For history check <a style="color: #867b85 !important;" href="https://www.motorcheck.ie">www.motorcheck.ie</a>') !!}</div>
 
                 <div class="lp-detail__specs">
                     @php

@@ -62,6 +62,16 @@
             font-size:12px;
             word-break:break-word;
         }
+        .car-part-brand-entry{
+            display:grid;
+            grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+            gap:10px;
+        }
+        @media (max-width: 575.98px){
+            .car-part-brand-entry{
+                grid-template-columns:1fr;
+            }
+        }
     </style>
     <section class="inner-banner">
         <div class="inner-banner-img" style=" background-image: url({{ getImageOrPlaceholder($breadcrumb,'1905x300') }}) "></div>
@@ -121,12 +131,15 @@
                                 <div class="description-item two">
                                     <div class="description-item-inner">
                                         <label class="form-label">{{ __('translate.Brand') }}</label>
-                                        <select class="form-select select2" name="brand_id" id="car_part_brand_id">
-                                            <option value="" disabled {{ old('brand_id') ? '' : 'selected' }} hidden>{{ __('translate.Select Brand') }}</option>
-                                            @foreach($makerOptions as $brandSlug => $brandLabel)
-                                                <option value="{{ $brandSlug }}" {{ old('brand_id') === $brandSlug ? 'selected' : '' }}>{{ $brandLabel }}</option>
-                                            @endforeach
-                                        </select>
+                                        <div class="car-part-brand-entry">
+                                            <select class="form-select select2" name="brand_id" id="car_part_brand_id">
+                                                <option value="" disabled {{ old('brand_id') ? '' : 'selected' }} hidden>{{ __('translate.Select Brand') }}</option>
+                                                @foreach($makerOptions as $brandSlug => $brandLabel)
+                                                    <option value="{{ $brandSlug }}" {{ old('brand_id') === $brandSlug ? 'selected' : '' }}>{{ $brandLabel }}</option>
+                                                @endforeach
+                                            </select>
+                                            <input type="text" class="form-control" name="manual_brand" id="manual_brand" value="{{ old('manual_brand') }}" placeholder="{{ __('Manual brand entry') }}">
+                                        </div>
                                     </div>
                                     <div class="description-item-inner">
                                         <label class="form-label">{{ __('Model') }}</label>
@@ -256,6 +269,7 @@
     (function () {
         const brandModelsMap = @json($brandModelsMap ?? []);
         const brandSelect = document.getElementById('car_part_brand_id');
+        const manualBrandInput = document.getElementById('manual_brand');
         const modelSelect = document.getElementById('car_part_model');
 
         function fillModelOptions(brandKey) {
@@ -294,9 +308,30 @@
 
         if (brandSelect && modelSelect) {
             brandSelect.addEventListener('change', function () {
+                if (manualBrandInput) {
+                    manualBrandInput.value = '';
+                }
                 fillModelOptions(this.value);
             });
             fillModelOptions(brandSelect.value || "{{ old('brand_id') }}");
+        }
+
+        if (manualBrandInput) {
+            manualBrandInput.addEventListener('input', function () {
+                if (!this.value.trim()) {
+                    return;
+                }
+
+                if (brandSelect) {
+                    brandSelect.value = '';
+                    if (window.jQuery && jQuery.fn && jQuery.fn.select2) {
+                        try {
+                            jQuery(brandSelect).trigger('change.select2');
+                        } catch (e) {}
+                    }
+                }
+                fillModelOptions('');
+            });
         }
 
         const input = document.getElementById('carPartImages');
