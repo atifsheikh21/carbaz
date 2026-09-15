@@ -5,6 +5,10 @@
 
 @section('body-content')
 <main>
+    @php
+        $__adActivationIsFree = (optional($setting ?? null)->fee_free_mode ?? 'disable') === 'enable'
+            || (optional($setting ?? null)->single_ad_pricing_enabled ?? 'enable') === 'disable';
+    @endphp
     <style>
         .mc-mobile__row{
             position: relative;
@@ -149,6 +153,8 @@
                                                     @else
                                                         @if($isActive)
                                                             <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('toggle_part_{{ $p->id }}').submit();">deactivate</button>
+                                                        @elseif($__adActivationIsFree)
+                                                            <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('toggle_part_{{ $p->id }}').submit();">activate</button>
                                                         @else
                                                             <button type="button" class="mc-mobile__action" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#individualAdPayModalPart" data-reactivate-type="part" data-reactivate-id="{{ $p->id }}">activate</button>
                                                         @endif
@@ -237,6 +243,8 @@
                                             @else
                                                 @if($isActive)
                                                     <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('toggle_part_desktop_{{ $p->id }}').submit();">deactivate</button>
+                                                @elseif($__adActivationIsFree)
+                                                    <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('toggle_part_desktop_{{ $p->id }}').submit();">activate</button>
                                                 @else
                                                     <button type="button" class="mc-mobile__action" onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#individualAdPayModalPart" data-reactivate-type="part" data-reactivate-id="{{ $p->id }}">activate</button>
                                                 @endif

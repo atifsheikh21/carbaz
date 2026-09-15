@@ -36,10 +36,14 @@
                                 <div class="forum-card-category">{{ $item->category }}</div>
                             @endif
                             <a href="{{ route('car-part-requests.show', $item->id) }}" class="forum-card-title">{{ \Illuminate\Support\Str::title($item->title) }}</a>
-                            @if($item->image)
-                                <a href="{{ route('car-part-requests.show', $item->id) }}" class="forum-card-image">
-                                    <img src="{{ getImageOrPlaceholder($item->image, '520x300') }}" alt="{{ \Illuminate\Support\Str::title($item->title) }}">
-                                </a>
+                            @if($item->image || $item->image_two)
+                                <div class="forum-card-image-grid">
+                                    @foreach(array_filter([$item->image, $item->image_two]) as $requestImage)
+                                        <a href="{{ route('car-part-requests.show', $item->id) }}" class="forum-card-image">
+                                            <img src="{{ getImageOrPlaceholder($requestImage, '520x300') }}" alt="{{ \Illuminate\Support\Str::title($item->title) }}">
+                                        </a>
+                                    @endforeach
+                                </div>
                             @endif
                             <p class="forum-card-description">{{ \Illuminate\Support\Str::ucfirst(\Illuminate\Support\Str::limit($item->part_description, 180)) }}</p>
                             @if($authUserId && $authUserId === (int) $item->user_id)
@@ -80,10 +84,11 @@
     .forum-owner-actions button:hover{background:#fef2f2}
     .forum-owner-actions a:hover{border-color:#4B5563;color:#111827}
     .forum-card-category{display:inline-flex;align-items:center;min-height:24px;padding:0 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:800;margin:0 0 8px;text-transform:capitalize}
-    .forum-card-image{display:flex;align-items:center;justify-content:center;width:100%;max-width:460px;margin:12px 0 14px;border-radius:8px;overflow:hidden;background:#F8FAFC;border:1px solid #E5E7EB}
+    .forum-card-image-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:520px;margin:12px 0 14px}
+    .forum-card-image{display:flex;align-items:center;justify-content:center;width:100%;border-radius:8px;overflow:hidden;background:#F8FAFC;border:1px solid #E5E7EB}
     .forum-card-image img{display:block;width:100%;height:220px;object-fit:contain;background:#F8FAFC}
     .forum-post-card .forum-card-title{font-size:22px;line-height:1.25;font-weight:850;color:#111827;margin:4px 0 8px;text-transform:capitalize}
     .forum-post-card .forum-card-description{font-size:15px;line-height:1.65;color:#6B7280;margin:0 0 14px;padding-top:10px;border-top:1px solid #F3F4F6;text-transform:capitalize}
-    @media(max-width:600px){.forum-card-image{max-width:none}.forum-card-image img{height:180px}.forum-post-card .forum-card-title{font-size:20px}}
+    @media(max-width:600px){.forum-card-image-grid{grid-template-columns:1fr;max-width:none}.forum-card-image img{height:180px}.forum-post-card .forum-card-title{font-size:20px}}
 </style>
 @endpush

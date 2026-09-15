@@ -101,16 +101,27 @@
 
                             {{-- Image upload --}}
                             <div class="forum-field">
-                                <label class="forum-label">Attach an Image <small>(optional, max 4MB)</small></label>
+                                <label class="forum-label">Attach Images <small>(optional, max 2 images, 4MB each)</small></label>
                                 <input type="file" name="image" accept="image/*" id="forum-image-input" style="display:none">
-                                <button type="button" class="forum-upload-zone" id="upload-zone">
+                                <input type="file" name="image_two" accept="image/*" id="forum-image-two-input" style="display:none">
+                                <button type="button" class="forum-upload-zone" id="upload-zone" data-image-trigger="forum-image-input">
                                     <span id="upload-label">📎 Click to attach an image</span>
                                 </button>
-                                <div class="forum-image-preview" id="forum-image-preview" style="display:none;">
-                                    <img src="" alt="Selected image preview" id="forum-preview-img">
-                                    <button type="button" id="forum-remove-image">Remove image</button>
+                                <button type="button" class="forum-upload-zone forum-upload-zone--secondary" data-image-trigger="forum-image-two-input">
+                                    <span id="upload-label-two">Attach second image</span>
+                                </button>
+                                <div class="forum-image-preview-grid">
+                                    <div class="forum-image-preview" id="forum-image-preview" style="display:none;">
+                                        <img src="" alt="Selected first image preview" id="forum-preview-img">
+                                        <button type="button" id="forum-remove-image" data-image-remove="forum-image-input">Remove image</button>
+                                    </div>
+                                    <div class="forum-image-preview" id="forum-image-two-preview" style="display:none;">
+                                        <img src="" alt="Selected second image preview" id="forum-preview-two-img">
+                                        <button type="button" data-image-remove="forum-image-two-input">Remove image</button>
+                                    </div>
                                 </div>
                                 @error('image')<div class="forum-error">{{ $message }}</div>@enderror
+                                @error('image_two')<div class="forum-error">{{ $message }}</div>@enderror
                             </div>
 
                             {{-- Footer actions --}}
@@ -185,8 +196,10 @@
     .forum-textarea.is-invalid{border-color:#DC2626}
     .forum-car-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
     .forum-upload-zone{width:100%;display:flex;align-items:center;justify-content:center;min-height:80px;border:2px dashed #D1D5DB;border-radius:8px;cursor:pointer;color:#6B7280;font-size:14px;background:#F9FAFB;transition:border-color .15s}
+    .forum-upload-zone--secondary{margin-top:10px;min-height:62px}
     .forum-upload-zone:hover{border-color:#b60304;color:#b60304;background:#fff1f1}
-    .forum-image-preview{margin-top:12px;border:1px solid #E5E7EB;border-radius:8px;background:#fff;padding:10px;max-width:360px}
+    .forum-image-preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px;max-width:520px}
+    .forum-image-preview{border:1px solid #E5E7EB;border-radius:8px;background:#fff;padding:10px}
     .forum-image-preview img{display:block;width:100%;height:180px;object-fit:contain;background:#F9FAFB;border-radius:6px}
     .forum-image-preview button{margin-top:10px;min-height:34px;padding:0 12px;border:1px solid #fca5a5;border-radius:999px;background:#fff;color:#dc2626;font-size:13px;font-weight:700;cursor:pointer}
     .forum-error{color:#DC2626;font-size:13px;margin-top:5px}
@@ -202,7 +215,7 @@
     .forum-widget a:hover{background:#fff1f1;color:#b60304}
     .forum-tips{margin:0;padding-left:18px;color:#4B5563;font-size:14px;line-height:2}
     @media(max-width:900px){.forum-create-grid{grid-template-columns:1fr}.forum-create-side{position:static}}
-    @media(max-width:600px){.forum-car-row{grid-template-columns:1fr}.forum-topbar{flex-wrap:wrap}.forum-search{order:3;flex:0 0 100%}}
+    @media(max-width:600px){.forum-car-row,.forum-image-preview-grid{grid-template-columns:1fr}.forum-topbar{flex-wrap:wrap}.forum-search{order:3;flex:0 0 100%}}
 </style>
 @endpush
 
@@ -249,6 +262,37 @@
         form.addEventListener('submit', function () {
             submitBtn.disabled = true;
             submitBtn.textContent = 'Posting...';
+        });
+    })();
+
+    (function () {
+        const imageInput = document.getElementById('forum-image-two-input');
+        const imageLabel = document.getElementById('upload-label-two');
+        const imagePreview = document.getElementById('forum-image-two-preview');
+        const previewImg = document.getElementById('forum-preview-two-img');
+        const uploadButton = document.querySelector('[data-image-trigger="forum-image-two-input"]');
+        const removeButton = document.querySelector('[data-image-remove="forum-image-two-input"]');
+
+        if (!imageInput || !imageLabel || !imagePreview || !previewImg || !uploadButton || !removeButton) {
+            return;
+        }
+
+        uploadButton.addEventListener('click', function () {
+            imageInput.click();
+        });
+
+        imageInput.addEventListener('change', function () {
+            const file = imageInput.files[0];
+            imageLabel.textContent = file ? 'Selected: ' + file.name : 'Attach second image';
+            imagePreview.style.display = file ? 'block' : 'none';
+            previewImg.src = file ? URL.createObjectURL(file) : '';
+        });
+
+        removeButton.addEventListener('click', function () {
+            imageInput.value = '';
+            imageLabel.textContent = 'Attach second image';
+            imagePreview.style.display = 'none';
+            previewImg.src = '';
         });
     })();
 </script>

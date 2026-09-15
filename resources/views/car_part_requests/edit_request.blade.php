@@ -71,14 +71,32 @@
                         </div>
 
                         <div style="margin-bottom:24px;">
-                            <label style="display:block;font-weight:700;margin-bottom:6px;">Image</label>
+                            <label style="display:block;font-weight:700;margin-bottom:6px;">Images <small style="font-weight:400;color:#6B7280;">(optional, max 2 images, 4MB each)</small></label>
                             @if($requestModel->image)
-                                <div class="forum-edit-image">
-                                    <img src="{{ getImageOrPlaceholder($requestModel->image, '480x270') }}" alt="{{ $requestModel->title }}">
+                                <div class="forum-edit-image" id="forum-edit-image-preview">
+                                    <img src="{{ getImageOrPlaceholder($requestModel->image, '480x270') }}" alt="{{ $requestModel->title }}" id="forum-edit-preview-img">
+                                </div>
+                            @else
+                                <div class="forum-edit-image" id="forum-edit-image-preview" style="display:none;">
+                                    <img src="" alt="{{ $requestModel->title }}" id="forum-edit-preview-img">
                                 </div>
                             @endif
-                            <input type="file" name="image" accept="image/*" class="forum-offer-input">
+                            <input type="file" name="image" accept="image/*" class="forum-offer-input forum-edit-image-input" data-preview-wrap="forum-edit-image-preview" data-preview-img="forum-edit-preview-img">
                             @error('image')
+                                <div style="color:#DC2626;font-size:13px;margin-top:5px;">{{ $message }}</div>
+                            @enderror
+
+                            @if($requestModel->image_two)
+                                <div class="forum-edit-image forum-edit-image--second" id="forum-edit-image-two-preview">
+                                    <img src="{{ getImageOrPlaceholder($requestModel->image_two, '480x270') }}" alt="{{ $requestModel->title }}" id="forum-edit-preview-two-img">
+                                </div>
+                            @else
+                                <div class="forum-edit-image forum-edit-image--second" id="forum-edit-image-two-preview" style="display:none;">
+                                    <img src="" alt="{{ $requestModel->title }}" id="forum-edit-preview-two-img">
+                                </div>
+                            @endif
+                            <input type="file" name="image_two" accept="image/*" class="forum-offer-input forum-edit-image-input" data-preview-wrap="forum-edit-image-two-preview" data-preview-img="forum-edit-preview-two-img">
+                            @error('image_two')
                                 <div style="color:#DC2626;font-size:13px;margin-top:5px;">{{ $message }}</div>
                             @enderror
                         </div>
@@ -101,6 +119,33 @@
     .forum-question-card{background:#fff;border:1px solid #E5E7EB;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
     .forum-rich-editor,.forum-offer-input{width:100%;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px;background:#fff;box-sizing:border-box;font-size:15px;font-family:inherit}
     .forum-edit-image{margin:0 0 10px;border:1px solid #E5E7EB;border-radius:8px;overflow:hidden;background:#F3F4F6;max-width:420px}
-    .forum-edit-image img{display:block;width:100%;height:auto;object-fit:contain;background:#fff}
+    .forum-edit-image--second{margin-top:16px}
+    .forum-edit-image img{display:block;width:100%;height:220px;object-fit:contain;background:#fff}
 </style>
+@endpush
+
+@push('js_section')
+<script>
+    document.querySelectorAll('.forum-edit-image-input').forEach(function (input) {
+        input.addEventListener('change', function () {
+            const file = input.files[0];
+            const wrap = document.getElementById(input.dataset.previewWrap);
+            const img = document.getElementById(input.dataset.previewImg);
+
+            if (!wrap || !img) {
+                return;
+            }
+
+            if (!file) {
+                if (!img.getAttribute('src')) {
+                    wrap.style.display = 'none';
+                }
+                return;
+            }
+
+            img.src = URL.createObjectURL(file);
+            wrap.style.display = 'block';
+        });
+    });
+</script>
 @endpush

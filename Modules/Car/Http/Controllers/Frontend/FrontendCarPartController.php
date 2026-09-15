@@ -136,6 +136,7 @@ class FrontendCarPartController extends Controller
             ->latest()
             ->paginate(15)
             ->appends($request->query());
+        $setting = Setting::first();
 
         return view('car::frontend.car_parts.index', [
             'carParts' => $carParts,
@@ -145,6 +146,7 @@ class FrontendCarPartController extends Controller
             'activeCount' => $activeCount,
             'inactiveCount' => $inactiveCount,
             'today' => $today,
+            'setting' => $setting,
         ]);
     }
 
@@ -172,7 +174,7 @@ class FrontendCarPartController extends Controller
 
         if ($user->is_dealer) {
             $setting = Setting::first();
-            $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+            $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
             if ($feeFreeModeEnabled) {
                 $carPart->expired_date = null;
@@ -209,7 +211,7 @@ class FrontendCarPartController extends Controller
             }
         } else {
             $setting = Setting::first();
-            $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+            $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
             $pendingPaymentQuery = IndividualAdPayment::where('user_id', $user->id)
                 ->where('status', 'success')
@@ -264,7 +266,7 @@ class FrontendCarPartController extends Controller
         }
 
         $setting = Setting::first();
-        $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+        $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
         if ($user && $user->is_dealer) {
             if (!$feeFreeModeEnabled) {
@@ -369,7 +371,7 @@ class FrontendCarPartController extends Controller
         $pendingIndividualPayment = null;
         if ($user && !$user->is_dealer) {
             $setting = Setting::first();
-            $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+            $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
             $pendingIndividualPaymentQuery = IndividualAdPayment::where('user_id', $user->id)
                 ->where('status', 'success')
@@ -424,7 +426,7 @@ class FrontendCarPartController extends Controller
 
         if ($user && $user->is_dealer) {
             $setting = Setting::first();
-            $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+            $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
             if ($feeFreeModeEnabled) {
                 $carPart->expired_date = null;
@@ -824,5 +826,15 @@ class FrontendCarPartController extends Controller
         unset($models);
 
         return $map;
+    }
+
+    private function adActivationIsFree(?Setting $setting): bool
+    {
+        if (!$setting) {
+            return false;
+        }
+
+        return ($setting->fee_free_mode ?? 'disable') === 'enable'
+            || ($setting->single_ad_pricing_enabled ?? 'enable') === 'disable';
     }
 }

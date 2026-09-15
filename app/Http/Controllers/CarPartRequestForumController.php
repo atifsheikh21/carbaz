@@ -8,8 +8,12 @@ use App\Models\CarPartRequestVote;
 use App\Models\CarPartRequestReplyVote;
 use App\Models\User;
 use App\Jobs\SendForumHelperNotificationJob;
+use App\Helpers\MailHelper;
+use App\Mail\ForumRequestReplyMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class CarPartRequestForumController extends Controller
 {
@@ -75,6 +79,7 @@ class CarPartRequestForumController extends Controller
             'car_year' => ['nullable', 'string', 'max:255'],
             'additional_notes' => ['nullable', 'string'],
             'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+            'image_two' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
         ]);
 
         $user = Auth::guard('web')->user();
@@ -84,6 +89,9 @@ class CarPartRequestForumController extends Controller
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadForumRequestImage($request->file('image'));
+        }
+        if ($request->hasFile('image_two')) {
+            $validated['image_two'] = $this->uploadForumRequestImage($request->file('image_two'));
         }
 
         $requestModel = CarPartRequest::create($validated);
@@ -142,6 +150,15 @@ class CarPartRequestForumController extends Controller
         $reply->offer_price = $validated['offer_price'] ?? null;
         $reply->save();
 
+        if ($requestModel->user && (int) $requestModel->user_id !== (int) $user->id) {
+            try {
+                MailHelper::setMailConfig();
+                Mail::to($requestModel->user->email)->send(new ForumRequestReplyMail($requestModel, $reply));
+            } catch (\Throwable $e) {
+                Log::error('Forum request reply mail send error: ' . $e->getMessage());
+            }
+        }
+
         $notification = ['messege' => trans('translate.Reply submitted successfully'), 'alert-type' => 'success'];
         return redirect()->back()->with($notification);
     }
@@ -167,10 +184,14 @@ class CarPartRequestForumController extends Controller
             'car_year'         => ['nullable', 'string', 'max:255'],
             'additional_notes' => ['nullable', 'string'],
             'image'            => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+            'image_two'        => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
         ]);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadForumRequestImage($request->file('image'), $requestModel->image);
+        }
+        if ($request->hasFile('image_two')) {
+            $validated['image_two'] = $this->uploadForumRequestImage($request->file('image_two'), $requestModel->image_two);
         }
 
         $requestModel->update($validated);
@@ -186,6 +207,9 @@ class CarPartRequestForumController extends Controller
 
         if ($requestModel->image) {
             deleteFile($requestModel->image);
+        }
+        if ($requestModel->image_two) {
+            deleteFile($requestModel->image_two);
         }
 
         $requestModel->replies()->delete();

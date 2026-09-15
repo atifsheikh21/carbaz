@@ -5,6 +5,10 @@
 @section('body-content')
 
 <main>
+    @php
+        $__adActivationIsFree = (optional($setting ?? null)->fee_free_mode ?? 'disable') === 'enable'
+            || (optional($setting ?? null)->single_ad_pricing_enabled ?? 'enable') === 'disable';
+    @endphp
     <style>
         .mc-desktop-tabs{
             margin-top: 12px;
@@ -120,6 +124,8 @@
                                                             @else
                                                                 @if($isActive)
                                                                     <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); document.getElementById('toggle_car_{{ $car->id }}').submit();">deactivate</button>
+                                                                @elseif($__adActivationIsFree)
+                                                                    <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); document.getElementById('toggle_car_{{ $car->id }}').submit();">activate</button>
                                                                 @else
                                                                     <button type="button" class="mc-mobile__action" data-bs-toggle="modal" data-bs-target="#individualAdPayModal" data-reactivate-type="car" data-reactivate-id="{{ $car->id }}">activate</button>
                                                                 @endif
@@ -199,6 +205,8 @@
                                                     @else
                                                         @if($isActive)
                                                             <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); document.getElementById('toggle_car_desktop_{{ $car->id }}').submit();">deactivate</button>
+                                                        @elseif($__adActivationIsFree)
+                                                            <button type="button" class="mc-mobile__action" onclick="event.preventDefault(); document.getElementById('toggle_car_desktop_{{ $car->id }}').submit();">activate</button>
                                                         @else
                                                             <button type="button" class="mc-mobile__action" data-bs-toggle="modal" data-bs-target="#individualAdPayModal" data-reactivate-type="car" data-reactivate-id="{{ $car->id }}">activate</button>
                                                         @endif

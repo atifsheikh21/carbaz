@@ -29,9 +29,13 @@
                             <div class="forum-card-category">{{ $request->category }}</div>
                         @endif
                         <h1 class="forum-question-title">{{ $request->title }}</h1>
-                        @if($request->image)
-                            <div class="forum-request-image">
-                                <img src="{{ getImageOrPlaceholder($request->image, '960x540') }}" alt="{{ $request->title }}">
+                        @if($request->image || $request->image_two)
+                            <div class="forum-request-image-grid">
+                                @foreach(array_filter([$request->image, $request->image_two]) as $requestImage)
+                                    <a class="forum-request-image" href="{{ getImageOrPlaceholder($requestImage, '1200x900') }}" target="_blank" rel="noopener">
+                                        <img src="{{ getImageOrPlaceholder($requestImage, '960x540') }}" alt="{{ $request->title }}">
+                                    </a>
+                                @endforeach
                             </div>
                         @endif
                         <div class="forum-author forum-detail-author">
@@ -191,7 +195,8 @@
     .forum-card-tag{display:inline-flex;color:#b60304;background:#fff1f1;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;margin-bottom:10px}
     .forum-card-category{display:inline-flex;align-items:center;min-height:24px;padding:0 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:800;margin:0 0 10px}
     .forum-question-title{font-size:28px!important;line-height:1.25!important;font-weight:850!important;color:#111827!important;margin:4px 0 12px!important}
-    .forum-request-image{margin:12px 0 18px;border-radius:8px;overflow:hidden;background:#F3F4F6;border:1px solid #E5E7EB;max-width:560px}
+    .forum-request-image-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 18px;max-width:760px}
+    .forum-request-image{display:flex;align-items:center;justify-content:center;border-radius:8px;overflow:hidden;background:#F3F4F6;border:1px solid #E5E7EB;text-decoration:none}
     .forum-request-image img{display:block;width:100%;height:260px;object-fit:contain;background:#fff}
     .forum-question-body{border-left:4px solid #b60304;background:#FAFAFA;border-radius:8px;padding:14px 16px;margin:14px 0;color:#374151}
     .forum-question-body--notes{border-left-color:#6B7280;background:#F9FAFB}
@@ -230,6 +235,8 @@
         .forum-mobile-tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #E5E7EB;z-index:30}
         .forum-mobile-tabs a{flex:1;display:flex;align-items:center;justify-content:center;min-height:52px;color:#374151;text-decoration:none;font-size:13px;font-weight:700}
         .forum-spec-grid{grid-template-columns:1fr 1fr}
+        .forum-request-image-grid{grid-template-columns:1fr}
+        .forum-request-image img{height:220px}
     }
 </style>
 @endpush

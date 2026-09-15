@@ -21,6 +21,7 @@ class CarPartRequest extends Model
         'additional_notes',
         'status',
         'image',
+        'image_two',
     ];
 
     public function user(): BelongsTo

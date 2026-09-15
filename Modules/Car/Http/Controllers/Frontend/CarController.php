@@ -87,6 +87,7 @@ class CarController extends Controller
         }
 
         $cars = $carsQuery->latest()->paginate(15)->appends($request->query());
+        $setting = Setting::first();
 
         return view('car::frontend.index', [
             'cars' => $cars,
@@ -95,6 +96,7 @@ class CarController extends Controller
             'activeCount' => $activeCount,
             'inactiveCount' => $inactiveCount,
             'today' => $today,
+            'setting' => $setting,
         ]);
     }
 
@@ -123,7 +125,7 @@ class CarController extends Controller
 
         if ($user->is_dealer) {
             $setting = Setting::first();
-            $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+            $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
             if ($feeFreeModeEnabled) {
                 $car->expired_date = null;
@@ -176,7 +178,7 @@ class CarController extends Controller
             }
         } else {
             $setting = Setting::first();
-            $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+            $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
             $pendingPaymentQuery = IndividualAdPayment::where('user_id', $user->id)
                 ->where('status', 'success')
@@ -252,7 +254,7 @@ class CarController extends Controller
         }
 
         $setting = Setting::first();
-        $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+        $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
         if($user->is_dealer){
             if ($feeFreeModeEnabled) {
@@ -405,7 +407,7 @@ class CarController extends Controller
         }
 
         $setting = Setting::first();
-        $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+        $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
         if ($authUser && $authUser->is_dealer) {
             if (!$feeFreeModeEnabled) {
@@ -449,7 +451,7 @@ class CarController extends Controller
         $pendingIndividualPayment = null;
         if($authUser && !$authUser->is_dealer){
             $setting = Setting::first();
-            $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+            $feeFreeModeEnabled = $this->adActivationIsFree($setting);
             $pendingIndividualPaymentQuery = IndividualAdPayment::where('user_id', $authUser->id)
                 ->where('status', 'success')
                 ->whereNull('consumed_at');
@@ -697,7 +699,7 @@ class CarController extends Controller
 
         $user = Auth::guard('web')->user();
         $setting = Setting::first();
-        $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+        $feeFreeModeEnabled = $this->adActivationIsFree($setting);
 
         if($user && $user->is_dealer){
             if ($feeFreeModeEnabled) {
@@ -934,7 +936,7 @@ class CarController extends Controller
 
         // Determine draft expiry based on plan / fee-free mode.
         $setting = Setting::first();
-        $feeFreeModeEnabled = $setting && $setting->fee_free_mode == 'enable';
+        $feeFreeModeEnabled = $this->adActivationIsFree($setting);
         $expiredDate = $feeFreeModeEnabled ? null : date('Y-m-d', strtotime('+30 days'));
         if (!$feeFreeModeEnabled) {
             $activePlan = SubscriptionHistory::where('user_id', $authUser->id)
@@ -1761,5 +1763,15 @@ class CarController extends Controller
         $notification=array('messege'=>$notification,'alert-type'=>'success');
         return redirect()->back()->with($notification);
 
+    }
+
+    private function adActivationIsFree(?Setting $setting): bool
+    {
+        if (!$setting) {
+            return false;
+        }
+
+        return ($setting->fee_free_mode ?? 'disable') === 'enable'
+            || ($setting->single_ad_pricing_enabled ?? 'enable') === 'disable';
     }
 }
