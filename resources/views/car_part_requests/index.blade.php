@@ -37,13 +37,13 @@
                             @endif
                             <a href="{{ route('car-part-requests.show', $item->id) }}" class="forum-card-title">{{ \Illuminate\Support\Str::title($item->title) }}</a>
                             @if($item->image || $item->image_two)
-                                <div class="forum-card-image-grid">
+                                <a href="{{ route('car-part-requests.show', $item->id) }}" class="forum-card-image-grid forum-card-image-grid-link" aria-label="{{ \Illuminate\Support\Str::title($item->title) }}">
                                     @foreach(array_filter([$item->image, $item->image_two]) as $requestImage)
-                                        <a href="{{ route('car-part-requests.show', $item->id) }}" class="forum-card-image">
+                                        <span class="forum-card-image">
                                             <img src="{{ getImageOrPlaceholder($requestImage, '520x300') }}" alt="{{ \Illuminate\Support\Str::title($item->title) }}">
-                                        </a>
+                                        </span>
                                     @endforeach
-                                </div>
+                                </a>
                             @endif
                             <p class="forum-card-description">{{ \Illuminate\Support\Str::ucfirst(\Illuminate\Support\Str::limit($item->part_description, 180)) }}</p>
                             @if($authUserId && $authUserId === (int) $item->user_id)
@@ -56,7 +56,7 @@
                                     </form>
                                 </div>
                             @endif
-                            <div class="forum-card-meta"><div class="forum-author"><span>@if($item->user?->image)<img src="{{ getImageOrPlaceholder($item->user->image,'40x40') }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">@else{{ strtoupper(substr($item->user?->name ?? 'U', 0, 1)) }}@endif</span><strong>{{ $item->user?->name ?? 'Community member' }}</strong><em>{{ $item->created_at?->diffForHumans() }}</em></div><div class="forum-actions"><span>▲ 0</span><span>{{ $item->replies_count }} replies</span><button type="button" aria-label="Bookmark">♡</button></div></div>
+                            <div class="forum-card-meta"><div class="forum-author"><span>@if($item->user?->image)<img src="{{ getImageOrPlaceholder($item->user->image,'40x40') }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">@else{{ strtoupper(substr($item->user?->name ?? 'U', 0, 1)) }}@endif</span><strong>{{ $item->user?->name ?? 'Community member' }}</strong><em>{{ $item->created_at?->diffForHumans() }}</em></div><div class="forum-actions"><span>&#9650; 0</span><span>{{ $item->replies_count }} replies</span><button type="button" class="forum-save-btn" aria-label="Save post" aria-pressed="false" data-forum-save="{{ $item->id }}">&#9825;</button></div></div>
                         </article>
                     @empty
                         <div class="forum-post-card"><p class="mb-0">{{ __('translate.No Item Found') }}</p></div>
@@ -85,10 +85,54 @@
     .forum-owner-actions a:hover{border-color:#4B5563;color:#111827}
     .forum-card-category{display:inline-flex;align-items:center;min-height:24px;padding:0 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:800;margin:0 0 8px;text-transform:capitalize}
     .forum-card-image-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:520px;margin:12px 0 14px}
+    .forum-card-image-grid-link{color:inherit;text-decoration:none}
     .forum-card-image{display:flex;align-items:center;justify-content:center;width:100%;border-radius:8px;overflow:hidden;background:#F8FAFC;border:1px solid #E5E7EB}
+    .forum-card-image-grid-link:hover .forum-card-image{border-color:#b60304}
     .forum-card-image img{display:block;width:100%;height:220px;object-fit:contain;background:#F8FAFC}
+    .forum-save-btn{font-size:20px;line-height:1;transition:background .15s,color .15s,border-color .15s}
+    .forum-save-btn.is-saved{border-color:#b60304!important;background:#fff1f1!important;color:#b60304!important}
     .forum-post-card .forum-card-title{font-size:22px;line-height:1.25;font-weight:850;color:#111827;margin:4px 0 8px;text-transform:capitalize}
     .forum-post-card .forum-card-description{font-size:15px;line-height:1.65;color:#6B7280;margin:0 0 14px;padding-top:10px;border-top:1px solid #F3F4F6;text-transform:capitalize}
     @media(max-width:600px){.forum-card-image-grid{grid-template-columns:1fr;max-width:none}.forum-card-image img{height:180px}.forum-post-card .forum-card-title{font-size:20px}}
 </style>
+@endpush
+
+@push('js_section')
+<script>
+    (function () {
+        const storageKey = 'forumSavedPartHelpPosts';
+        let saved = [];
+
+        try {
+            saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        } catch (e) {
+            saved = [];
+        }
+
+        function persist() {
+            localStorage.setItem(storageKey, JSON.stringify(saved));
+        }
+
+        function render(button) {
+            const id = button.dataset.forumSave;
+            const isSaved = saved.includes(id);
+            button.classList.toggle('is-saved', isSaved);
+            button.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
+            button.innerHTML = isSaved ? '&#9829;' : '&#9825;';
+            button.title = isSaved ? 'Saved' : 'Save post';
+        }
+
+        document.querySelectorAll('[data-forum-save]').forEach(function (button) {
+            render(button);
+            button.addEventListener('click', function () {
+                const id = button.dataset.forumSave;
+                saved = saved.includes(id) ? saved.filter(function (savedId) {
+                    return savedId !== id;
+                }) : saved.concat(id);
+                persist();
+                render(button);
+            });
+        });
+    })();
+</script>
 @endpush

@@ -62,16 +62,6 @@
             font-size:12px;
             word-break:break-word;
         }
-        .car-part-brand-entry{
-            display:grid;
-            grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-            gap:10px;
-        }
-        @media (max-width: 575.98px){
-            .car-part-brand-entry{
-                grid-template-columns:1fr;
-            }
-        }
     </style>
     <section class="inner-banner">
         <div class="inner-banner-img" style=" background-image: url({{ getImageOrPlaceholder($breadcrumb,'1905x300') }}) "></div>
@@ -131,21 +121,24 @@
                                 <div class="description-item two">
                                     <div class="description-item-inner">
                                         <label class="form-label">{{ __('translate.Brand') }}</label>
-                                        <div class="car-part-brand-entry">
-                                            <select class="form-select select2" name="brand_id" id="car_part_brand_id">
-                                                <option value="" disabled {{ old('brand_id') ? '' : 'selected' }} hidden>{{ __('translate.Select Brand') }}</option>
-                                                @foreach($makerOptions as $brandSlug => $brandLabel)
-                                                    <option value="{{ $brandSlug }}" {{ old('brand_id') === $brandSlug ? 'selected' : '' }}>{{ $brandLabel }}</option>
-                                                @endforeach
-                                            </select>
-                                            <input type="text" class="form-control" name="manual_brand" id="manual_brand" value="{{ old('manual_brand') }}" placeholder="{{ __('Manual brand entry') }}">
-                                        </div>
+                                        <select class="form-select select2" name="brand_id" id="car_part_brand_id">
+                                            <option value="" disabled {{ old('brand_id') ? '' : 'selected' }} hidden>{{ __('translate.Select Brand') }}</option>
+                                            @foreach($makerOptions as $brandSlug => $brandLabel)
+                                                <option value="{{ $brandSlug }}" {{ old('brand_id') === $brandSlug ? 'selected' : '' }}>{{ $brandLabel }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="description-item-inner">
                                         <label class="form-label">{{ __('Model') }}</label>
                                         <select class="form-select select2" name="car_model" id="car_part_model">
                                             <option value="">{{ __('Select Model') }}</option>
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="description-item">
+                                    <div class="description-item-inner" style="width:100%">
+                                        <input type="text" class="form-control" name="manual_brand" id="manual_brand" value="{{ old('manual_brand') }}" placeholder="{{ __('Manual brand and model entry') }}">
                                     </div>
                                 </div>
 

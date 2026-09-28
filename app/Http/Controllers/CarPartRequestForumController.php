@@ -185,7 +185,25 @@ class CarPartRequestForumController extends Controller
             'additional_notes' => ['nullable', 'string'],
             'image'            => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
             'image_two'        => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+            'remove_image'     => ['nullable', 'boolean'],
+            'remove_image_two' => ['nullable', 'boolean'],
         ]);
+
+        unset($validated['remove_image'], $validated['remove_image_two']);
+
+        if ($request->boolean('remove_image') && !$request->hasFile('image')) {
+            if ($requestModel->image) {
+                deleteFile($requestModel->image);
+            }
+            $validated['image'] = null;
+        }
+
+        if ($request->boolean('remove_image_two') && !$request->hasFile('image_two')) {
+            if ($requestModel->image_two) {
+                deleteFile($requestModel->image_two);
+            }
+            $validated['image_two'] = null;
+        }
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadForumRequestImage($request->file('image'), $requestModel->image);

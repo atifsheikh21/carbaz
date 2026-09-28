@@ -113,11 +113,11 @@
                                 <div class="forum-image-preview-grid">
                                     <div class="forum-image-preview" id="forum-image-preview" style="display:none;">
                                         <img src="" alt="Selected first image preview" id="forum-preview-img">
-                                        <button type="button" id="forum-remove-image" data-image-remove="forum-image-input">Remove image</button>
+                                        <button type="button" class="forum-image-remove" id="forum-remove-image" data-image-remove="forum-image-input" aria-label="Remove image">&times;</button>
                                     </div>
                                     <div class="forum-image-preview" id="forum-image-two-preview" style="display:none;">
                                         <img src="" alt="Selected second image preview" id="forum-preview-two-img">
-                                        <button type="button" data-image-remove="forum-image-two-input">Remove image</button>
+                                        <button type="button" class="forum-image-remove" data-image-remove="forum-image-two-input" aria-label="Remove image">&times;</button>
                                     </div>
                                 </div>
                                 @error('image')<div class="forum-error">{{ $message }}</div>@enderror
@@ -199,9 +199,10 @@
     .forum-upload-zone--secondary{margin-top:10px;min-height:62px}
     .forum-upload-zone:hover{border-color:#b60304;color:#b60304;background:#fff1f1}
     .forum-image-preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px;max-width:520px}
-    .forum-image-preview{border:1px solid #E5E7EB;border-radius:8px;background:#fff;padding:10px}
+    .forum-image-preview{position:relative;border:1px solid #E5E7EB;border-radius:8px;background:#fff;padding:10px}
     .forum-image-preview img{display:block;width:100%;height:180px;object-fit:contain;background:#F9FAFB;border-radius:6px}
-    .forum-image-preview button{margin-top:10px;min-height:34px;padding:0 12px;border:1px solid #fca5a5;border-radius:999px;background:#fff;color:#dc2626;font-size:13px;font-weight:700;cursor:pointer}
+    .forum-image-preview .forum-image-remove{position:absolute;top:8px;right:8px;width:30px;height:30px;min-height:30px;margin:0;padding:0;border:1px solid #fca5a5;border-radius:50%;background:rgba(255,255,255,.96);color:#dc2626;font-size:20px;font-weight:800;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+    .forum-image-preview .forum-image-remove:hover{background:#dc2626;color:#fff}
     .forum-error{color:#DC2626;font-size:13px;margin-top:5px}
     .forum-composer-footer{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:28px;padding-top:20px;border-top:1px solid #F3F4F6}
     .forum-btn-cancel{min-height:44px;padding:0 20px;display:inline-flex;align-items:center;border:1px solid #E5E7EB;border-radius:8px;background:#fff;color:#374151;font-weight:600;text-decoration:none;font-size:15px}
