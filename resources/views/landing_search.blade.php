@@ -169,6 +169,10 @@
             bottom: 70px;
             right: 50px;
             text-align: right;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 18px;
         }
 
         .bottom-section__image{
@@ -186,8 +190,9 @@
 
         .landing-social--desktop{
             justify-content:flex-end;
-            margin-top:12px;
-            padding-right:24px;
+            margin-top:0;
+            padding-right:0;
+            flex:0 0 auto;
         }
 
         .landing-social__link{
@@ -347,6 +352,7 @@
                 position: static;
                 margin-top: 20px;
                 text-align: center;
+                display: block;
             }
 
             .bottom-section__image{
