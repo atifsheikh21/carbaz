@@ -7,6 +7,11 @@
 
 @section('body-content')
 <main>
+    @php
+        $facebookUrl = 'https://www.facebook.com/profile.php?id=61591899730874';
+        $instagramUrl = 'https://www.instagram.com/carnpart.ie?stkn=MWtxeG9rNDlucGR6Zw%3D%3D&utm_source=qr';
+    @endphp
+
      <!-- banner-part-start  -->
 
      <section class="inner-banner">
@@ -55,6 +60,26 @@
                                 <h4>{{ __('translate.Email Us') }}</h4>
 
                                 <p>{{ $contact_us->email }}</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-social-card">
+                            <div class="contact-social-card__icon">
+                                <a href="{{ $facebookUrl }}" target="_blank" rel="noopener" aria-label="Facebook">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M14 8.3V6.9c0-.7.5-.9.9-.9h2.4V2.1L14 2c-3.7 0-5.7 2.2-5.7 6.1v2.2H4.7v4.4h3.6V22H13v-7.3h3.9l.6-4.4H13V8.6c0-1.3.3-2.3 1-2.3z" />
+                                    </svg>
+                                </a>
+                                <a href="{{ $instagramUrl }}" target="_blank" rel="noopener" aria-label="Instagram">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M7 2.5h10A4.5 4.5 0 0 1 21.5 7v10a4.5 4.5 0 0 1-4.5 4.5H7A4.5 4.5 0 0 1 2.5 17V7A4.5 4.5 0 0 1 7 2.5Zm0 2A2.5 2.5 0 0 0 4.5 7v10A2.5 2.5 0 0 0 7 19.5h10a2.5 2.5 0 0 0 2.5-2.5V7A2.5 2.5 0 0 0 17 4.5H7Zm5 3.25A4.25 4.25 0 1 0 12 16.25 4.25 4.25 0 0 0 12 7.75Zm0 2A2.25 2.25 0 1 1 12 14.25 2.25 2.25 0 0 1 12 9.75Zm5.25-2.35a.9.9 0 1 1-1.8 0 .9.9 0 0 1 1.8 0Z" />
+                                    </svg>
+                                </a>
+                            </div>
+
+                            <div class="contact-social-card__text">
+                                <h4>{{ __('translate.Follow Us') }}</h4>
+                                <p>Facebook & Instagram</p>
                             </div>
                         </div>
                     </div>
@@ -205,6 +230,87 @@
 </main>
 
 @endsection
+
+@push('style_section')
+<style>
+    .contact-us .contact-us-item {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .contact-us .contact-us-inner,
+    .contact-us .contact-social-card {
+        height: 100%;
+        min-height: 128px;
+    }
+
+    .contact-us .contact-social-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 22px 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(10, 32, 64, 0.04);
+    }
+
+    .contact-us .contact-social-card__icon {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .contact-us .contact-social-card__icon a {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #c60000;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .contact-us .contact-social-card__icon a:hover {
+        background: #082957;
+        transform: translateY(-1px);
+    }
+
+    .contact-us .contact-social-card__icon svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+    }
+
+    .contact-us .contact-social-card__text h4 {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #001b48;
+        margin: 0 0 6px;
+    }
+
+    .contact-us .contact-social-card__text p {
+        color: #001b48;
+        font-size: 14px;
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    @media (max-width: 575.98px) {
+        .contact-us .contact-us-item {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+@endpush
 
 @push('js_section')
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>

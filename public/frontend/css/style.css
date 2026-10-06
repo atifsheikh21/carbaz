@@ -8835,6 +8835,7 @@ p {
   border-top: 1px solid transparent;
   margin-top: 0;
   padding: 22px 0;
+  padding-top: 60px;
 }
 
 .inner-header .menu-bg .nav-main .nav-left .menu ul {
@@ -9171,6 +9172,7 @@ p {
   background-color: var(--white-color);
   position: relative;
   z-index: 1;
+  padding-top: 0;
 }
 
 .inventory .brand-car-two .brand-car-item {
