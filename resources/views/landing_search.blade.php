@@ -167,7 +167,7 @@
 
         .bottom-section {
             position: absolute;
-            bottom: 70px;
+            bottom: 90px;
             right: 50px;
             text-align: right;
         }
@@ -270,7 +270,7 @@
             display: grid;
             grid-template-columns: minmax(0, 1fr) auto auto;
             align-items: center;
-            gap: 36px;
+            gap: 64px;
             z-index: 2;
         }
 
