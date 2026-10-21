@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v=20261021">
     @php
     $__carBrandModelsJson = json_encode($carBrandModels ?? [], JSON_UNESCAPED_UNICODE);
     $__partBrandModelsJson = json_encode($partBrandModels ?? [], JSON_UNESCAPED_UNICODE);
@@ -62,8 +63,8 @@
 
         .logo-section {
             position: absolute;
-            top: 100px;
-            left: -70px;
+            top: 80px;
+            left: -50px;
         }
 
         .search-section {
@@ -169,10 +170,6 @@
             bottom: 70px;
             right: 50px;
             text-align: right;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 18px;
         }
 
         .bottom-section__image{
@@ -265,11 +262,21 @@
             font-weight: 300;
         }
 
-        .footer-links {
+        .landing-footer {
             position: fixed;
             bottom: 20px;
             left: 50px;
+            right: 50px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto auto;
+            align-items: center;
+            gap: 36px;
+            z-index: 2;
+        }
+
+        .footer-links {
             font-size: 15px;
+            white-space: nowrap;
         }
 
         .footer-links a {
@@ -281,6 +288,12 @@
         .footer-links a:hover {
             color: #333;
             text-decoration: underline;
+        }
+
+        .landing-footer__copyright {
+            color: #777;
+            font-size: 12px;
+            white-space: nowrap;
         }
 
         .auth-links {
@@ -352,7 +365,6 @@
                 position: static;
                 margin-top: 20px;
                 text-align: center;
-                display: block;
             }
 
             .bottom-section__image{
@@ -377,11 +389,20 @@
                 margin-top: 70px;
             }
 
-            .footer-links {
+            .landing-footer {
                 position: static;
                 margin: 16px 0 20px;
+                padding: 0 16px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 16px 24px;
+            }
+
+            .footer-links {
                 text-align: center;
                 letter-spacing: 0.5px;
+                white-space: normal;
             }
         }
 
@@ -684,8 +705,22 @@
             }
 
             .landing-social--mobile{
-                justify-content:center;
+                justify-content:flex-end;
+                margin-left:auto;
+            }
+
+            .ls-mobile__footer-bottom{
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:16px;
                 margin-top:24px;
+            }
+
+            .ls-mobile__copyright{
+                color:#666;
+                font-size:10px;
+                line-height:1.4;
             }
         }
     </style>
@@ -950,13 +985,17 @@
             
                 
             </div>
-            <div class="landing-social landing-social--mobile" aria-label="Social links">
-                <a class="landing-social__link" href="{{ $facebookUrl }}" target="_blank" rel="noopener" aria-label="Facebook">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.77l-.44 2.91h-2.33V22C18.34 21.24 22 17.08 22 12.06Z"/></svg>
-                </a>
-                <a class="landing-social__link" href="{{ $instagramUrl }}" target="_blank" rel="noopener" aria-label="Instagram">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2Zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8A3.6 3.6 0 0 0 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6A3.6 3.6 0 0 0 16.4 4H7.6Zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>
-                </a>
+            <div class="ls-mobile__footer-bottom">
+                <div class="ls-mobile__copyright">Copyright 2026. All right reserved</div>
+
+                <div class="landing-social landing-social--mobile" aria-label="Social links">
+                    <a class="landing-social__link" href="{{ $facebookUrl }}" target="_blank" rel="noopener" aria-label="Facebook">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.77l-.44 2.91h-2.33V22C18.34 21.24 22 17.08 22 12.06Z"/></svg>
+                    </a>
+                    <a class="landing-social__link" href="{{ $instagramUrl }}" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2Zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8A3.6 3.6 0 0 0 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6A3.6 3.6 0 0 0 16.4 4H7.6Zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -1084,32 +1123,37 @@
 
             <div class="bottom-section">
                 <img class="bottom-section__image" src="{{ asset('frontend/images/buy-sell-banner.png') }}" alt="BUY & SELL | NEW & USED CAR AND CAR PART">
-                <div class="landing-social landing-social--desktop" aria-label="Social links">
+            </div>
+        </div>
+
+        <footer class="landing-footer">
+            <div class="footer-links">
+                <a href="{{ route('contact-us') }}">contact</a>
+                <span class="separators"></span>
+                <a href="https://carnpart.ie/page/terms-of-use">website terms of use</a>
+                <span class="separators"></span>
+                <a href="{{ route('terms-conditions') }}">terms and condition</a>
+                <span class="separators"></span>
+                <a href="{{ route('privacy-policy') }}">privacy policy</a>
+                <span class="separators"></span>
+                <a href="https://carnpart.ie/page/cookie-policy">cookie policy</a>
+                <span class="separators"></span>
+                <a href="https://carnpart.ie/page/legal">legal</a>
+                <span class="separators"></span>
+                <a href="https://carnpart.ie/free-ad-offer">pricing</a>
+            </div>
+
+            <div class="landing-footer__copyright">Copyright 2026. All right reserved</div>
+
+            <div class="landing-social landing-social--desktop" aria-label="Social links">
                     <a class="landing-social__link" href="{{ $facebookUrl }}" target="_blank" rel="noopener" aria-label="Facebook">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.77l-.44 2.91h-2.33V22C18.34 21.24 22 17.08 22 12.06Z"/></svg>
                     </a>
                     <a class="landing-social__link" href="{{ $instagramUrl }}" target="_blank" rel="noopener" aria-label="Instagram">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2Zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8A3.6 3.6 0 0 0 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6A3.6 3.6 0 0 0 16.4 4H7.6Zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>
                     </a>
-                </div>
             </div>
-        </div>
-
-        <div class="footer-links">
-            <a href="{{ route('contact-us') }}">contact</a>
-            <span class="separators"></span>
-            <a href="https://carnpart.ie/page/terms-of-use">website terms of use</a>
-            <span class="separators"></span>
-            <a href="{{ route('terms-conditions') }}">terms and condition</a>
-            <span class="separators"></span>
-            <a href="{{ route('privacy-policy') }}">privacy policy</a>
-            <span class="separators"></span>
-            <a href="https://carnpart.ie/page/cookie-policy">cookie policy</a>
-            <span class="separators"></span>
-            <a href="https://carnpart.ie/page/legal">legal</a>
-            <span class="separators"></span>
-            <a href="https://carnpart.ie/free-ad-offer">pricing</a>
-        </div>
+        </footer>
     </div>
 
     <script>
