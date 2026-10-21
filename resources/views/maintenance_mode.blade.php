@@ -10,7 +10,7 @@
 	<title>{{ env('APP_NAME') }}</title>
 
     <!-- Fav Icon -->
-	<link rel="icon" href="{{ asset('favicon.ico') }}?v=20261021">
+	<link rel="icon" href="{{ asset('favicon.ico') }}?v=20261021b">
 
     <link rel="stylesheet" href="{{ asset('frontend/assets/fontawesome/css/all.css') }}">
     <!--bootstrap.min.css  -->

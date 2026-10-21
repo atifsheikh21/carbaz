@@ -12,7 +12,7 @@
 		<title>{{ __('translate.Login') }}</title>
 
 		<!-- Fav Icon -->
-		<link rel="icon" href="{{ asset('favicon.ico') }}?v=20261021">
+		<link rel="icon" href="{{ asset('favicon.ico') }}?v=20261021b">
 
         <!--  Stylesheet -->
 		<link rel="stylesheet" href="{{ asset('backend/css/bootstrap.min.css') }}">

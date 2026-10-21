@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v=20261021">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v=20261021b">
     @php
     $__carBrandModelsJson = json_encode($carBrandModels ?? [], JSON_UNESCAPED_UNICODE);
     $__partBrandModelsJson = json_encode($partBrandModels ?? [], JSON_UNESCAPED_UNICODE);
@@ -167,7 +167,7 @@
 
         .bottom-section {
             position: absolute;
-            bottom: 90px;
+            bottom: 110px;
             right: 50px;
             text-align: right;
         }
