@@ -13,7 +13,7 @@
 	@yield('title')
 
 	<!-- Fav Icon -->
-	<link rel="icon" href="{{ asset('favicon.ico') }}?v=20261021b">
+	<link rel="icon" href="{{ asset('favicon.ico') }}?v=20261021c">
 
 	<!--  Stylesheet -->
 	<link rel="stylesheet" href="{{ asset('backend/css/bootstrap.min.css') }}">
