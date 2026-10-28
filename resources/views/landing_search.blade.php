@@ -483,6 +483,40 @@
             }
         }
 
+        @media (min-width: 769px) and (orientation: portrait) {
+            .main-container {
+                min-height: auto;
+                padding-bottom: 0;
+            }
+
+            .search-section {
+                margin-top: clamp(160px, 18vh, 260px);
+            }
+
+            .bottom-section {
+                margin-top: 70px;
+            }
+
+            .landing-footer {
+                position: static;
+                margin: 40px 50px 24px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 991.98px) and (orientation: portrait) {
+            .search-section {
+                margin-top: 60px;
+            }
+
+            .bottom-section {
+                margin-top: 50px;
+            }
+
+            .landing-footer {
+                margin: 32px 24px 20px;
+            }
+        }
+
         @media (max-width: 575.98px) {
             .navbar-brand {
                 font-size: 24px;
