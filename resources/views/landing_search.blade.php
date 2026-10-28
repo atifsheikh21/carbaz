@@ -26,6 +26,7 @@
         body {
             background: #e2e1e1;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .navbar-brand {
@@ -56,9 +57,12 @@
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 20px 50px 130px;
             position: relative;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
         }
 
         .logo-section {
@@ -69,11 +73,13 @@
 
         .search-section {
             display: flex;
-            gap: 40px;
+            gap: clamp(20px, 3vw, 40px);
             justify-content: center;
-            margin-top: 317px;
+            width: 100%;
+            max-width: 900px;
+            margin: clamp(180px, 29vh, 317px) auto 20px;
             margin-bottom: 20px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
         }
         .logo-section img{
     display: block;
@@ -83,8 +89,9 @@
 }
 
         .search-box {
-            flex: 0 0 450px;
+            flex: 1 1 0;
             max-width: 430px;
+            min-width: 0;
             width: 100%;
         }
 
@@ -166,10 +173,13 @@
         }
 
         .bottom-section {
-            position: absolute;
-            bottom: 130px;
-            right: 50px;
+            position: static;
+            width: min(620px, 52vw);
+            margin-top: auto;
+            margin-left: auto;
+            margin-right: 30px;
             text-align: right;
+            flex: 0 0 auto;
         }
 
         .bottom-section__image{
@@ -177,6 +187,12 @@
             max-width: 620px;
             width: 85%;
             height: auto;
+        }
+
+        @media (max-width: 1399.98px) and (min-width: 992px) {
+            .logo-section {
+                left: 40px;
+            }
         }
 
         .landing-social{
@@ -330,6 +346,64 @@
             color: #dc3545;
         }
 
+        @media (max-width: 1199.98px) and (min-width: 992px) {
+            .main-container {
+                padding-right: 34px;
+                padding-left: 34px;
+            }
+
+            .landing-footer {
+                right: 24px;
+                left: 24px;
+                gap: 24px;
+            }
+
+            .footer-links {
+                font-size: 11px;
+            }
+
+            .footer-links a {
+                margin-right: 2px;
+            }
+
+            .footer-links .separators {
+                height: 18px;
+                margin: 0 3px;
+            }
+
+            .landing-footer__copyright {
+                font-size: 10px;
+            }
+
+            .landing-social--desktop {
+                gap: 10px;
+            }
+
+            .landing-social__link {
+                width: 26px;
+                height: 26px;
+            }
+
+            .landing-social__link svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        @media (min-width: 992px) and (max-height: 650px) {
+            .main-container {
+                padding-bottom: 90px;
+            }
+
+            .search-section {
+                margin-top: 150px;
+            }
+
+            .car-search-offer {
+                margin-top: 30px;
+            }
+        }
+
         @media (max-width: 991.98px) {
             .main-container {
                 padding: 16px;
@@ -354,6 +428,7 @@
             .search-section {
                 margin-top: 30px;
                 gap: 20px;
+                flex-wrap: wrap;
             }
 
             .search-box {
@@ -363,7 +438,9 @@
 
             .bottom-section {
                 position: static;
+                width: 100%;
                 margin-top: 20px;
+                margin-right: 0;
                 text-align: center;
             }
 
