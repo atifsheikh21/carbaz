@@ -1079,7 +1079,7 @@ a:hover{
     }
 }
 
-@media (max-width: 767.98px), screen and (orientation: landscape) and (max-width: 900px){
+@media (max-width: 991.98px){
     .d-block.d-md-none{
         display:block !important;
     }
@@ -1791,6 +1791,38 @@ a:hover{
     }
 }
 
+@media (min-width: 768px) and (max-width: 991.98px){
+    .lp-mobile{
+        max-width: 760px;
+        padding: 24px 20px 32px;
+    }
+
+    .lp-mobile__filter{
+        margin-top: 18px;
+    }
+
+    .lp-mobile__filter-label{
+        font-size: 14px;
+    }
+
+    .lp-mobile__filter-input{
+        height: 38px;
+        font-size: 14px;
+    }
+
+    .lp-mobile-card__media img{
+        height: 360px;
+    }
+
+    .lp-mobile-card__title{
+        font-size: 16px;
+    }
+
+    .lp-mobile-card__meta{
+        font-size: 13px;
+    }
+}
+
 .inventory-main-box{
     background:#cacaca !important;
 }
@@ -2458,4 +2490,3 @@ a:hover{
     background: #2e4ccc;
     color: #fff;
 }
-

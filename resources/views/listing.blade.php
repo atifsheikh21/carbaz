@@ -26,7 +26,7 @@
     @php
         $__carBrandModelsJson = json_encode($carBrandModels ?? [], JSON_UNESCAPED_UNICODE);
     @endphp
-    <div class="lp-mobile d-block d-md-none">
+    <div class="lp-mobile d-block d-lg-none">
         <div class="lp-mobile__filter">
             <button class="lp-mobile__filter-label" type="button" data-bs-toggle="offcanvas" data-bs-target="#lpMobileFilter" aria-controls="lpMobileFilter">Filter</button>
             <form class="lp-mobile__filter-form" method="GET" action="{{ route('listings') }}">
@@ -449,7 +449,7 @@
     </script>
     @endpush
 
-    <div class="d-none d-md-block">
+    <div class="d-none d-lg-block">
     <!-- banner-part-start  -->
 
     <section class="inner-banner">

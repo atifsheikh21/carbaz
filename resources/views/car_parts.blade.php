@@ -26,7 +26,7 @@
     @php
         $__partBrandModelsJson = json_encode($partBrandModels ?? [], JSON_UNESCAPED_UNICODE);
     @endphp
-    <div class="lp-mobile d-block d-md-none">
+    <div class="lp-mobile d-block d-lg-none">
         <div class="lp-mobile__filter">
             <button class="lp-mobile__filter-label" type="button" data-bs-toggle="offcanvas" data-bs-target="#lpMobileFilter" aria-controls="lpMobileFilter">Filter</button>
             <form class="lp-mobile__filter-form" method="GET" action="{{ route('car-parts') }}">
@@ -307,7 +307,7 @@
     </style>
     @endpush
 
-    <div class="d-none d-md-block">
+    <div class="d-none d-lg-block">
     <section class="inner-banner">
         <div class="inner-banner-img" style=" background-image: url({{ getImageOrPlaceholder($breadcrumb,'1905x300') }}) "></div>
         <div class="container">
