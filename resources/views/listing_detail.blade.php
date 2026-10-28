@@ -23,6 +23,8 @@
         }
         .listing-detail-hero__media{
             max-width: 560px;
+            min-width: 0;
+            width: 100%;
             display: flex;
             flex-direction: column;
             margin-top: 50px !important;
@@ -727,6 +729,30 @@ font-weight: 300;
             }
             .listing-detail-hero__actions{
                 margin-top: 40px;
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199.98px){
+            .listing-detail-hero .container{
+                max-width: 960px;
+            }
+
+            .listing-detail-hero__grid{
+                grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+                gap: 32px;
+            }
+
+            .listing-detail-hero__media,
+            .listing-detail-hero #car_gallery_for,
+            .listing-detail-hero #car_gallery_nav{
+                width: 100%;
+                max-width: 440px;
+                min-width: 0;
+            }
+
+            .listing-detail-hero #car_gallery_for,
+            .listing-detail-hero #car_gallery_for .inventory-details-slick-img{
+                height: 300px;
             }
         }
 

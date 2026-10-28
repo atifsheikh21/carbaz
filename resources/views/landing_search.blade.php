@@ -73,10 +73,10 @@
 
         .search-section {
             display: flex;
-            gap: clamp(20px, 3vw, 40px);
+            gap: clamp(18px, 2.2vw, 24px);
             justify-content: center;
             width: 100%;
-            max-width: 900px;
+            max-width: 760px;
             margin: clamp(180px, 29vh, 317px) auto 20px;
             margin-bottom: 20px;
             flex-wrap: nowrap;
@@ -90,21 +90,21 @@
 
         .search-box {
             flex: 1 1 0;
-            max-width: 430px;
+            max-width: 368px;
             min-width: 0;
             width: 100%;
         }
 
         .search-btn {
             width: 100%;
-            height: 35px;
+            height: 32px;
             border: none;
             border-radius: 30px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             letter-spacing: 3px;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             cursor: pointer;
             transition: all 0.3s;
         }
@@ -133,11 +133,10 @@
 
         .search-form {
             background: #e2e1e1;
-            border: 3.5px solid #938b8b;
-            border-radius: 20px;
-            padding: 25px;
+            border: 3px solid #938b8b;
+            border-radius: 16px;
+            padding: 18px 20px 8px;
             backdrop-filter: blur(10px);
-            padding-bottom:10px;
         }
 
         .form-control, .form-select {
@@ -483,10 +482,10 @@
             }
         }
 
-        @media (min-width: 769px) and (orientation: portrait) {
+        @media (min-width: 768px) and (orientation: portrait) {
             .main-container {
-                min-height: auto;
-                padding-bottom: 0;
+                min-height: 100vh;
+                padding-bottom: 130px;
             }
 
             .search-section {
@@ -494,26 +493,29 @@
             }
 
             .bottom-section {
-                margin-top: 70px;
+                margin-top: auto;
             }
 
             .landing-footer {
-                position: static;
-                margin: 40px 50px 24px;
+                position: fixed;
+                bottom: 20px;
+                margin: 0;
             }
         }
 
-        @media (min-width: 769px) and (max-width: 991.98px) and (orientation: portrait) {
+        @media (min-width: 768px) and (max-width: 991.98px) and (orientation: portrait) {
             .search-section {
                 margin-top: 60px;
             }
 
             .bottom-section {
-                margin-top: 50px;
+                margin-top: auto;
             }
 
             .landing-footer {
-                margin: 32px 24px 20px;
+                right: 24px;
+                left: 24px;
+                margin: 0;
             }
         }
 
