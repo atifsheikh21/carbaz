@@ -226,8 +226,6 @@
                                                         <div class="vehicle-details-value" id="vd_co2">—</div>
                                                     </div>
                                                 </div>
-
-                                                <button type="button" class="vehicle-details-action" id="btn_apply_vehicle_details">{{ __('Edit vehicle details') }}</button>
                                             </div>
 
                                             <input type="hidden" name="motorcheck_reg" id="motorcheck_reg" value="{{ old('motorcheck_reg', $car->motorcheck_reg) }}">
@@ -973,12 +971,6 @@
                 if (initialDetails) {
                     toggleManualFieldsForApiData(initialDetails, false);
                 }
-
-                $("#btn_apply_vehicle_details").off('click').on('click', function() {
-                    vehicleEditMode = !vehicleEditMode;
-                    let details = hydratePanelFromHiddenInputs();
-                    toggleManualFieldsForApiData(details, vehicleEditMode);
-                });
 
                 $("#btn_motorcheck_lookup").on("click", function() {
                     let reg = $("#registration_number").val();

@@ -266,8 +266,6 @@
                                                     <div class="vehicle-details-value" id="vd_co2">â€”</div>
                                                 </div>
                                             </div>
-
-                                            <button type="button" class="vehicle-details-action" id="btn_apply_vehicle_details">{{ __('Edit vehicle details') }}</button>
                                         </div>
 
                                         <input type="hidden" name="motorcheck_reg" id="motorcheck_reg" value="{{ old('motorcheck_reg') }}">
@@ -1192,12 +1190,6 @@
                             $("#vd_owners").text(vehicleDetails.owners || 'â€”');
                             $("#vd_tax_expiry").text(vehicleDetails.tax_expiry || 'â€”');
                             $("#vd_co2").text(vehicleDetails.co2 || 'â€”');
-
-                            $("#btn_apply_vehicle_details").off('click').on('click', function() {
-                                vehicleEditMode = !vehicleEditMode;
-                                $("#vehicle_details_fields").data('manual-mode', vehicleEditMode);
-                                toggleManualFieldsForApiData(vehicleEditMode, vehicleDetails);
-                            });
 
                             toastr.success("Vehicle details loaded");
                         },
