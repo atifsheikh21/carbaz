@@ -194,6 +194,15 @@
             }
         }
 
+        /* 1400px+: the container is centred, so -50px can push the logo past the
+           viewport edge (e.g. 1440 / 1536). Keep at least a 40px gutter from the
+           screen edge, and only reach the -50px offset on wider screens. */
+        @media (min-width: 1400px) {
+            .logo-section {
+                left: max(-50px, calc(40px - (100vw - 1400px) / 2));
+            }
+        }
+
         .landing-social{
             display:flex;
             align-items:center;
