@@ -25,7 +25,7 @@
                     </span>
                     <form id="upload_user_avatar_form" enctype="multipart/form-data" method="POST">
                         @csrf
-                        <input name="image" type="file" class="icon-img" onchange="previewThumnailImage(event)">
+                        <input name="image" type="file" class="icon-img" accept="image/png,image/jpeg,image/jpg,image/webp" onchange="uploadUserAvatar(this)">
                     </form>
                 </div>
             </div>
@@ -217,49 +217,5 @@
 
 
 @push('js_section')
-<script>
-    (function($) {
-        "use strict";
-        $(document).ready(function () {
-            $("#upload_user_avatar_form").on("submit", function(e){
-                e.preventDefault();
-
-                var isDemo = "{{ env('APP_MODE') }}"
-                if(isDemo == 'DEMO'){
-                    toastr.error('This Is Demo Version. You Can Not Change Anything');
-                    return;
-                }
-
-                $.ajax({
-                    type: 'POST',
-                    data:new FormData(this),
-                    dataType:'JSON',
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    url: "{{ route('user.upload-user-avatar') }}",
-                    success: function (response) {
-                        toastr.success(response.message)
-                    },
-                    error: function(response) {
-
-                    }
-                });
-            })
-        });
-    })(jQuery);
-
-
-    function previewThumnailImage(event) {
-        var reader = new FileReader();
-        reader.onload = function(){
-            var output = document.getElementById('preview-user-avatar');
-            output.src = reader.result;
-        }
-
-        reader.readAsDataURL(event.target.files[0]);
-        $("#upload_user_avatar_form").submit();
-    };
-</script>
-
+    @include('profile.avatar_upload_script')
 @endpush

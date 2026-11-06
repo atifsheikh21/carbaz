@@ -200,7 +200,7 @@
 
                                     <form id="upload_user_avatar_edit_form" enctype="multipart/form-data" method="POST">
                                         @csrf
-                                        <input type="file" name="image" onchange="previewEditPageImage(event)" >
+                                        <input type="file" name="image" accept="image/png,image/jpeg,image/jpg,image/webp" onchange="uploadUserAvatar(this)" >
                                     </form>
                                 </div>
 
@@ -311,55 +311,8 @@
                 parseOldPhone();
             }
 
-            $("#upload_user_avatar_edit_form").on("submit", function(e){
-                e.preventDefault();
-
-                var isDemo = "{{ env('APP_MODE') }}"
-                if(isDemo == 'DEMO'){
-                    toastr.error('This Is Demo Version. You Can Not Change Anything');
-                    return;
-                }
-
-                $.ajax({
-                    type: 'POST',
-                    data:new FormData(this),
-                    dataType:'JSON',
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    url: "{{ route('user.upload-user-avatar') }}",
-                    success: function (response) {
-                        toastr.success(response.message)
-                        if (response.image_url) {
-                            var bust = (new Date()).getTime();
-                            var newUrl = response.image_url + (response.image_url.indexOf('?') >= 0 ? '&' : '?') + 'v=' + bust;
-                            $('#preview-user-avatar-edit-page').attr('src', newUrl);
-                            $('#preview-user-avatar').attr('src', newUrl);
-                        }
-                    },
-                    error: function(response) {
-                        console.log(response);
-                        toastr.error(response.responseJSON.image.message)
-                    }
-                });
-            })
         });
     })(jQuery);
-
-
-    function previewEditPageImage(event) {
-        var reader = new FileReader();
-        reader.onload = function(){
-            var output = document.getElementById('preview-user-avatar-edit-page');
-            output.src = reader.result;
-
-            var output_sidebar = document.getElementById('preview-user-avatar');
-            output_sidebar.src = reader.result;
-        }
-
-        reader.readAsDataURL(event.target.files[0]);
-        $("#upload_user_avatar_edit_form").submit();
-    };
 </script>
-
+@include('profile.avatar_upload_script')
 @endpush
