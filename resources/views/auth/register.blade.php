@@ -13,25 +13,6 @@
 </style>
 
 <main>
-    <!-- banner-part-start  -->
-
-    <section class="inner-banner">
-    <div class="inner-banner-img" style=" background-image: url({{ getImageOrPlaceholder($breadcrumb,'1905x300') }}) "></div>
-        <div class="container">
-        <div class="col-lg-12">
-            <div class="inner-banner-df">
-                <h1 class="inner-banner-taitel">{{ __('Sign Up') }}</h1>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">{{ __('Sign Up') }}</li>
-                    </ol>
-                </nav>
-            </div>
-            </div>
-        </div>
-    </section>
-    <!-- banner-part-end -->
 
 
 
