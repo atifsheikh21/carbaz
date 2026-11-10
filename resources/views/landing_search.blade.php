@@ -583,7 +583,9 @@
             display:none;
         }
 
-        @media (max-width: 768px){
+        /* Mobile layout also covers base iPads (810x1080) and 800x600 screens;
+           820px+ (iPad Air / Pro) keeps the tablet layout. */
+        @media (max-width: 819.98px){
             .ls-desktop{
                 display:none;
             }
