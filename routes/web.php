@@ -158,6 +158,7 @@ Route::group(['middleware' => ['XSS', 'DEMO']], function () {
                 Route::get('/change-password', 'change_password')->name('change-password');
                 Route::post('/update-password', 'update_password')->name('update-password');
                 Route::post('/upload-user-avatar', 'upload_user_avatar')->name('upload-user-avatar');
+                Route::delete('/delete-user-avatar', 'delete_user_avatar')->name('delete-user-avatar');
 
                 Route::get('/pricing-plan', 'pricing_plan')->name('pricing-plan');
 

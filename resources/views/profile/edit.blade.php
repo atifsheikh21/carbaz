@@ -204,6 +204,22 @@
                                     </form>
                                 </div>
 
+                                <div class="remove-picture-wrap" id="remove_avatar_wrap" style="{{ $user->image ? '' : 'display:none;' }}">
+                                    <button type="button" class="remove-picture-btn" onclick="deleteUserAvatar(this)">
+                                        {{ __('Remove Picture') }}
+                                    </button>
+                                </div>
+                                <style>
+                                    .remove-picture-wrap{ text-align:center; margin-top:12px; }
+                                    .remove-picture-btn{
+                                        background:transparent; border:1px solid #b60304; color:#b60304;
+                                        border-radius:6px; padding:8px 22px; font-size:15px; font-weight:500;
+                                        cursor:pointer; transition:background .15s,color .15s;
+                                    }
+                                    .remove-picture-btn:hover{ background:#b60304; color:#fff; }
+                                    .remove-picture-btn:disabled{ opacity:.6; cursor:default; }
+                                </style>
+
                                 <div class="upload-picture-text">
                                     <h5>{{ __('translate.Upload Your Image') }}</h5>
                                     <h6>{{ __('translate.Choose a image PNG, JPEG, JPG') }}</h6>

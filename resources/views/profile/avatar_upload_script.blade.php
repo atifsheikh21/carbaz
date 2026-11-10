@@ -54,6 +54,7 @@
                     const newUrl = response.image_url + (response.image_url.indexOf('?') >= 0 ? '&' : '?') + 'v=' + Date.now();
                     previews.forEach(function(img) { img.src = newUrl; });
                 }
+                $('#remove_avatar_wrap').show();
             },
             error: function(xhr) {
                 previews.forEach(function(img, i) { img.src = previousSrc[i]; });
@@ -68,6 +69,42 @@
             complete: function() {
                 URL.revokeObjectURL(localUrl);
                 input.value = '';
+            }
+        });
+    };
+
+    window.deleteUserAvatar = window.deleteUserAvatar || function(button) {
+        if (!confirm("{{ __('Are you sure you want to remove your profile picture?') }}")) {
+            return;
+        }
+
+        if (button) {
+            button.disabled = true;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('user.delete-user-avatar') }}",
+            data: { _token: "{{ csrf_token() }}", _method: 'DELETE' },
+            dataType: 'JSON',
+            success: function(response) {
+                toastr.success(response.message);
+                ['preview-user-avatar', 'preview-user-avatar-edit-page'].forEach(function(id) {
+                    const img = document.getElementById(id);
+                    if (img && response.image_url) {
+                        img.src = response.image_url;
+                    }
+                });
+                $('#remove_avatar_wrap').hide();
+            },
+            error: function(xhr) {
+                const json = xhr && xhr.responseJSON ? xhr.responseJSON : {};
+                toastr.error(json.message || "{{ __('Profile picture could not be removed. Please try again.') }}");
+            },
+            complete: function() {
+                if (button) {
+                    button.disabled = false;
+                }
             }
         });
     };

@@ -244,6 +244,36 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function delete_user_avatar(Request $request){
+
+        if (env('APP_MODE') === 'DEMO') {
+            return response()->json(['message' => 'This Is Demo Version. You Can Not Change Anything'], 403);
+        }
+
+        $user = Auth::guard('web')->user();
+        $oldImage = $user->image ? trim($user->image) : null;
+
+        if ($oldImage) {
+            $user->image = null;
+            $user->save();
+
+            // Only remove files the user uploaded themselves; never shared
+            // defaults or external (social login) image URLs.
+            if (\Illuminate\Support\Str::startsWith(ltrim($oldImage, '/'), 'uploads/custom-images/')) {
+                try {
+                    deleteFile($oldImage);
+                } catch (\Throwable $e) {
+                    \Log::warning('Avatar file delete failed: ' . $e->getMessage());
+                }
+            }
+        }
+
+        return response()->json([
+            'message' => __('Profile picture removed successfully'),
+            'image_url' => getImageOrPlaceholder(null, '68x68'),
+        ]);
+    }
+
 
     public function pricing_plan(){
 
