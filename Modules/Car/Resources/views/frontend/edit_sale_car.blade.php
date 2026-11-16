@@ -349,14 +349,16 @@
                                                 <label for="brand" class="form-label">{{ __('translate.Brand') }}
                                                     <span>*</span> </label>
                                                 @php
-                                                    $__selectedBrandId = old('brand_id', $car->brand_id);
+                                                    $__currentBrandName = optional(optional($car->brand)->translate)->name ?? '';
                                                 @endphp
-                                                <select class="form-select select2" name="brand_id" id="brand_id">
-                                                    <option value="">{{ __('translate.Select Brand') }}</option>
-                                                    @foreach ($brands as $brand)
-                                                        <option {{ (string) $brand->id === (string) $__selectedBrandId ? 'selected' : '' }} value="{{ $brand->id }}">{{ $brand->translate->name }}</option>
+                                                <input type="text" class="form-control" name="manual_brand" id="manual_brand"
+                                                    list="manual_brand_suggestions" autocomplete="off" maxlength="255"
+                                                    placeholder="{{ __('Brand (e.g. Toyota)') }}" value="{{ old('manual_brand', $__currentBrandName) }}">
+                                                <datalist id="manual_brand_suggestions">
+                                                    @foreach ($brands->pluck('translate.name')->filter()->unique()->sort() as $brandName)
+                                                        <option value="{{ $brandName }}"></option>
                                                     @endforeach
-                                                </select>
+                                                </datalist>
                                             </div>
                                         </div>
 

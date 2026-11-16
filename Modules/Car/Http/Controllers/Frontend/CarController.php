@@ -581,7 +581,7 @@ class CarController extends Controller
 
         $car->agent_id = $authUser ? $authUser->id : $request->agent_id;
         $isRegisteredVehicle = $request->input('vehicle_source', 'registered') === 'registered';
-        $car->brand_id = $isRegisteredVehicle ? null : $request->brand_id;
+        $car->brand_id = $isRegisteredVehicle ? null : $this->resolveManualBrandId($request);
         $ireland = Country::whereRaw('LOWER(name) = ?', ['ireland'])->first();
         $car->country_id = $request->country_id ?: ($ireland?->id ?? null);
         $car->city_id = $request->city_id ?: ($authUser?->city_id ?? null);
@@ -793,6 +793,58 @@ class CarController extends Controller
             'warranty_months',
             'city',
         ];
+    }
+
+    /**
+     * Manual-entry ads type the make as free text. Match it to an existing
+     * brand by name or slug (case-insensitive); otherwise create the brand,
+     * the same way manual part brands are handled.
+     */
+    private function resolveManualBrandId(Request $request): ?int
+    {
+        $name = trim((string) $request->input('manual_brand', ''));
+        if ($name === '') {
+            $fallback = $request->input('brand_id');
+            return is_numeric($fallback) && Brand::find((int) $fallback) ? (int) $fallback : null;
+        }
+
+        $name = preg_replace('/\s+/', ' ', $name);
+        $slug = Str::slug($name);
+
+        $translation = \Modules\Brand\Entities\BrandTranslation::query()
+            ->whereRaw('LOWER(TRIM(name)) = ?', [mb_strtolower($name)])
+            ->orderBy('brand_id')
+            ->first();
+        if ($translation && Brand::find($translation->brand_id)) {
+            return (int) $translation->brand_id;
+        }
+
+        if ($slug !== '') {
+            $bySlug = Brand::where('slug', $slug)->first();
+            if ($bySlug) {
+                return (int) $bySlug->id;
+            }
+        }
+
+        if ($slug === '') {
+            return null;
+        }
+
+        $brand = new Brand();
+        $brand->slug = $slug;
+        $brand->image = 'uploads/brand/default.png';
+        $brand->status = 'enable';
+        $brand->save();
+
+        foreach (Language::all() as $language) {
+            $translation = new \Modules\Brand\Entities\BrandTranslation();
+            $translation->brand_id = $brand->id;
+            $translation->lang_code = $language->lang_code;
+            $translation->name = $name;
+            $translation->save();
+        }
+
+        return (int) $brand->id;
     }
 
     private function generateUniqueCarSlug(string $title): string
@@ -1491,7 +1543,7 @@ class CarController extends Controller
         if ($isRegisteredVehicle) {
             $car->brand_id = null;
         } else {
-            $car->brand_id = $request->brand_id;
+            $car->brand_id = $this->resolveManualBrandId($request);
         }
         $ireland = Country::whereRaw('LOWER(name) = ?', ['ireland'])->first();
         $car->country_id = $request->country_id ?: ($ireland?->id ?? null);
