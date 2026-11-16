@@ -26,11 +26,16 @@
     section.login .form-control,
     section.login .form-select{
         height: 46px;
+        /* theme default is 20px 25px, which leaves no room for text at 46px
+           and clips the selected option in <select> boxes */
+        padding: 0 16px;
+        line-height: normal;
         border-radius: 10px;
         font-size: 15px;
     }
     section.login textarea.form-control{
         height: auto;
+        padding: 12px 16px;
     }
     section.login .login-form-item{
         margin-top: 16px !important;
