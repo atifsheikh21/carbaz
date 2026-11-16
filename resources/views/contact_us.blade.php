@@ -156,7 +156,10 @@
 
                 <div class="col-lg-6">
                     <div class="get-in-touch">
-                        <h3 class="get-in-touch-taitel">{{ __('translate.Get in Touch') }}</h3>
+                        <h3 class="get-in-touch-taitel">{{ __('translate.Get in Touch') }} <span class="get-in-touch-or">{{ __('or') }}</span> {{ __('Give Us Feedback') }}</h3>
+                        <style>
+                            .get-in-touch-or{ font-weight: 400; font-size: .7em; color: #8b8b8b; margin: 0 4px; text-transform: lowercase; }
+                        </style>
 
                         <form action="{{ route('store-contact-message') }}" method="POST">
                             @csrf
