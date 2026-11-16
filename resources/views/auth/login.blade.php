@@ -21,6 +21,7 @@
             }
         }
     </style>
+    @include('auth.partials.compact_form_style', ['maxWidth' => '460px'])
 @endpush
 
 <main>

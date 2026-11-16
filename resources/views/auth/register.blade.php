@@ -8,9 +8,10 @@
      .login-form-item {
         flex-direction: column;
         margin-top: 20px!important;
-    
+
 }
 </style>
+@include('auth.partials.compact_form_style', ['maxWidth' => '560px'])
 
 <main>
 
