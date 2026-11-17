@@ -122,36 +122,111 @@
             }
         }
 
-        /* Minimal footer: match landing page footer links */
-        .minimal-footer .footer-links{
+        /* Site footer: same look as the landing page footer */
+        .site-footer{
+            display:grid;
+            grid-template-columns:minmax(0, 1fr) auto auto;
+            align-items:center;
+            gap:64px;
+            padding:28px 50px 24px;
+        }
+        .site-footer__links{
             display:flex;
             align-items:center;
-            justify-content:center;
-            gap:9px;
             flex-wrap:wrap;
+            row-gap:6px;
             font-size:15px;
         }
-        .minimal-footer .footer-links a{
+        .site-footer__links a{
             color:#666;
+            text-decoration:none;
             text-transform:lowercase;
+            white-space:nowrap;
         }
-        .minimal-footer .footer-links a:hover{
+        .site-footer__links a:hover{
             color:#333;
-            text-decoration: underline;
+            text-decoration:underline;
         }
-        .minimal-footer .footer-links .separators{
+        .site-footer__sep{
             display:inline-block;
             width:3px;
-            height:24px;
-            background:#b60304;
-            vertical-align:middle;
-            margin:0 6px;
+            height:25px;
+            background:#c51212;
+            margin:0 12px;
+            flex-shrink:0;
         }
-        @media (max-width: 767.98px){
-            .minimal-footer .footer-links{
+        .site-footer__copyright{
+            color:#777;
+            font-size:12px;
+            white-space:nowrap;
+        }
+        .site-footer__social{
+            display:flex;
+            align-items:center;
+            gap:18px;
+        }
+        .site-footer__social-link{
+            width:30px;
+            height:30px;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            color:#9a9a9a;
+            text-decoration:none;
+            transition:color .15s, transform .15s;
+        }
+        .site-footer__social-link:hover{
+            color:#b60304;
+            transform:translateY(-1px);
+        }
+        .site-footer__social-link svg{
+            width:24px;
+            height:24px;
+            fill:currentColor;
+            display:block;
+        }
+        @media (max-width: 1199.98px){
+            .site-footer{
+                gap:24px;
+                padding:24px 24px 20px;
+            }
+            .site-footer__links{
+                font-size:13px;
+            }
+            .site-footer__sep{
+                height:18px;
+                margin:0 8px;
+            }
+        }
+        @media (max-width: 991.98px){
+            .site-footer{
+                grid-template-columns:1fr auto;
+                grid-template-areas:
+                    "links links"
+                    "copy social";
+                gap:20px 16px;
+                padding:28px 16px 22px;
+            }
+            .site-footer__links{
+                grid-area:links;
+                justify-content:center;
                 font-size:12px;
-                padding: 0 10px;
-                text-align:center;
+                row-gap:10px;
+            }
+            .site-footer__sep{
+                width:2px;
+                height:14px;
+                background:#b60304;
+                margin:0 6px;
+            }
+            .site-footer__copyright{
+                grid-area:copy;
+                font-size:10px;
+                color:#666;
+            }
+            .site-footer__social{
+                grid-area:social;
+                justify-content:flex-end;
             }
         }
 
@@ -866,42 +941,33 @@
 
     </footer>
 
-    <footer class="minimal-footer">
-        <div class="container">
-        <div class="footer-links">
+    {{-- Same footer as the landing page: links | copyright | social --}}
+    <footer class="site-footer">
+        <div class="site-footer__links">
             <a href="{{ route('contact-us') }}">contact</a>
-            <span class="separators"></span>
+            <span class="site-footer__sep"></span>
             <a href="https://carnpart.ie/page/terms-of-use">website terms of use</a>
-            <span class="separators"></span>
-                <a href="{{ route('terms-conditions') }}">terms and condition</a>
-                <span class="separators"></span>
-                <a href="{{ route('privacy-policy') }}">privacy policy</a>
-                <span class="separators"></span>
+            <span class="site-footer__sep"></span>
+            <a href="{{ route('terms-conditions') }}">terms and condition</a>
+            <span class="site-footer__sep"></span>
+            <a href="{{ route('privacy-policy') }}">privacy policy</a>
+            <span class="site-footer__sep"></span>
             <a href="https://carnpart.ie/page/cookie-policy">cookie policy</a>
-
-                <span class="separators"></span>
-                <a href="https://carnpart.ie/page/legal">legal</a>
-
-
-            <span class="separators"></span>
+            <span class="site-footer__sep"></span>
+            <a href="https://carnpart.ie/page/legal">legal</a>
+            <span class="site-footer__sep"></span>
             <a href="https://carnpart.ie/free-ad-offer">pricing</a>
-            </div>
         </div>
 
-        <div class="mobile-copyright">
-            Copyright 2026. All right reserved
-        </div>
+        <div class="site-footer__copyright">Copyright 2026. All right reserved</div>
 
-        <div class="copyright">
-            <div class="container">
-                <div class="row ">
-                    <div class="col-lg-12">
-                        <div class="copyright-text">
-                            <p>Copyright 2026. All right reserved</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="site-footer__social" aria-label="Social links">
+            <a class="site-footer__social-link" href="https://www.facebook.com/profile.php?id=61591899730874" target="_blank" rel="noopener" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.77l-.44 2.91h-2.33V22C18.34 21.24 22 17.08 22 12.06Z"/></svg>
+            </a>
+            <a class="site-footer__social-link" href="https://www.instagram.com/carnpart.ie?stkn=MWtxeG9rNDlucGR6Zw%3D%3D&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4c0 3.2-2.6 5.8-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8C2 4.6 4.6 2 7.8 2Zm-.2 2A3.6 3.6 0 0 0 4 7.6v8.8A3.6 3.6 0 0 0 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6A3.6 3.6 0 0 0 16.4 4H7.6Zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>
+            </a>
         </div>
     </footer>
 
