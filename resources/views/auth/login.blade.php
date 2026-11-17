@@ -6,6 +6,8 @@
 @section('body-content')
 
 @push('style_section')
+    {{-- shared compact card styles first, so the page rules below win --}}
+    @include('auth.partials.compact_form_style', ['maxWidth' => '460px'])
     <style>
         /* Sign In shows only the form card and footer: hide the site header
            (desktop, mobile and the inner-page mobile bar). The markup stays in
@@ -22,8 +24,10 @@
             align-items:center;
             gap:12px;
         }
-        .login-head h3{
+        .login-head h3,
+        section.login .login-head h3{
             margin:0;
+            font-size:22px;
         }
         .login-head__logo{
             display:inline-flex;
@@ -43,7 +47,6 @@
             }
         }
     </style>
-    @include('auth.partials.compact_form_style', ['maxWidth' => '460px'])
 @endpush
 
 <main>
