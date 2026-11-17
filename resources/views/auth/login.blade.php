@@ -7,17 +7,39 @@
 
 @push('style_section')
     <style>
-        @media (max-width: 991.98px){
-            .login-head{
-                display:flex;
-                justify-content:space-between;
-                align-items:baseline;
-                gap:12px;
-            }
-            .login-head span{
-                margin:0;
-                white-space:nowrap;
-                text-align:right;
+        /* Sign In shows only the form card and footer: hide the site header
+           (desktop, mobile and the inner-page mobile bar). The markup stays in
+           the layout because custom.js binds to the mobile menu buttons. */
+        header.header,
+        header.mobile-header,
+        .lp-mobile__header{
+            display:none !important;
+        }
+
+        .login-head{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+        }
+        .login-head h3{
+            margin:0;
+        }
+        .login-head__logo{
+            display:inline-flex;
+            flex-shrink:0;
+        }
+        .login-head__logo img{
+            display:block;
+            width:auto;
+            height:auto;
+            max-width:130px;
+            max-height:32px;
+        }
+        @media (max-width: 575.98px){
+            .login-head__logo img{
+                max-width:110px;
+                max-height:28px;
             }
         }
     </style>
@@ -38,7 +60,9 @@
                     <div class="login-head">
                         <h3>{{ __('translate.Sign In') }}</h3>
 
-                        <span></span>
+                        <a href="{{ route('home') }}" class="login-head__logo" aria-label="CarNPart home">
+                            <img src="{{ asset('frontend/assets/images/logo/car-n-part.png') }}" alt="CarNPart">
+                        </a>
                     </div>
 
                     <form method="POST" action="{{ route('user-login') }}">
