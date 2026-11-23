@@ -1140,7 +1140,7 @@
         <div class="main-container">
             <div class="logo-section">
                 <a href="{{ route('home') }}" style="text-decoration:none;">
-                    <img src="{{ $logoUrl }}" width="232" style="max-width: 300px;" alt="CarNPart">
+                    <img src="{{ $logoUrl }}" width="232" style="width: 232px; max-width: 100%;" alt="CarNPart">
                 </a>
             </div>
 
