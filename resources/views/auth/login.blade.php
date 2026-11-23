@@ -64,7 +64,7 @@
                         <h3>{{ __('translate.Sign In') }}</h3>
 
                         <a href="{{ route('home') }}" class="login-head__logo" aria-label="CarNPart home">
-                            <img src="{{ asset('frontend/assets/images/logo/car-n-part.png') }}" alt="CarNPart">
+                            <img src="{{ asset('frontend/assets/images/logo/carnpart-logo-registered.png') }}" alt="CarNPart">
                         </a>
                     </div>
 

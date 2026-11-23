@@ -125,7 +125,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel2">
-                            <a href="{{ route('home') }}"><img src="{{ getImageOrPlaceholder($setting->inner_logo, '170x46') }}" alt="logo"></a>
+                            <a href="{{ route('home') }}"><img src="{{ asset('frontend/assets/images/logo/carnpart-logo-registered.png') }}" alt="CarNPart" style="max-width:170px;height:auto;"></a>
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>

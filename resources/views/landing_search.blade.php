@@ -9,15 +9,11 @@
     $__partBrandModelsJson = json_encode($partBrandModels ?? [], JSON_UNESCAPED_UNICODE);
 
     $setting = $setting ?? \Modules\GeneralSetting\Entities\Setting::first();
-    $logoPath = $setting?->logo;
     $facebookUrl = 'https://www.facebook.com/profile.php?id=61591899730874';
     $instagramUrl = 'https://www.instagram.com/carnpart.ie?stkn=MWtxeG9rNDlucGR6Zw%3D%3D&utm_source=qr';
 
-    if ($logoPath && env('FILESYSTEM_DISK') === 's3') {
-        $logoUrl = \Illuminate\Support\Facades\Storage::disk('s3')->url($logoPath);
-    } else {
-        $logoUrl = $logoPath ? asset($logoPath) : 'https://placehold.co/170x46?text=170x46';
-    }
+    // Registered (®) brand logo, same file as every other page.
+    $logoUrl = asset('frontend/assets/images/logo/carnpart-logo-registered.png');
 @endphp
     <title>CarNPart - Search System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -856,7 +852,7 @@
             <div class="ls-mobile__header">
                 <div class="ls-mobile__logo">
                     <a href="{{ route('home') }}" style="text-decoration:none;">
-                        <img src="{{ $logoUrl }}" alt="logo">
+                        <img src="{{ $logoUrl }}" width="232" alt="CarNPart">
                     </a>
                 </div>
             </div>
@@ -1144,7 +1140,7 @@
         <div class="main-container">
             <div class="logo-section">
                 <a href="{{ route('home') }}" style="text-decoration:none;">
-                    <img src="https://carnpart.ie/frontend/assets/images/logo/car-n-part.png" style="max-width: 300px;" alt="logo">
+                    <img src="{{ $logoUrl }}" width="232" style="max-width: 300px;" alt="CarNPart">
                 </a>
             </div>
 

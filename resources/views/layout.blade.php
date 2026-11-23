@@ -298,7 +298,7 @@
                             <div class="logo">
                                 <a href="{{ route('home') }}">
                                     @if (!Route::is('home'))
-                                        <img src="{{ asset('frontend/assets/images/logo/car-n-part.png') }}" alt="logo">
+                                        <img src="{{ asset('frontend/assets/images/logo/carnpart-logo-registered.png') }}" width="232" alt="CarNPart">
                                     @else
                                         @if (Session::get('selected_theme') == 'theme_two')
                                             <img src="{{ getImageOrPlaceholder($setting ? $setting->home2_logo2 : null, '170x46') }}" alt="logo">
@@ -389,7 +389,7 @@
                     <div class="logo">
                         <a href="{{ route('home') }}">
                             @if (!Route::is('home'))
-                                <img src="{{ asset('frontend/assets/images/logo/car-n-part.png') }}" alt="logo">
+                                <img src="{{ asset('frontend/assets/images/logo/carnpart-logo-registered.png') }}" width="232" alt="CarNPart">
                             @else
                                 @if (Session::get('selected_theme') == 'theme_two')
                                     <img src="{{ getImageOrPlaceholder($setting ? $setting->logo : null, '170x46') }}" alt="logo">
@@ -424,7 +424,7 @@
                 <a href="{{ route('home') }}  ">
 
                     @if (!Route::is('home'))
-                        <img src="{{ asset('frontend/assets/images/logo/car-n-part.png') }}" alt="logo">
+                        <img src="{{ asset('frontend/assets/images/logo/carnpart-logo-registered.png') }}" width="232" alt="CarNPart">
                     @else
                         @if (Session::get('selected_theme') == 'theme_two')
                             <img src="{{ getImageOrPlaceholder($setting ? $setting->home2_logo2 : null, '170x46') }}" alt="logo">
@@ -480,7 +480,7 @@
             <div class="lp-mobile__header">
                 <div class="lp-mobile__logo">
                     <a href="{{ route('home') }}" style="text-decoration:none;">
-                        <img src="{{ asset('frontend/assets/images/logo/car-n-part.png') }}" alt="logo">
+                        <img src="{{ asset('frontend/assets/images/logo/carnpart-logo-registered.png') }}" width="232" alt="CarNPart">
                     </a>
                 </div>
 
