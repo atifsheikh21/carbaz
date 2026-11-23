@@ -27,7 +27,8 @@
         .login-head h3,
         section.login .login-head h3{
             margin:0;
-            font-size:22px;
+            margin-top:5px;
+            font-size:20px;
         }
         .login-head__logo{
             display:inline-flex;
